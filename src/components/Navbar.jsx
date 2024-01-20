@@ -1,41 +1,39 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 
 import logo from "../assets/images/logo.jpg";
 import Button from "../components/Button";
 import Cart from "./Cart";
 
-import { navLinks, navIcons, cateLinks } from "../constants";
+
+import { navLinks, navIcons } from "../constants";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { GET_CART_TOTAL } from "../constants/slice";
+import { GET_CART_TOTAL } from "../constants/cartSlice";
+import { LOGOUT } from "../constants/userSlice";
+import { ShopContext } from "../context/ShopContext";
 
 const Navbar = () => {
   const [active, setActive] = useState("Home");
   const[open, setOpen] = useState(false);
-  const[categories, setCategories] = useState([]);
-  const[subCategories, setSubCategories] = useState([]);
 
-  const getCategories = (url = "https://localhost:7183/api/Categories/") => {
-    axios.get(url).then(res => setCategories(res.data)).catch(err => console.log(err))
-  }
+  const {categories,subCategories} = useContext(ShopContext);
 
-  const getSubCategories = (url = "https://localhost:7183/api/SubCategories/") => {
-    axios.get(url).then((res) => {setSubCategories(res.data); console.log(res.data)}).catch(err => console.log(err))
-  }
-
-  useEffect(() => {
-    getCategories();
-    getSubCategories();
-  },[])
 
   const cart = useSelector((state) => state.cart);
+  const user = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
+
+  const logout = () => {
+    dispatch(LOGOUT());
+    window.scroll(0,0);
+  }
 
   useEffect(() => {
     dispatch(GET_CART_TOTAL());
   }, [cart, dispatch]);
+
 
   return (
     <nav className="grid grid-cols-3 items-center drop-shadow-lg fixed top-0 left-0 w-full bg-white h-24 z-50">
@@ -127,10 +125,17 @@ const Navbar = () => {
           )
         )}
 
-        <li className="flex gap-4 ml-5">
-          <Button onClick={() => window.scroll(0,0)} title="Login" link="/login"/>
-          <Button onClick={() => window.scroll(0,0)} title="Signup" link="/signup"/>
-        </li>
+          {user == null ? (
+            <li className="flex gap-4 ml-5">
+              <Button onClick={() => window.scroll(0,0)} title="Login" link="/login"/>
+              <Button onClick={() => window.scroll(0,0)} title="Signup" link="/signup"/>
+            </li>
+          ): (
+            <li className="flex gap-4 ml-5">
+              <span>Hi, {user.username}</span>
+              <Button onClick={() => logout()} title="Logout" link="/login"/>
+            </li>
+          )}
       </ul>
 
       <Cart open={open} setOpen ={setOpen} />

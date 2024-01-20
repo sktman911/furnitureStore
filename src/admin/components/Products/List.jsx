@@ -21,7 +21,7 @@ const List = ({ listData, formDel }) => {
             <tr key={index} className="px-5 py-3 border-b h-full">
               <td className="p-3">{index + 1}</td>
               <td className="p-3 flex justify-center">
-                <img src={item.imageLink} className="w-20 h-20" alt="" />
+                <img src={item.images[0].imageLink} className="w-20 h-20" alt="" />
               </td>
               <td className="p-3">{item.productName}</td>
               <td className="p-3">{item.price}</td>

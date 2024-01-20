@@ -12,7 +12,7 @@ import {
   INCREASE_ITEM,
   REMOVE_ITEM,
   GET_CART_TOTAL
-} from "../constants/slice";
+} from "../constants/cartSlice";
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);

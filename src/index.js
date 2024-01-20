@@ -9,16 +9,18 @@ import { StateContextProvider } from "./context/StateContext";
 
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
-import cartReducer from "./constants/slice"
+
+import cartReducer from "./constants/cartSlice"
+import userReducer from "./constants/userSlice"
 
 const store = configureStore({
   reducer: {
-    cart: cartReducer
+    cart: cartReducer,
+    user : userReducer
   },
 });
 
 // Khởi tạo tổng số lượng giỏ hàng ban đầu
-// store.dispatch(GET_CART_TOTAL());
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

@@ -1,10 +1,49 @@
 import React from "react";
+import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router";
+import axios from "axios";
+
+import { useDispatch } from "react-redux";
+import { jwtDecode } from "jwt-decode";
+import { LOGIN_USER } from "../constants/userSlice";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValue: {
+      username: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = async (data) => {
+    const url = "https://localhost:7183/api/Authentication/";
+    axios
+      .post(url, data)
+      .then((res) => {
+        if (res.data.token) {
+          sessionStorage.setItem("token", res.data.token);
+          const decoded = jwtDecode(res.data.token);
+          dispatch(LOGIN_USER(decoded));
+          if(decoded.role)
+              navigate("/admin")
+          else navigate("/")
+        }
+      })
+      .catch((err) => console.log(err.message));
+  };
+
   return (
     <>
-      <div
+      <form
+        onSubmit={handleSubmit(onSubmit)}
         className="mt-36 mb-12 p-10 bg-slate-800 border shadow-lg
        border-slate-400 w-1/3 mx-auto rounded-md bg-opacity-90"
       >
@@ -13,11 +52,16 @@ const Login = () => {
           <input
             type="text"
             className="block w-full py-2 bg-transparent border-b-2 border-white 
-            focus:outline-none appearance-none peer"
+            focus:outline-none appearance-none peer "
             placeholder=""
+            {...register("username", { required: "Please fill username" })}
           />
+          {errors.username && (
+            <p className="my-1 text-red-500 text-left">
+              {errors.username.message}
+            </p>
+          )}
           <label
-            htmlFor=""
             className="absolute duration-300 transform left-0 scale-75 -translate-y-6 top-3
                 origin-[0] peer-focus:left-0 peer-placeholder-shown:translate-y-0 
              peer-focus:scale-75 peer-focus:-translate-y-6 peer-placeholder-shown:scale-100"
@@ -31,9 +75,15 @@ const Login = () => {
             className="block w-full py-2 bg-transparent border-b-2 border-white 
             focus:outline-none appearance-none peer"
             placeholder=""
+            {...register("password", { required: "Please fill password" })}
+            autoComplete="wrongPass"
           />
+          {errors.password && (
+            <p className="my-1 text-red-500 text-left">
+              {errors.password.message}
+            </p>
+          )}
           <label
-            htmlFor=""
             className="absolute duration-300 transform left-0 scale-75 -translate-y-6 top-3
              origin-[0] peer-focus:left-0 peer-placeholder-shown:translate-y-0 
              peer-focus:scale-75 peer-focus:-translate-y-6 peer-placeholder-shown:scale-100"
@@ -50,9 +100,12 @@ const Login = () => {
             Forgot Password ?
           </Link>
         </div>
-        <button className="w-80 py-2 border bg-white rounded-full my-6 hover:border
+        <button
+          type="submit"
+          className="w-80 py-2 border bg-white rounded-full my-6 hover:border
          hover:border-white hover:bg-slate-800 hover:bg-opacity-10 hover:text-white
-        transition-colors duration-300">
+        transition-colors duration-300"
+        >
           Login
         </button>
         <div>
@@ -63,7 +116,7 @@ const Login = () => {
             </Link>
           </span>
         </div>
-      </div>
+      </form>
     </>
   );
 };

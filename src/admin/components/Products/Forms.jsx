@@ -1,38 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 
 import defaultImg from "../../assets/images/default_img.png"
 import { IoClose } from "react-icons/io5";
+import { ShopContext } from "../../../context/ShopContext";
 
-const Forms = ({
-  updateFunc,
-  submitFunc,
-  closeForm,
-  edit,
-  register,
-  errors,
-  handleSubmit,
-  addForm,
-}) => {
+const Forms = (props) => {
+  
   const [val,setVal] = useState(defaultImg);
-  const [subCategory, setSubCategory] = useState([]);
-  const [category, setCategory] = useState([]);
+  const {subCategories, categories} = useContext(ShopContext);
 
-  const getCategories = () => {
-    const url = "https://localhost:7183/api/Categories/";
-    axios
-      .get(url)
-      .then((res) => setCategory(res.data))
-      .catch((err) => console.log(err));
-  };
-
-  const getSubCategories = () => {
-    const url = "https://localhost:7183/api/SubCategories/";
-    axios
-      .get(url)
-      .then((res) => setSubCategory(res.data))
-      .catch((err) => console.log(err));
-  };
 
   const showPreview = (e) => {
     if(e.target.files && e.target.files[0]){
@@ -45,27 +22,20 @@ const Forms = ({
     }
   }
 
-  useEffect(() => {
-    if (addForm === true) {
-      getCategories();
-      getSubCategories();
-    }
-  }, []);
-
   return (
     <>
       <div
         className="fixed inset-0 bg-black opacity-50 z-40"
-        onClick={closeForm}
+        onClick={props.closeForm}
       ></div>
       <form
-        onSubmit={edit ? handleSubmit(updateFunc) : handleSubmit(submitFunc)}
+        onSubmit={props.handleSubmit(props.submitFunc)}
         className="w-2/4 bg-white rounded-md mx-auto p-4 shadow-lg fixed top-1/2
            -translate-y-1/2 left-2/4 -translate-x-2/4 z-50"
       >
         <h1 className="font-semibold text-2xl py-4">Product</h1>
         <IoClose
-          onClick={closeForm}
+          onClick={props.closeForm}
           className="absolute text-2xl top-3 right-4 cursor-pointer"
         />
 
@@ -77,11 +47,11 @@ const Forms = ({
               type="text"
               className="py-1 px-3 w-3/5 h-full border-b focus:outline-none
                focus:border-black"
-              {...register("productName", { required: "Please fill name" })}
+              {...props.register("productName", { required: "Please fill name" })}
             />
-            {errors.productName && (
+            {props.errors.productName && (
               <p className="w-2/4 text-red-600 text-right mx-auto">
-                {errors.productName.message}
+                {props.errors.productName.message}
               </p>
             )}
           </div>
@@ -92,15 +62,15 @@ const Forms = ({
               type="text"
               className="py-1 px-3 w-3/5 h-full border-b focus:outline-none
                focus:border-black"
-              {...register("price", {
+              {...props.register("price", {
                 required: "Please fill price",
                 validate: (value) =>
                   (!isNaN(value) && value >= 5) || "Invalid price",
               })}
             />
-            {errors.price && (
+            {props.errors.price && (
               <p className="w-2/4 my-2 text-red-600 text-left mx-auto">
-                {errors.price.message}
+                {props.errors.price.message}
               </p>
             )}
           </div>
@@ -112,14 +82,14 @@ const Forms = ({
             <select
               className="py-1 px-3 w-3/5 h-full border-b focus:outline-none
                focus:border-black"
-              {...register("subCategoryId", {
+              {...props.register("subCategoryId", {
                 required: "Please choose SubCategory",
               })}
             >
               <option value="">Choose SubCategory</option>
-              {category.map((item, index) => (
+              {categories.map((item, index) => (
                 <optgroup key={index} label={item.categoryName}>
-                  {subCategory
+                  {subCategories
                     .filter((e) => e.categoryId === item.categoryId)
                     .map((subItem, index) => (
                       <option key={index} value={subItem.subCategoryId}>
@@ -129,9 +99,9 @@ const Forms = ({
                 </optgroup>
               ))}
             </select>
-            {errors.subCategoryId && (
+            {props.errors.subCategoryId && (
               <p className="w-full text-red-600 text-right mx-auto">
-                {errors.subCategoryId.message}
+                {props.errors.subCategoryId.message}
               </p>
             )}
           </div>
@@ -143,11 +113,11 @@ const Forms = ({
               className="py-1 px-3 w-3/5 h-full file:border-none file:px-4 file:py-2 file:rounded-full 
               file:bg-gray-300 file:cursor-pointer cursor-pointer bg-gray-300 rounded-full file:text-black
               file:hover:text-white file:active:text-black"
-              {...register("imageFile", { required: "Please choose image", onChange: (e) => showPreview(e) })}
+              {...props.register("imageFile", { required: "Please choose image", onChange: (e) => showPreview(e) })}
             />
-            {errors.imageFile && (
+            {props.errors.imageFile && (
               <p className="w-1/2 text-red-600 text-right mx-auto">
-                {errors.imageFile.message}
+                {props.errors.imageFile.message}
               </p>
             )}
           </div>
@@ -159,7 +129,7 @@ const Forms = ({
             <textarea
               rows="5"
               className="border-2 rounded-lg resize-none "
-              {...register("description", { required: false })}
+              {...props.register("description", { required: false })}
             ></textarea>
           </div>
           <div className="flex justify-center w-1/2">
@@ -172,7 +142,7 @@ const Forms = ({
           type="submit"
           className="p-3 bg-slate-800 text-white rounded-lg my-5"
         >
-          {edit ? "Update Product" : "Add Product"}
+          Add Product
         </button>
       </form>
     </>

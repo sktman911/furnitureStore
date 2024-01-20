@@ -5,20 +5,30 @@ const ShopContext = createContext(null);
 
 
 const ShopContextProvider = (props) => {
-  const [products,setProducts] = useState([])
+  const [products,setProducts] = useState([]);
+  const[categories, setCategories] = useState([]);
+  const[subCategories, setSubCategories] = useState([]);
 
   const  getProducts = async (url = "https://localhost:7183/api/Products/") => {
-    axios.get(url).then(res => {setProducts(res.data); console.log(res.data)}).catch(err => console.log(err));
+    axios.get(url).then(res => {setProducts(res.data)}).catch(err => console.log(err));
+  }
+
+  const getCategories = (url = "https://localhost:7183/api/Categories/") => {
+    axios.get(url).then(res => {setCategories(res.data)}).catch(err => console.log(err))
+  }
+
+  const getSubCategories = (url = "https://localhost:7183/api/SubCategories/") => {
+    axios.get(url).then((res) => {setSubCategories(res.data)}).catch(err => console.log(err))
   }
 
   useEffect(() => {
     getProducts();
+    getCategories();
+    getSubCategories();
   },[])
 
-    const context = {products}; 
-
   return (
-    <ShopContext.Provider value ={context}>
+    <ShopContext.Provider value ={{ products, categories, subCategories }}>
         {props.children} 
     </ShopContext.Provider>
   )

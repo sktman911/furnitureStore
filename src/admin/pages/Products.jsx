@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm} from "react-hook-form";
 import swal from 'sweetalert';
 
 import { RxSlash } from "react-icons/rx";
@@ -72,21 +72,6 @@ const Products = (props) => {
     setValue("categoryName", data.categoryName);
   };
 
-  const onUpdate = async (data, e) => {
-    e.preventDefault();
-
-    productAPI()
-      .PUT(data.categoryId, data)
-      .then((res) => {
-        renderProducts();
-      })
-      .catch((err) => console.log(err));
-
-    reset();
-    setEdit(null);
-    setAddForm(false);
-  };
-
   const onDelete = async (data, e) => {
     e.preventDefault();
     await swal({
@@ -141,14 +126,11 @@ const Products = (props) => {
 
       {addForm && (
         <Forms
-          updateFunc={onUpdate}
           submitFunc={onSubmit}
           closeForm = {closeForm}
-          edit = {edit}
           register={register}
           errors={errors}
           handleSubmit = {handleSubmit}
-          addForm={addForm}
         />
       )}
     </div>

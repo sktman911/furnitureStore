@@ -11,7 +11,7 @@ import Products from "./Products";
 
 import { ShopContext } from "../context/ShopContext";
 import { useDispatch } from "react-redux";
-import { ADD_TO_CART } from "../constants/slice";
+import { ADD_TO_CART } from "../constants/cartSlice";
 
 const ProductDisplay = (props) => {
   const { products } = useContext(ShopContext);

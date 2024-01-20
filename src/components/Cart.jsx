@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "./Button";
 
-import { REMOVE_ITEM } from "../constants/slice";
+import { REMOVE_ITEM } from "../constants/cartSlice";
 
 import { IoMdClose } from "react-icons/io";
 import { MdCancel } from "react-icons/md";
@@ -45,7 +45,7 @@ const Cart = (props) => {
                 <div key={index}>
                   <div className="flex items-center p-6 justify-between">
                     <img
-                      className="w-1/3 h-1/3 rounded-md"
+                      className="w-28 h-28 rounded-md"
                       src={item.imageLink}
                       alt=""
                     />
