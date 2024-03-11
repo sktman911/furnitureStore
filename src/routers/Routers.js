@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router";
 import PrivateRoute from "./PrivateRoute";
 
@@ -19,34 +19,12 @@ import Categories from "../admin/pages/Categories";
 import SubCategories from "../admin/pages/SubCategories";
 import Products from "../admin/pages/Products";
 import ADProduct from "../admin/pages/Product";
+import Colors from "../admin/pages/Colors";
 import axios from "axios";
+import { ShopContext } from "../context/ShopContext";
 
 const Router = () => {
-  const [categories, setCategories] = useState([]);
-  const [subCategories, setSubCategories] = useState([]);
-
-  const getCategories = (url = "https://localhost:7183/api/Categories/") => {
-    axios
-      .get(url)
-      .then((res) => setCategories(res.data))
-      .catch((err) => console.log(err));
-  };
-
-  const getSubCategories = (
-    url = "https://localhost:7183/api/SubCategories/"
-  ) => {
-    axios
-      .get(url)
-      .then((res) => {
-        setSubCategories(res.data);
-      })
-      .catch((err) => console.log(err));
-  };
-
-  useEffect(() => {
-    getCategories();
-    getSubCategories();
-  }, []);
+  const {categories, subCategories} = useContext(ShopContext);
 
   return (
     <Routes>
@@ -83,6 +61,7 @@ const Router = () => {
       </Route>
       <Route path="admin/categories" element={<PrivateRoute><Categories /></PrivateRoute>}></Route>
       <Route path="admin/subcategories" element={<PrivateRoute><SubCategories /></PrivateRoute>}></Route>
+      <Route path="admin/colors" element={<PrivateRoute><Colors /></PrivateRoute>}></Route>
 
       <Route path="login" element={<Login />}></Route>
       <Route path="signup" element={<Signup />}></Route>

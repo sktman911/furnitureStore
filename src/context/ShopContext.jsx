@@ -13,7 +13,7 @@ const ShopContextProvider = (props) => {
     axios.get(url).then(res => {setProducts(res.data)}).catch(err => console.log(err));
   }
 
-  const getCategories = (url = "https://localhost:7183/api/Categories/") => {
+  const getCategories = async (url = "https://localhost:7183/api/Categories/") => {
     axios.get(url).then(res => {setCategories(res.data)}).catch(err => console.log(err))
   }
 

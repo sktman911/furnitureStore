@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { FaStar, FaStarHalfAlt, FaFacebook } from "react-icons/fa";
 import { RxDividerVertical } from "react-icons/rx";
@@ -57,7 +57,7 @@ const ProductDisplay = (props) => {
           <div className="w-4/5">
             <img
               className="my-1 rounded-lg h-full"
-              src={product.imageLink}
+              src={product.images[0].imageLink}
               alt=""
             />
           </div>

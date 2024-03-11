@@ -1,14 +1,14 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import swal from 'sweetalert';
 
 import { RxSlash } from "react-icons/rx";
+import {categoryAPI} from "../modules/api/api"
 
 import List from "../components/Categories/List";
 import Forms from "../components/Categories/Forms";
 
-const Categories = (props) => {
+const Categories = () => {
 
   const {reset,register,setValue,handleSubmit,formState: { errors }
 } = useForm({
@@ -25,15 +25,6 @@ const Categories = (props) => {
   useEffect(() => {
     renderCategories();
   }, []);
-
-  const categoryAPI = (url = "https://localhost:7183/api/Categories/") => {
-    return {
-      GET: () => axios.get(url),
-      POST: (newData) => axios.post(url, newData),
-      PUT: (id, updateData) => axios.put(url + id, updateData),
-      DELETE: (id) => axios.delete(url + id),
-    };
-  };
 
   const renderCategories = () => {
     categoryAPI()

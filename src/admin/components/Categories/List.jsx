@@ -2,7 +2,7 @@ import React from "react";
 
 import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 
-const List = ({listData, show, formAdd, formDel}) => {
+const List = (props) => {
 
   return (
     <div className="w-11/12 mx-auto shadow-2xl bg-yellow-50 rounded-lg">
@@ -15,7 +15,7 @@ const List = ({listData, show, formAdd, formDel}) => {
           </tr>
         </thead>
         <tbody>
-          {listData.map((item, index) => (
+          {props.listData.map((item, index) => (
             <tr key={index} className="flex justify-between px-5 py-3 border-b">
               <td>{index + 1}</td>
               <td>{item.categoryName}</td>
@@ -23,13 +23,13 @@ const List = ({listData, show, formAdd, formDel}) => {
                 <button>
                   <FaRegEdit
                     onClick={() => {
-                        show(item);
-                      formAdd(true);
+                        props.show(item);
+                      props.formAdd(true);
                     }}
                   />
                 </button>
                 <button>
-                  <FaRegTrashAlt onClick={(e) => formDel(item, e)} />
+                  <FaRegTrashAlt onClick={(e) => props.formDel(item, e)} />
                 </button>
               </td>
             </tr>

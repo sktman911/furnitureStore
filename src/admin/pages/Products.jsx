@@ -46,15 +46,13 @@ const Products = (props) => {
       .catch((err) => console.log(err));
   };
 
-  const onSubmit = async (data, e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
     const formData = new FormData();
     formData.append('imageFile',data.imageFile[0])
     formData.append('productName',data.productName)
     formData.append('price',data.price)
     formData.append('description',data.description)
     formData.append('subCategoryid',data.subCategoryId)
-
     productAPI()
       .POST(formData)
       .then((res) => {
@@ -99,6 +97,7 @@ const Products = (props) => {
     reset();
     setEdit(null);
   }
+
 
   return (
     <div className="pt-12">

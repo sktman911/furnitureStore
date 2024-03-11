@@ -70,7 +70,7 @@ const Shop = (props) => {
               <Products
                 key={index}
                 id={item.productId}
-                img={item.imageLink}
+                img={item.images[0].imageLink}
                 name={item.productName}
                 des={item.description}
                 price={item.price}
@@ -81,7 +81,7 @@ const Shop = (props) => {
               <Products
                 key={index}
                 id={item.productId}
-                img={item.imageLink}
+                img={item.images[0].imageLink}
                 name={item.productName}
                 des={item.description}
                 price={item.price}
@@ -93,7 +93,7 @@ const Shop = (props) => {
               <Products
                 key={index}
                 id={item.productId}
-                img={item.imageLink}
+                img={item.images[0].imageLink}
                 name={item.productName}
                 des={item.description}
                 price={item.price}

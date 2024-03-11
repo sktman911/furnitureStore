@@ -15,7 +15,7 @@ const Popular = () => {
             <Products
               key={index}
               id={item.productId}
-              img={item.imageLink}
+              img={item.images[0].imageLink}
               name={item.productName}
               price={item.price}
             />
