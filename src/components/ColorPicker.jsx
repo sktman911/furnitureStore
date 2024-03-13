@@ -1,6 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { colorAPI } from "../modules/apiClient";
+import { useParams } from "react-router";
 
 const ColorPicker = () => {
+  const {productId} = useParams();
+  const [color, setColor] = useState([]);
+
+  useEffect(() => {
+    colorAPI()
+      .GET(productId)
+      .then((res) => setColor(res.data))
+      .catch((err) => console.log(err));
+  });
+
   return (
     <div>
       <div className="py-3">
@@ -9,27 +21,22 @@ const ColorPicker = () => {
         </label>
         <div className="flex items-baseline mt-2">
           <div className="space-x-2 flex gap-2 text-sm">
-            <label>
-              <input className="sr-only peer" name="size" type="radio" value="1" />
-              <div
-                className="w-7 h-7 rounded-full flex items-center justify-center cursor-pointer bg-violet-500 text-slate-700
-                 peer-checked:border-2 peer-checked:border-gray peer-checked:text-red"
-              ></div>
-            </label>
-            <label>
-              <input className="sr-only peer" name="size" type="radio" value="2" />
-              <div
-                className="w-7 h-7 rounded-full flex items-center justify-center cursor-pointer bg-black text-slate-700
-                peer-checked:border-2 peer-checked:border-gray peer-checked:border-white peer-checked:text-white"
-              ></div>
-            </label>
-            <label>
-              <input className="sr-only peer" name="size" type="radio" value="3" />
-              <div
-                className="w-7 h-7 rounded-full flex items-center justify-center cursor-pointer bg-yellow-600 text-slate-700
-                 peer-checked:border-2 peer-checked:border-gray peer-checked:border-white peer-checked:text-white"
-              ></div>
-            </label>
+            {color &&
+              color.map((item) => (
+                <label key={item.colorId}>
+                  <input
+                    className="sr-only peer"
+                    name="size"
+                    type="radio"
+                    value={item.colorId}
+                  />
+                  <div
+                    style={{backgroundColor: item.colorHexcode}}
+                    className="w-7 h-7 rounded-full flex items-center justify-center border-2 border-gray cursor-pointer
+                  peer-checked:border-slate-700"
+                  ></div>
+                </label>
+              ))}
           </div>
         </div>
       </div>

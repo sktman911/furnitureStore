@@ -19,6 +19,7 @@ const Product = () => {
   const [img, setImg] = useState("");
   const [subImgs, setSubImgs] = useState(Array(4).fill(defaultImg));
   const [subUpload, setSubUpload] = useState(Array(4).fill(null));
+  const [subId, setSubId] = useState(Array(4).fill(null));
 
   const {
     register,
@@ -47,6 +48,13 @@ const Product = () => {
             return subImgs[index];
           })
         );
+
+        setSubId(
+          res.data.map((file,index) => {
+            subId[index] = file.imageId;
+            return subId[index];
+          })
+        )
       })
       .catch((err) => console.log(err));
   };
@@ -106,10 +114,13 @@ const Product = () => {
       }
     });
 
+  
     imageAPI()
       .POST(formData)
       .then((res) => renderSubImage())
       .catch((err) => console.log(err));
+
+    setSubUpload(Array(4).fill(null));
   };
 
   useEffect(() => {

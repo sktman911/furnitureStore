@@ -22,7 +22,7 @@ namespace FurnitureAPI.Models
         public int? SubCategoryId { get; set; }
 
         [NotMapped]
-        public IFormFile ImageFile { get; set; }
+        public IFormFile? ImageFile { get; set; }
 
         public virtual SubCategory? SubCategory { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }

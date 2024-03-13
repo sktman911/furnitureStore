@@ -331,6 +331,8 @@ namespace FurnitureAPI.Models
 
                 entity.Property(e => e.SizeId).HasColumnName("size_id");
 
+                entity.Property(e => e.Quantity).HasColumnName("quantity");
+
                 entity.HasOne(d => d.Color)
                     .WithMany(p => p.ProductSizeColors)
                     .HasForeignKey(d => d.ColorId)

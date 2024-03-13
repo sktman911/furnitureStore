@@ -9,6 +9,7 @@ using FurnitureAPI.Models;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using FurnitureAPI.TempModels;
 using Microsoft.Data.SqlClient;
+using FurnitureAPI.Helpers;
 
 namespace FurnitureAPI.Controllers
 {
@@ -18,11 +19,13 @@ namespace FurnitureAPI.Controllers
     {
         private readonly FurnitureContext _context;
         private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly HandleImage handleImage;
 
-        public ProductsController(FurnitureContext context, IWebHostEnvironment hostEnvironment)
+        public ProductsController(FurnitureContext context, IWebHostEnvironment hostEnvironment, HandleImage handleImage)
         {
             _context = context;
             this._hostEnvironment = hostEnvironment;
+            this.handleImage = handleImage;
         }
 
         // GET: api/Products
@@ -30,7 +33,7 @@ namespace FurnitureAPI.Controllers
         public async Task<ActionResult<IEnumerable<ProductInfo>>> GetProducts()
         {
             var products = _context.Images.Include(x => x.Product)
-                .Where(x => x.Product!.Status == true)
+                .Where(x => x.Product!.Status == true && x.ImageMain == true)
                 .Select(s => new ProductInfo
                 {
                     ProductId = s.ProductId,
@@ -115,11 +118,10 @@ namespace FurnitureAPI.Controllers
                 product.CreatedDate = DateTime.Now;
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();
-
                 Image image = new Image();
                 image.ProductId = product.ProductId;
                 image.ImageMain = true;
-                image.ImageSrc = await UploadImage(product.ImageFile!);
+                image.ImageSrc = await handleImage!.UploadImage(product.ImageFile!);
                 _context.Images.Add(image);
 
                 await _context.SaveChangesAsync();
@@ -155,15 +157,5 @@ namespace FurnitureAPI.Controllers
             return NoContent();
         }
 
-        [NonAction]
-        public async Task<string> UploadImage(IFormFile imageFile)
-        {
-            string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName).ToArray());
-            imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(imageFile.FileName);
-            var imagePath = Path.Combine(_hostEnvironment.ContentRootPath,"Images",imageName);
-            var fileStream = new FileStream(imagePath, FileMode.Create);
-            await imageFile.CopyToAsync(fileStream);
-            return imageName;
-        }
     }
 }

@@ -46,7 +46,7 @@ const Cart = (props) => {
                   <div className="flex items-center p-6 justify-between">
                     <img
                       className="w-28 h-28 rounded-md"
-                      src={item.imageLink}
+                      src={item.images[0].imageLink}
                       alt=""
                     />
                     <div className="flex flex-col gap-2 w-1/2 pl-2">
@@ -55,7 +55,7 @@ const Cart = (props) => {
                         <p>{item.cartQuantity}</p>
                         <span>x</span>
                         <span className="text-yellow-600 text-sm">
-                          $ {item.cost}
+                          $ {item.price}
                         </span>
                       </div>
                     </div>

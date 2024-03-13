@@ -1,4 +1,6 @@
-﻿namespace FurnitureAPI.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace FurnitureAPI.Models
 {
     public class Image
     {
@@ -8,7 +10,13 @@
 
         public string? ImageSrc { get; set; }
 
+        [NotMapped]
+        public string? ImageLink { get; set; }
+
         public bool ImageMain { get; set; }
+
+        [NotMapped]
+        public IFormFileCollection? ImageFiles { get; set; }
 
         public int ProductId { get; set; }
 
