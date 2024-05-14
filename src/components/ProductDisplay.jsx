@@ -18,23 +18,34 @@ const ProductDisplay = (props) => {
   const { product } = props;
 
   const [quantity, setQuantity] = useState(1);
+  const [color, setColor] = useState();
+  const [size, setSize] = useState();
+
+  
 
   const dispatch = useDispatch();
   const handleAddToCart = ( product) => {
 
     return dispatch({
       type: "cart/ADD_TO_CART",
-      payload: { product, quantity },
+      payload: { product, quantity, size, color },
     });
   };
 
+  const handleSize = (size) => {
+    setSize(size);
+  }
+
+  const handleColor = (color) => {
+    setColor(color);
+  }
+
   const handlePlus = () => {
-    if (quantity < 99) setQuantity(Number(quantity) + 1);
+    if (quantity < 99) setQuantity(prev => prev + 1);
   };
 
-  const handleMinus = (e) => {
-    e.preventDefault();
-    if(quantity > 1) setQuantity(Number(quantity) - 1);
+  const handleMinus = () => {
+    if(quantity > 1) setQuantity(prev => prev - 1);
   };
 
   const handleTypeQuantity = (amount) => {
@@ -54,10 +65,11 @@ const ProductDisplay = (props) => {
             <img className="rounded-lg w-full" src="" alt="" />
             <img className="rounded-lg w-full" src="" alt="" />
           </div>
-          <div className="w-4/5">
+          <div className="w-4/5 h-8/10">
             <img
               className="my-1 rounded-lg h-full"
               src={product.images[0].imageLink}
+              
               alt=""
             />
           </div>
@@ -81,9 +93,9 @@ const ProductDisplay = (props) => {
             which boasts a clear midrange and extended highs for a sound.
           </p>
 
-          <SizePicker />
+          <SizePicker onChange={handleSize} />
 
-          <ColorPicker />
+          <ColorPicker onChange={handleColor}/>
 
           <div className="pt-5 flex items-center justify-between w-11/12">
             <div className=" w-28 h-14 border-2 border-gray-400 rounded-lg">

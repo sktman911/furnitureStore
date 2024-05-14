@@ -54,6 +54,7 @@ const Login = () => {
             className="block w-full py-2 bg-transparent border-b-2 border-white 
             focus:outline-none appearance-none peer "
             placeholder=""
+            autoComplete="off"
             {...register("username", { required: "Please fill username" })}
           />
           {errors.username && (

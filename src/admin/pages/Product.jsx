@@ -10,6 +10,7 @@ import {
 
 import defaultImg from "../assets/images/default_img.png";
 import ProductSubDetail from "../components/Product/ProductSubDetail";
+import ProductSubImage from "../components/Product/ProductSubImage";
 
 const Product = () => {
   const { products, categories, subCategories } = useContext(ShopContext);
@@ -17,9 +18,6 @@ const Product = () => {
   const [product, setProduct] = useState(null);
 
   const [img, setImg] = useState("");
-  const [subImgs, setSubImgs] = useState(Array(4).fill(defaultImg));
-  const [subUpload, setSubUpload] = useState(Array(4).fill(null));
-  const [subId, setSubId] = useState(Array(4).fill(null));
 
   const {
     register,
@@ -34,27 +32,6 @@ const Product = () => {
       .then((res) => {
         setProduct(res.data);
         setImg(res.data.images[0].imageLink);
-      })
-      .catch((err) => console.log(err));
-  };
-
-  const renderSubImage = async () => {
-    imageAPI()
-      .GET(productId)
-      .then((res) => {
-        setSubImgs(
-          res.data.map((file, index) => {
-            subImgs[index] = file.imageLink;
-            return subImgs[index];
-          })
-        );
-
-        setSubId(
-          res.data.map((file,index) => {
-            subId[index] = file.imageId;
-            return subId[index];
-          })
-        )
       })
       .catch((err) => console.log(err));
   };
@@ -81,51 +58,8 @@ const Product = () => {
     }
   };
 
-  const showSubPreview = (e, index) => {
-    if (e.target.files && e.target.files[0]) {
-      URL.revokeObjectURL(subImgs[index]);
-      let file = e.target.files[0];
-      if (file) {
-        setSubImgs((prev) => {
-          const newImgs = [...prev];
-          newImgs[index] = URL.createObjectURL(file);
-          return newImgs;
-        });
-
-        setSubUpload((prev) => {
-          const newUploads = [...prev];
-          newUploads[index] = file;
-          return newUploads;
-        });
-      }
-    }
-  };
-
-  const uploadSubImgs = () => {
-    if (subUpload.every((item) => item === null)) {
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append(`productId`, productId);
-    subUpload.forEach((file) => {
-      if (file !== null) {
-        formData.append("imageFiles", file);
-      }
-    });
-
-  
-    imageAPI()
-      .POST(formData)
-      .then((res) => renderSubImage())
-      .catch((err) => console.log(err));
-
-    setSubUpload(Array(4).fill(null));
-  };
-
   useEffect(() => {
     getProduct();
-    renderSubImage();
   }, []);
 
   useEffect(() => {
@@ -170,41 +104,7 @@ const Product = () => {
                     })}
                   />
                 </label>
-                <div className="flex items-center justify-between">
-                  {subImgs.map((item, index) => (
-                    <label key={index}>
-                      <input
-                        className="sr-only"
-                        type="file"
-                        onChange={(e) => showSubPreview(e, index)}
-                      />
-                      <img className="w-20 h-20" src={item} alt="" />
-                    </label>
-                  ))}
-
-                  {subImgs.length < 4 &&
-                    [...Array(4 - subImgs.length)].map((item, index) => (
-                      <label key={subImgs.length + index}>
-                        <input
-                          className="sr-only"
-                          type="file"
-                          onChange={(e) =>
-                            showSubPreview(e, subImgs.length + index)
-                          }
-                        />
-                        <img className="w-20 h-20" src={defaultImg} alt="" />
-                      </label>
-                    ))}
-                </div>
-                <div className="flex justify-end my-2">
-                  <button
-                    type="button"
-                    onClick={() => uploadSubImgs()}
-                    className="px-2 py-1 border-2 border-black rounded-lg hover:bg-slate-800 hover:text-white"
-                  >
-                    Image +
-                  </button>
-                </div>
+                  <ProductSubImage productId={productId} />
               </div>
 
               <div>

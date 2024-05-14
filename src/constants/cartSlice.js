@@ -19,11 +19,26 @@ const slice = createSlice({
         (item) => item.productId === action.payload.product.productId
       );
       if (index >= 0) {
-        state.cartItems[index].cartQuantity += action.payload.quantity;
+        // check if exist color and size exist
+        if (!checkExisted(state, action)) {
+          const temp = {
+            ...action.payload.product,
+            cartQuantity: action.payload.quantity,
+            size: action.payload.size,
+            color: action.payload.color,
+          };
+          state.cartItems.push(temp);
+        }
       } else {
-        const temp = { ...action.payload.product, cartQuantity: action.payload.quantity };
+        const temp = {
+          ...action.payload.product,
+          cartQuantity: action.payload.quantity,
+          size: action.payload.size,
+          color: action.payload.color,
+        };
         state.cartItems.push(temp);
       }
+
       toast.success(`Add ${action.payload.product.productName} successfully`, {
         position: "top-center",
         autoClose: 1500,
@@ -32,33 +47,36 @@ const slice = createSlice({
 
       localStorage.setItem("cart", JSON.stringify(state.cartItems));
     },
+
     REMOVE_ITEM(state, action) {
+      // select products diff from the delete
       const newCartItems = state.cartItems.filter(
-        (item) => item.productId !== action.payload.productId
+        (item, index) => index !== action.payload.index
       );
 
       state.cartItems = newCartItems;
       localStorage.setItem("cart", JSON.stringify(state.cartItems));
-      toast.success(`Remove ${action.payload.productName} successfully`, {
+      toast.success(`Remove ${action.payload.item.productName} successfully`, {
         position: "top-center",
         autoClose: 1500,
         theme: "colored",
       });
     },
+
     DECREASE_ITEM(state, action) {
       const itemIndex = state.cartItems.findIndex(
-        (item) => item.productId === action.payload.productId
+        (item, index) => index === action.payload.index
       );
 
       if (state.cartItems[itemIndex].cartQuantity > 1)
         state.cartItems[itemIndex].cartQuantity -= 1;
       else if (state.cartItems[itemIndex].cartQuantity === 1) {
         const newCartItems = state.cartItems.filter(
-          (item) => item.productId !== action.payload.productId
+          (item, index) => index !== action.payload.index
         );
 
         state.cartItems = newCartItems;
-        toast.success(`Remove ${action.payload.productName} successfully`, {
+        toast.success(`Remove ${action.payload.item.productName} successfully`, {
           position: "top-center",
           autoClose: 1500,
           theme: "colored",
@@ -66,9 +84,10 @@ const slice = createSlice({
       }
       localStorage.setItem("cart", JSON.stringify(state.cartItems));
     },
+
     INCREASE_ITEM(state, action) {
       const index = state.cartItems.findIndex(
-        (item) => item.productId === action.payload.productId
+        (item, index) => index === action.payload.index
       );
       if (index >= 0) {
         state.cartItems[index].cartQuantity += 1;
@@ -76,26 +95,28 @@ const slice = createSlice({
 
       localStorage.setItem("cart", JSON.stringify(state.cartItems));
     },
+
     CLEAR_CART(state, action) {
       state.cartItems = [];
-      toast.success(`Clear cart successfully`, {
-        position: "top-center",
-        autoClose: 1500,
-        theme: "colored",
-      });
+      // toast.success(`Clear cart successfully`, {
+      //   position: "top-center",
+      //   autoClose: 1500,
+      //   theme: "colored",
+      // });
 
       localStorage.setItem("cart", JSON.stringify(state.cartItems));
     },
+
     GET_CART_TOTAL(state, action) {
       let { total, quantity } = state.cartItems.reduce(
         (cartTotal, cartItem) => {
-            const {price, cartQuantity} = cartItem;
-            const totalCost = price * cartQuantity;
+          const { price, cartQuantity } = cartItem;
+          const totalCost = price * cartQuantity;
 
-            cartTotal.total += totalCost;
-            cartTotal.quantity += cartQuantity;
+          cartTotal.total += totalCost;
+          cartTotal.quantity += cartQuantity;
 
-            return cartTotal;
+          return cartTotal;
         },
         {
           total: 0,
@@ -109,13 +130,29 @@ const slice = createSlice({
   },
 });
 
+// check exist func
+const checkExisted = (state, action) => {
+  const existedBoth = state.cartItems.findIndex(
+    (item) =>
+      item.color[0] === action.payload.color[0] &&
+      item.size[0] === action.payload.size[0]
+  );
+
+  if (existedBoth >= 0) {
+    state.cartItems[existedBoth].cartQuantity += action.payload.quantity;
+    return true;
+  }
+
+  return false;
+};
+
 export const {
   ADD_TO_CART,
   REMOVE_ITEM,
   DECREASE_ITEM,
   INCREASE_ITEM,
   CLEAR_CART,
-  GET_CART_TOTAL
+  GET_CART_TOTAL,
 } = slice.actions;
 
 export default slice.reducer;

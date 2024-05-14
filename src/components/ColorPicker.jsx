@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { colorAPI } from "../modules/apiClient";
+import { colorAPI,  } from "../modules/apiClient";
 import { useParams } from "react-router";
 
-const ColorPicker = () => {
+const ColorPicker = (props) => {
   const {productId} = useParams();
   const [color, setColor] = useState([]);
 
   useEffect(() => {
     colorAPI()
-      .GET(productId)
-      .then((res) => setColor(res.data))
+      .GET_ID(productId)
+      .then((res) => {setColor(res.data)})
       .catch((err) => console.log(err));
-  });
+  },[]);
+
+  const selectedColor = (data) => {
+    props.onChange(data);
+  }
 
   return (
     <div>
@@ -26,9 +30,9 @@ const ColorPicker = () => {
                 <label key={item.colorId}>
                   <input
                     className="sr-only peer"
-                    name="size"
+                    name="color"
                     type="radio"
-                    value={item.colorId}
+                    onChange={() => selectedColor([item.colorId, item.colorHexcode])}
                   />
                   <div
                     style={{backgroundColor: item.colorHexcode}}

@@ -6,13 +6,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { FaTrashAlt } from "react-icons/fa";
 import Button from "../components/Button";
 import Info from "../components/Info";
-import {
-  CLEAR_CART,
-  DECREASE_ITEM,
-  INCREASE_ITEM,
-  REMOVE_ITEM,
-  GET_CART_TOTAL
-} from "../constants/cartSlice";
+import { CLEAR_CART } from "../constants/cartSlice";
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
@@ -22,21 +16,30 @@ const Cart = () => {
   //   dispatch(GET_CART_TOTAL());
   // },[cart, dispatch]);
 
-  const handleRemoveItem = (item) => {
-    dispatch(REMOVE_ITEM(item));
+  const handleRemoveItem = (item, index) => {
+    dispatch({
+      type: "cart/REMOVE_ITEM",
+      payload: { item, index },
+    });
   };
 
-  const handleIncreaseQuantity = (item) => {
-    dispatch(INCREASE_ITEM(item));
+  const handleIncreaseQuantity = (item, index) => {
+    dispatch({
+      type: "cart/INCREASE_ITEM",
+      payload: { item, index },
+    });
   };
 
-  const handleDecreaseQuantity = (item) => {
-    dispatch(DECREASE_ITEM(item));
+  const handleDecreaseQuantity = (item, index) => {
+    dispatch({
+      type: "cart/DECREASE_ITEM",
+      payload: { item, index },
+    });
   };
 
-  const handleClear = () =>{
-    dispatch(CLEAR_CART())
-  }
+  const handleClear = () => {
+    dispatch(CLEAR_CART());
+  };
 
   return (
     <div className="mt-24">
@@ -69,6 +72,8 @@ const Cart = () => {
                   <th className="p-3"></th>
                   <th className="p-3">Image</th>
                   <th className="p-3">Product</th>
+                  <th className="p-3">Color</th>
+                  <th className="p-3">Size</th>
                   <th className="p-3">Price</th>
                   <th className="p-3">Quantity</th>
                   <th className="p-3">Subtotal</th>
@@ -82,18 +87,25 @@ const Cart = () => {
                     <td className="py-10 px-3">
                       <img
                         className=" w-28 h-24 mx-auto"
-                        src={item.imageLink}
+                        src={item.images[0].imageLink}
                         alt=""
                       />
                     </td>
                     <td className="py-10 px-3">{item.productName}</td>
+                    <td className="py-10 px-3">
+                      <div
+                        style={{ backgroundColor: item.color[1] }}
+                        className="w-7 h-7 rounded-full mx-auto border-2 border-gray"
+                      ></div>
+                    </td>
+                    <td className="py-10 px-3">{item.size[1]}</td>
                     <td className="py-10 px-3">$ {item.price}</td>
                     <td className="py-10 px-3">
                       <div className="flex justify-center items-center rounded-md border-2 w-3/4 mx-auto text-sm">
                         <Button
-                          className="w-4 h-8"
+                          className="w-3 h-8"
                           title="-"
-                          onClick={() => handleDecreaseQuantity(item)}
+                          onClick={() => handleDecreaseQuantity(item, index)}
                         />
                         <input
                           type="text"
@@ -101,9 +113,9 @@ const Cart = () => {
                           className="w-8 h-8 outline-none text-center"
                         />
                         <Button
-                          className="w-4 h-8"
+                          className="w-3 h-8"
                           title="+"
-                          onClick={() => handleIncreaseQuantity(item)}
+                          onClick={() => handleIncreaseQuantity(item, index)}
                         />
                       </div>
                     </td>
@@ -112,7 +124,9 @@ const Cart = () => {
                     </td>
                     <td>
                       <FaTrashAlt
-                        onClick={() => handleRemoveItem(item)}
+                        onClick={() => {
+                          handleRemoveItem(item, index);
+                        }}
                         className="text-yellow-600 cursor-pointer"
                       />
                     </td>
@@ -143,11 +157,14 @@ const Cart = () => {
               </div>
               <div className="py-5 flex w-1/2 mx-auto justify-between">
                 <span className="font-semibold">Total</span>
-                <span className="text-yellow-600 text-lg">${cart.cartTotalCost}</span>
+                <span className="text-yellow-600 text-lg">
+                  ${cart.cartTotalCost}
+                </span>
               </div>
               <Button
                 className="bg-none border-2 rounded-xl border-black py-2 px-14 my-2"
                 title="Checkout"
+                link={"/checkout"}
               />
             </div>
           </div>

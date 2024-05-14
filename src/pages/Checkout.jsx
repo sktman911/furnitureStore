@@ -1,18 +1,105 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import Button from "../components/Button";
 import Info from "../components/Info";
+import { useSelector, useDispatch } from "react-redux";
+import { customerAPI, orderAPI } from "../modules/apiClient";
+import { CLEAR_CART } from "../constants/cartSlice";
+import { toast } from "react-toastify";
 
 const Checkout = () => {
+  const cart = useSelector((state) => state.cart);
+  const user = useSelector((state) => state.user);
+  const [shipFee, setShipFee] = useState(0);
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    loadInfo();
+    if (cart.cartTotalCost > 0) {
+      setShipFee(20);
+      setTotal(shipFee + cart.cartTotalCost);
+    } else {
+      setShipFee(0);
+      setTotal(0);
+    }
+  }, [cart.cartTotalQuantity]);
+
+  const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm();
 
-  const onCheckout = () => {
-    console.log("A");
+  const setInfo = (user) => {
+    if (user != null) {
+      setValue("cusName", user.cusName);
+      setValue("cusPhone", user.cusPhone);
+      setValue("cusEmail", user.email);
+      setValue("cusAddress", user.cusAddress);
+    }
+  };
+
+  const loadInfo = () => {
+    if (user != null) {
+      customerAPI()
+        .GET_ID(user.cusId)
+        .then((res) => setInfo(res.data))
+        .catch((err) => console.log(err));
+    }
+  };
+
+  const onCheckout = async () => {
+    if (user == null) {
+      return;
+    }
+
+    if (cart == null) {
+      return;
+    }
+
+    const pscList = [];
+
+    for (var item of cart.cartItems) {
+      const detail = {
+        productId: item.productId,
+        quantity: item.cartQuantity,
+        colorId: item.color[0],
+        sizeId: item.size[0],
+      };
+      pscList.push(detail);
+    }
+
+    const data = {
+      totalPrice: total,
+      totalQuantity: cart.cartTotalQuantity,
+      omId: 1,
+      cusId: user.cusId,
+      pscList: pscList,
+    };
+
+    await orderAPI()
+      .POST(data)
+      .then((res) => {
+        dispatch(CLEAR_CART());
+        toast.success(res.data.message, {
+          position: "top-center",
+          autoClose: 1500,
+          theme: "colored",
+        });
+      })
+      .catch((err) =>{
+        const message = err.response.data.message;
+        toast.error(message, {
+          position: "top-center",
+          autoClose: 1500,
+          theme: "colored",
+        })
+      }
+      );
   };
 
   return (
@@ -26,14 +113,15 @@ const Checkout = () => {
         </span>
       </div>
 
-      <div className="flex w-4/5 mx-auto">
+      <div className="flex w-4/5 mx-auto max-h-max">
         <div className="w-1/2">
           <h2 className="font-semibold text-xl text-left">Billing details</h2>
           <form className="py-8" onSubmit={handleSubmit(onCheckout)}>
             <div className="flex gap-6 text-left">
               <div className="py-2">
                 <label className="my-2 block">Your name: </label>
-                <input type="text"
+                <input
+                  type="text"
                   className="py-2 px-6 border-2 rounded-md w-5/6"
                   {...register("cusName", { required: "Please fill name" })}
                 />
@@ -48,7 +136,8 @@ const Checkout = () => {
                 <input
                   type="text"
                   className="py-2 px-6 border-2 rounded-md w-5/6"
-                  {...register("cusPhone", {required: "Please fill phone number",
+                  {...register("cusPhone", {
+                    required: "Please fill phone number",
                     minLength: {
                       value: 10,
                       message: "Length must be longer than 9",
@@ -57,7 +146,8 @@ const Checkout = () => {
                       value: 11,
                       message: "Length can't be longer than 11",
                     },
-                    validate: (value) => !isNaN(value) || "Invalid phone number",
+                    validate: (value) =>
+                      !isNaN(value) || "Invalid phone number",
                   })}
                 />
                 {errors.cusPhone && (
@@ -113,37 +203,39 @@ const Checkout = () => {
           </form>
         </div>
 
-        <div className="w-1/2 pl-20">
+        <div className="w-1/2 pl-20 max-h-max">
           <div className="flex flex-col gap-4 border-b-2 py-8 px-3 bg-yellow-50 rounded-t-lg">
             <div className="text-lg font-semibold flex justify-between">
               <span>Product</span>
               <span>Subtotal</span>
             </div>
+            {cart.cartItems.map((item, index) => (
+              <div className="flex justify-between items-end" key={index}>
+                <div>
+                  <span className="text-gray-400">{item.productName}</span>
+                  <span> x {item.cartQuantity}</span>
+                </div>
+                <p>$ {item.cartQuantity * item.price}</p>
+              </div>
+            ))}
             <div className="flex justify-between items-end">
               <div>
-                <span className="text-gray-400">Sofa</span>
-                <span> x 1</span>
+                <span>Shipping</span>
               </div>
-              <p>$ 20</p>
-            </div>
-            <div className="flex justify-between items-end">
-              <div>
-                <span>Subtotal</span>
-              </div>
-              <p>$ 20</p>
+              <p>$ {shipFee}</p>
             </div>
             <div className="flex justify-between items-end">
               <div>
                 <span>Total</span>
               </div>
-              <p className="text-yellow-600 text-xl font-semibold">$ 20</p>
+              <p className="text-yellow-600 text-xl font-semibold">${total}</p>
             </div>
           </div>
 
           <div className="pt-8 flex flex-col gap-4 px-3 bg-yellow-50 rounded-b-lg">
             <div>
               <div className="flex items-center gap-5">
-                <input type="radio" />
+                <input type="radio" name="payment" />
                 <label className="text-sm">Direct Bank Transfer</label>
               </div>
               <p className="text-sm text-left text-gray-400 leading-6 py-2">
@@ -153,7 +245,7 @@ const Checkout = () => {
               </p>
             </div>
             <div className="flex items-center gap-5">
-              <input type="radio" />
+              <input type="radio" name="payment" />
               <label className="text-sm">Cash On Delivery</label>
             </div>
 

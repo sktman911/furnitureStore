@@ -11,8 +11,11 @@ const Cart = (props) => {
   const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
 
-  const removeItem = (item) => {
-    dispatch(REMOVE_ITEM(item));
+  const removeItem = (item, index) => {
+    dispatch(    {
+      type: "cart/REMOVE_ITEM",
+      payload: { item, index },
+    });
   };
 
   return (
@@ -49,8 +52,18 @@ const Cart = (props) => {
                       src={item.images[0].imageLink}
                       alt=""
                     />
-                    <div className="flex flex-col gap-2 w-1/2 pl-2">
+                    <div className="flex flex-col gap-1 w-1/2 pl-2">
                       <h2 className="text-left">{item.productName}</h2>
+                      <h2 className="text-left">Size: {item.size[1]}</h2>
+                      <div>
+                      <h2 className="text-left flex items-center gap-2">
+                        Color:
+                        <div
+                          style={{backgroundColor: item.color[1] }}
+                          className="w-7 h-7 rounded-full  border-2 border-gray"
+                        ></div>
+                      </h2>
+                      </div>
                       <div className="flex items-end gap-6">
                         <p>{item.cartQuantity}</p>
                         <span>x</span>
@@ -60,7 +73,7 @@ const Cart = (props) => {
                       </div>
                     </div>
                     <MdCancel
-                      onClick={() => removeItem(item)}
+                      onClick={() => {removeItem(item, index)}}
                       className="text-gray-400 text-xl cursor-pointer"
                     />
                   </div>
@@ -81,7 +94,9 @@ const Cart = (props) => {
                     className={
                       "px-6 py-1.5 border border-black rounded-full hover:bg-slate-900 hover:text-white active:bg-slate-800"
                     }
-                    onClick={() => {window.scroll(0,0)}}
+                    onClick={() => {
+                      window.scroll(0, 0);
+                    }}
                   />
                   <Button
                     link="/checkout"
@@ -89,7 +104,9 @@ const Cart = (props) => {
                     className={
                       "px-6 py-1.5 border border-black rounded-full hover:bg-slate-900 hover:text-white active:bg-slate-800"
                     }
-                    onClick={() => {window.scroll(0,0)}}
+                    onClick={() => {
+                      window.scroll(0, 0);
+                    }}
                   />
                   <Button
                     title="Comparison"

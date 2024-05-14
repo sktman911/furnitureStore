@@ -45,6 +45,7 @@ const productAPI = (url = "https://localhost:7183/api/Products/") => {
     return {
       GET: (id) => axios.get(url + id),
       POST: (data) => axios.post(url, data),
+      PUT: (id, data) => axios.put(url + id, data)
     };
   };
 // End Image API

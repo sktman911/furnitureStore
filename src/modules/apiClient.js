@@ -1,6 +1,13 @@
 import axios from "axios";
 
 
+// Authentication API
+const authAPI = (url = "https://localhost:7183/api/Authentication/") => {
+  return {
+    SIGNUP: (data) => axios.post(url,data), 
+  };
+};
+
 // Product Size Color API 
 const productSizeColorAPI = (
     url = "https://localhost:7183/api/ProductSizeColors/"
@@ -17,6 +24,7 @@ const productSizeColorAPI = (
   const sizeAPI = (url = "https://localhost:7183/api/Sizes/") => {
     return {
       GET: () => axios.get(url),
+      GET_ID: (id)=> axios.get(url + id),
     };
   };
 // End Size API
@@ -61,5 +69,25 @@ const categoryAPI = (url = "https://localhost:7183/api/Categories/") => {
 };
 //End Categories API
 
+// Customers API
 
-  export {productSizeColorAPI, sizeAPI, colorAPI, productAPI, imageAPI, categoryAPI}
+const customerAPI = (url = "https://localhost:7183/api/Customers/") => {
+  return {
+    GET_ID: (id) => axios.get(url + id),
+  };
+};
+
+// End Customers API
+
+// Orders API
+
+const orderAPI = (url = "https://localhost:7183/api/Orders/") => {
+  return {
+    POST: (newData) => axios.post(url, newData),
+  };
+};
+
+// End Orders API
+
+
+  export {productSizeColorAPI, sizeAPI, colorAPI, productAPI, imageAPI, categoryAPI, authAPI, customerAPI, orderAPI}
