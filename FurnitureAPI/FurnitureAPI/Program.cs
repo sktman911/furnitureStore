@@ -1,5 +1,6 @@
 using FurnitureAPI.Helpers;
 using FurnitureAPI.Models;
+using FurnitureAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -17,9 +18,31 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<HandleImage>();
 
+// use Singleton for only 1 instance in system 
+builder.Services.AddSingleton<IVnPayService, VnPayService>();
 
-builder.Services.AddCors();
 
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(15);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+
+builder.Services.AddCors(options => options.AddPolicy("AllowAllOrigins",
+            builder =>
+            {
+                builder.WithOrigins("https://localhost:3000")
+                       .AllowAnyMethod()
+                       .AllowAnyHeader()
+                       .AllowCredentials();
+            }));
+
+
+
+// JWT
 // get key from setting
 var key = builder.Configuration["Jwt:Key"];
 
@@ -50,7 +73,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseCors(builder => builder.WithOrigins("http://localhost:3000", "https://localhost:7183").AllowAnyHeader().AllowAnyMethod());
+    app.UseCors(builder => builder.
+    AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 }
 
 app.UseHttpsRedirection();
@@ -64,10 +88,19 @@ app.UseStaticFiles(new StaticFileOptions
 
 });
 
+
 app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseRouting();
+
+app.UseSession();
+
+app.UseCors("AllowAllOrigins");
+
+
 
 app.Run();

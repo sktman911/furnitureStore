@@ -7,10 +7,10 @@ namespace FurnitureAPI.Models
     {
         public int OdId { get; set; }
         public int? OrderId { get; set; }
-        public int? ProductId { get; set; }
+        public int? PscId { get; set; }
         public int? Quantity { get; set; }
 
         public virtual Order? Order { get; set; }
-        public virtual Product? Product { get; set; }
+        public virtual ProductSizeColor? ProductSizeColor { get; set; }
     }
 }

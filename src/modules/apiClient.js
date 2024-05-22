@@ -83,7 +83,7 @@ const customerAPI = (url = "https://localhost:7183/api/Customers/") => {
 
 const orderAPI = (url = "https://localhost:7183/api/Orders/") => {
   return {
-    POST: (newData) => axios.post(url, newData),
+    POST: (newData) => axios.post(url, newData,{mode: "no-cors"}),
   };
 };
 

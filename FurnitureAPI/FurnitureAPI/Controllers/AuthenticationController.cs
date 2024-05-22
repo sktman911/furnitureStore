@@ -16,6 +16,7 @@ namespace FurnitureAPI.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
+
         private readonly FurnitureContext _context;
         private readonly IConfiguration configuration;
 
@@ -31,7 +32,7 @@ namespace FurnitureAPI.Controllers
             var md5Hash = GenerateMD5(loginModel.Password!);
 
             var customer = _context.Customers.FirstOrDefault(x => x.Username == loginModel.Username && x.Password == loginModel.Password);
-            if(customer != null)
+            if (customer != null)
             {
                 var key = configuration["Jwt:Key"];
                 var signKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
@@ -48,7 +49,7 @@ namespace FurnitureAPI.Controllers
                     audience: configuration["Jwt:Audience"],
                     expires: DateTime.Now.AddMinutes(10),
                     signingCredentials: signCredential,
-                    claims : claims
+                    claims: claims
                 );
 
                 // new string token
@@ -87,23 +88,23 @@ namespace FurnitureAPI.Controllers
             return new JsonResult(new { message = "Login Failed" });
         }
 
-        private static string Generate256(string rawData)
-        {
-            // Create a SHA256
-            using (SHA256 sha256Hash = SHA256.Create())
-            {
-                // ComputeHash - returns byte array
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+        //private static string Generate256(string rawData)
+        //{
+        //    // Create a SHA256
+        //    using (SHA256 sha256Hash = SHA256.Create())
+        //    {
+        //        // ComputeHash - returns byte array
+        //        byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
 
-                // Convert byte array to a string
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    builder.Append(bytes[i].ToString("x2"));
-                }
-                return builder.ToString();
-            }
-        }
+        //        // Convert byte array to a string
+        //        StringBuilder builder = new StringBuilder();
+        //        for (int i = 0; i < bytes.Length; i++)
+        //        {
+        //            builder.Append(bytes[i].ToString("x2"));
+        //        }
+        //        return builder.ToString();
+        //    }
+        //}
 
         private static string GenerateMD5(string input)
         {
@@ -118,6 +119,70 @@ namespace FurnitureAPI.Controllers
                 }
                 return hash.ToString();
             }
+        }
+
+        [HttpPost("signup")]
+        public IActionResult Signup(Customer cus)
+        {
+            if(cus == null)
+            {
+                return BadRequest();
+            }
+
+            // check if email existed
+            if (!CheckEmail(cus.Email!))
+            {
+                return new JsonResult(new {message = "Email has been existed"});
+            }
+
+            // check if email existed
+            if (!CheckPhone(cus.CusPhone!))
+            {
+                return new JsonResult(new { message = "Phone has been existed" });
+            }
+
+            // check if email existed
+            if (!CheckUsername(cus.Username!))
+            {
+                return new JsonResult(new { message = "Username has been existed" });
+            }
+
+            _context.Customers.Add(cus);
+             _context.SaveChanges();
+            return new JsonResult(new {message = "Sign up successfully"});
+        }
+
+        private bool CheckPhone(string phoneNum)
+        {
+            var result = _context.Customers.First(x => x.CusPhone == phoneNum);
+
+            if(result != null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private bool CheckUsername(string username)
+        {
+            var result = _context.Customers.First(x => x.Username == username);
+
+            if (result != null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private bool CheckEmail(string email)
+        {
+            var result = _context.Customers.First(x => x.Email == email);
+
+            if (result != null)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

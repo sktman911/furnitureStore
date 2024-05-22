@@ -243,7 +243,7 @@ namespace FurnitureAPI.Models
 
                 entity.Property(e => e.OrderId).HasColumnName("order_id");
 
-                entity.Property(e => e.ProductId).HasColumnName("product_id");
+                entity.Property(e => e.PscId).HasColumnName("psc_id");
 
                 entity.Property(e => e.Quantity).HasColumnName("quantity");
 
@@ -252,10 +252,10 @@ namespace FurnitureAPI.Models
                     .HasForeignKey(d => d.OrderId)
                     .HasConstraintName("FK__OrderDeta__order__6C190EBB");
 
-                entity.HasOne(d => d.Product)
+                entity.HasOne(d => d.ProductSizeColor)
                     .WithMany(p => p.OrderDetails)
-                    .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__OrderDeta__produ__6D0D32F4");
+                    .HasForeignKey(d => d.PscId)
+                    .HasConstraintName("FK_OrderDetail_ProductSizeColor");
             });
 
             modelBuilder.Entity<OrderMethod>(entity =>

@@ -67,7 +67,7 @@ namespace FurnitureAPI.Controllers
         public async Task<ActionResult<IEnumerable<Color>>> GetProductSuzeColorsByClient(int id)
         {
 
-            var result = await _context.Colors.Where(x => _context.ProductSizeColors.Any(y => y.ColorId == x.ColorId && y.ProductId == id)).ToListAsync();
+            var result = await _context.Colors.Where(x => x.ProductSizeColors.Any(y => y.ColorId == x.ColorId && y.ProductId == id)).ToListAsync();
 
 
             if (result == null)

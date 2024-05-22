@@ -67,17 +67,6 @@ namespace FurnitureAPI.Controllers
             return result;
         }
 
-        [HttpGet("/client/ProductSizeColors/{id}")]
-        public async Task<ActionResult<IEnumerable<ProductSizeColor>>> GetProductSuzeColorsByClient(int id)
-        {
-            var result = await _context.ProductSizeColors.Where(x => x.ProductId == id && x.ColorId == x.Color!.ColorId).ToListAsync();
 
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return result;
-        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FurnitureAPI.Models
 {
@@ -17,6 +18,9 @@ namespace FurnitureAPI.Models
         public int? OsId { get; set; }
         public int? OmId { get; set; }
         public int? CusId { get; set; }
+
+        [NotMapped]
+        public List<ProductSizeColor> PscList { get; set; }
 
         public virtual Customer? Cus { get; set; }
         public virtual OrderMethod? Om { get; set; }

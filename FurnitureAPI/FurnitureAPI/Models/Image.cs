@@ -18,6 +18,9 @@ namespace FurnitureAPI.Models
         [NotMapped]
         public IFormFileCollection? ImageFiles { get; set; }
 
+        [NotMapped]
+        public int[]? Ids { get; set; }
+
         public int ProductId { get; set; }
 
         public virtual Product? Product { get; set; }

@@ -20,5 +20,20 @@ namespace FurnitureAPI.Controllers
         {
             return await _context.Sizes.ToListAsync();
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IEnumerable<Size>>> GetSize(int id)
+        {
+
+            var result = await _context.Sizes.Where(x => x.ProductSizeColors.Any(y => y.SizeId == x.SizeId && y.ProductId == id)).ToListAsync();
+
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return result;
+        }
     }
 }

@@ -35,17 +35,50 @@ namespace FurnitureAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Image>> PostSubImage([FromForm]Image image)
+        public async Task<ActionResult<Image>> PostSubImage([FromForm] Image image)
         {
-            if(image.ImageFiles == null)
+            if (image.ImageFiles == null)
             {
                 return BadRequest();
             }
 
-            foreach(var file in image.ImageFiles)
+            foreach (var file in image.ImageFiles)
             {
+                image.ImageId = 0;
                 image.ImageSrc = await handleImage.UploadImage(file);
                 await _context.Images.AddAsync(image);
+                await _context.SaveChangesAsync();
+            }
+
+            return StatusCode(200);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> PutSubImage(int id, [FromForm] Image image)
+        {
+            if (image.ImageFiles == null)
+            {
+                return BadRequest();
+            }
+
+            if(id != image.ProductId)
+            {
+                return NotFound();
+            }
+
+            var files = image.ImageFiles;
+            var ids = image.Ids;
+
+            for (int i =0;i < files.Count; i++)
+            {
+                var existImg = await _context.Images.FindAsync(ids![i]);
+                if(existImg == null)
+                {
+                    // response
+                    return NotFound();
+                }
+                existImg.ImageSrc = await handleImage.UploadImage(files[i]);
+                _context.Entry(existImg).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
 

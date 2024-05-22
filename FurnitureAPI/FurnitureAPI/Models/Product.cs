@@ -8,7 +8,7 @@ namespace FurnitureAPI.Models
     {
         public Product()
         {
-            OrderDetails = new HashSet<OrderDetail>();
+            //OrderDetails = new HashSet<OrderDetail>();
             ProductSizeColors = new HashSet<ProductSizeColor>();
         }
 
@@ -25,7 +25,7 @@ namespace FurnitureAPI.Models
         public IFormFile? ImageFile { get; set; }
 
         public virtual SubCategory? SubCategory { get; set; }
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+        //public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<ProductSizeColor> ProductSizeColors { get; set; }
     }
 }

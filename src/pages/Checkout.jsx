@@ -76,7 +76,7 @@ const Checkout = () => {
     const data = {
       totalPrice: total,
       totalQuantity: cart.cartTotalQuantity,
-      omId: 1,
+      omId: 2,
       cusId: user.cusId,
       pscList: pscList,
     };
@@ -84,16 +84,19 @@ const Checkout = () => {
     await orderAPI()
       .POST(data)
       .then((res) => {
-        dispatch(CLEAR_CART());
+        // dispatch(CLEAR_CART());
         toast.success(res.data.message, {
           position: "top-center",
           autoClose: 1500,
           theme: "colored",
         });
+        if(res.data.type === "Bank"){
+          window.location.href = res.data.url;
+        }
       })
       .catch((err) =>{
-        const message = err.response.data.message;
-        toast.error(message, {
+        // const message = err.response.data.message;
+        toast.error(err, {
           position: "top-center",
           autoClose: 1500,
           theme: "colored",
