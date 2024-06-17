@@ -7,6 +7,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import { LOGIN_USER } from "../constants/userSlice";
+import { errorMessage } from "../constants/message";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -35,6 +36,8 @@ const Login = () => {
           if(decoded.role)
               navigate("/admin")
           else navigate("/")
+        }else{
+          errorMessage("Username or password is not correct")
         }
       })
       .catch((err) => console.log(err.message));

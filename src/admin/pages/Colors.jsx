@@ -8,7 +8,7 @@ import { RxSlash } from "react-icons/rx";
 import List from "../components/Colors/List";
 import Forms from "../components/Colors/Forms";
 
-const Categories = (props) => {
+const Colors = (props) => {
 
   const {reset,register,setValue,handleSubmit,formState: { errors }
 } = useForm({
@@ -144,4 +144,4 @@ const Categories = (props) => {
   );
 };
 
-export default Categories;
+export default Colors;

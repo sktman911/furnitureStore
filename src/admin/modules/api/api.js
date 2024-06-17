@@ -61,5 +61,33 @@ const categoryAPI = (url = "https://localhost:7183/api/Categories/") => {
 };
 //End Categories API
 
+// Orders API
+const orderAPI = (url = "https://localhost:7183/api/Orders/") => {
+  return {
+    GET: () => axios.get(url),
+    GET_ID: (id) => axios.get(url + id),
+    POST: (newData) => axios.post(url, newData),
+  };
+};
+//End Orders API
 
-  export {productSizeColorAPI, sizeAPI, colorAPI, productAPI, imageAPI, categoryAPI}
+// OrderDetail API
+const orderDetailAPI = (url = "https://localhost:7183/api/OrderDetail/") => {
+  return {
+    GET: (id) => axios.get(url + id),
+  };
+};
+//End OrderDetail API
+
+// Customers API
+const customerAPI = (url = "https://localhost:7183/api/Customers/") => {
+  return {
+    GET: () => axios.get(url),
+    POST: (newData) => axios.post(url, newData),
+    GET_ID: (id) => axios.get(url + id)
+  };
+};
+//End Customers API
+
+
+  export {productSizeColorAPI, sizeAPI, colorAPI, productAPI, imageAPI, categoryAPI, orderAPI, customerAPI, orderDetailAPI}

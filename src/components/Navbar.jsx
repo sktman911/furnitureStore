@@ -36,7 +36,8 @@ const Navbar = () => {
 
 
   return (
-    <nav className="grid grid-cols-3 items-center drop-shadow-lg fixed top-0 left-0 w-full bg-white h-24 z-50">
+  //  h-24
+    <nav className="grid grid-cols-3 items-center drop-shadow-lg fixed top-0 left-0 w-full bg-white z-50">
       <div>
         <img src={logo} alt="Logo" className=" w-36 h-24 max-lg:mx-auto" />
       </div>

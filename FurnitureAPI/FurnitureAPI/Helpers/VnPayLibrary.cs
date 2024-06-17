@@ -73,7 +73,6 @@ namespace FurnitureAPI.Helpers
             String signData = queryString;
             if (signData.Length > 0)
             {
-
                 signData = signData.Remove(data.Length - 1, 1);
             }
             string vnp_SecureHash = Utils.HmacSHA512(vnp_HashSecret, signData);

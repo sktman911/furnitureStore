@@ -74,6 +74,7 @@ const categoryAPI = (url = "https://localhost:7183/api/Categories/") => {
 const customerAPI = (url = "https://localhost:7183/api/Customers/") => {
   return {
     GET_ID: (id) => axios.get(url + id),
+    PUT: (id, data) => axios.put(url+id, data)
   };
 };
 
@@ -83,11 +84,21 @@ const customerAPI = (url = "https://localhost:7183/api/Customers/") => {
 
 const orderAPI = (url = "https://localhost:7183/api/Orders/") => {
   return {
-    POST: (newData) => axios.post(url, newData,{mode: "no-cors"}),
+    POST: (newData) => axios.post(url, newData),
+    GET_ID: (id) => axios.get(url + id),
+    GET_HISTORY: (id) => axios.get(url + "customer/getOrders/" + id)
   };
 };
 
 // End Orders API
 
+// OrderDetail API
+const orderDetailAPI = (url = "https://localhost:7183/api/OrderDetail/") => {
+  return {
+    GET: (id) => axios.get(url + id),
+  };
+};
+//End OrderDetail API
 
-  export {productSizeColorAPI, sizeAPI, colorAPI, productAPI, imageAPI, categoryAPI, authAPI, customerAPI, orderAPI}
+
+  export {productSizeColorAPI, sizeAPI, colorAPI, productAPI, imageAPI, categoryAPI, authAPI, customerAPI, orderAPI,orderDetailAPI}

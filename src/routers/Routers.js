@@ -20,8 +20,16 @@ import SubCategories from "../admin/pages/SubCategories";
 import Products from "../admin/pages/Products";
 import ADProduct from "../admin/pages/Product";
 import Colors from "../admin/pages/Colors";
-import axios from "axios";
+
 import { ShopContext } from "../context/ShopContext";
+import PaymentReturn from "../pages/PaymentReturn";
+import Orders from "../admin/pages/Orders";
+import Customers from "../admin/pages/Customers";
+import ADOrderDetail from "../admin/pages/OrderDetail";
+import CustomerDetail from "../admin/pages/CustomerDetail";
+import Account from "../pages/Account";
+import OrderDetail from "../pages/OrderDetail";
+
 
 const Router = () => {
   const {categories, subCategories} = useContext(ShopContext);
@@ -49,19 +57,39 @@ const Router = () => {
       </Route>
       <Route path="cart" element={<Cart />}></Route>
       <Route path="checkout" element={<Checkout />}></Route>
+      <Route path="paymentReturn" element={<PaymentReturn />}></Route>
+
+      <Route path="account" element={<Navigate to="/account/profile" />}></Route>
+      <Route path="account/profile" element={<Account component={"profile"}/>}></Route>
+      <Route path="account/history" element={<Account component={"history"} />}></Route>
+      <Route path="account/history">
+        <Route path=":orderId" element={<OrderDetail />}></Route>
+      </Route>
+
+
+      {/* Admin route */}
 
       <Route path="admin" element={<Navigate to="/admin/home" />}></Route>
 
       <Route path="admin/home" element={<PrivateRoute><Dashboard /></PrivateRoute>}></Route>
       <Route path="admin/employees"></Route>
-      <Route path="admin/customers"></Route>
+      <Route path="admin/customers" element={<PrivateRoute><Customers /></PrivateRoute>}></Route>
+      <Route path="admin/customer">
+        <Route path=":customerId" element={<PrivateRoute><CustomerDetail /></PrivateRoute>}></Route>
+      </Route>
+
       <Route path="admin/products" element={<PrivateRoute><Products /></PrivateRoute>}></Route>
-      <Route path="admin/product" element={<PrivateRoute><ADProduct /></PrivateRoute>}>
+      <Route path="admin/product" >
         <Route path=":productId" element={<PrivateRoute><ADProduct /></PrivateRoute>}></Route>
       </Route>
+
       <Route path="admin/categories" element={<PrivateRoute><Categories /></PrivateRoute>}></Route>
       <Route path="admin/subcategories" element={<PrivateRoute><SubCategories /></PrivateRoute>}></Route>
       <Route path="admin/colors" element={<PrivateRoute><Colors /></PrivateRoute>}></Route>
+      <Route path="admin/orders" element={<PrivateRoute><Orders /></PrivateRoute>}></Route>
+      <Route path="admin/order">
+        <Route path=":orderId" element={<PrivateRoute><ADOrderDetail /></PrivateRoute>}></Route>
+      </Route>
 
       <Route path="login" element={<Login />}></Route>
       <Route path="signup" element={<Signup />}></Route>

@@ -7,13 +7,13 @@ import { useStateContext } from "../../context/StateContext";
 import axios from "axios";
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCouch, faUserFriends, faUsers,faList,faListAlt, faHome, faPalette}
+import { faCouch, faUserFriends, faUsers,faList,faListAlt, faHome, faPalette, faReceipt}
 from '@fortawesome/free-solid-svg-icons'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const Sidebar = () => {
   // Add Sidebar icon
-  library.add( faCouch, faUserFriends, faUsers, faList, faListAlt, faHome, faPalette)
+  library.add( faCouch, faUserFriends, faUsers, faList, faListAlt, faHome, faPalette,faReceipt)
 
   const { activeMenu, setActiveMenu, screenSize } = useStateContext();
   const [functions, setFunctions] = useState([]);

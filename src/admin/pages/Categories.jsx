@@ -100,7 +100,7 @@ const Categories = () => {
       <div className="w-1/4 flex items-center ml-12 text-lg">
         <span>Management</span>
         <RxSlash className="mx-1" />
-        <span>Employees</span>
+        <span>Categories</span>
       </div>
 
       <div className="w-40 my-8 ml-6">

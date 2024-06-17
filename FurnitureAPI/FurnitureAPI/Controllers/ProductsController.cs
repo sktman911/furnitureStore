@@ -89,6 +89,17 @@ namespace FurnitureAPI.Controllers
             return await product.FirstAsync();
         }
 
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<Product>>> SearchProduct(string text)
+        {
+            if(text != null)
+            {
+                var result = await _context.Products.Where(x => x.ProductName!.Contains(text)).ToListAsync();
+                return Ok(result);
+            }
+            return NoContent();
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduct(int id, [FromForm]Product product)
         {
@@ -98,6 +109,13 @@ namespace FurnitureAPI.Controllers
             }
 
             product.Status = true;
+
+            if(product.ImageFile != null)
+            {
+                var image = await _context.Images.SingleOrDefaultAsync(x => x.ImageMain && x.ProductId == product.ProductId);
+                image!.ImageSrc = await handleImage.UploadImage(product.ImageFile);
+            }
+            
             _context.Entry(product).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();

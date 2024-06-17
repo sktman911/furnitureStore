@@ -5,10 +5,8 @@ import { useForm } from "react-hook-form";
 import { ShopContext } from "../../context/ShopContext";
 import {
   productAPI,
-  imageAPI,
 } from "../modules/api/api";
 
-import defaultImg from "../assets/images/default_img.png";
 import ProductSubDetail from "../components/Product/ProductSubDetail";
 import ProductSubImage from "../components/Product/ProductSubImage";
 
@@ -58,18 +56,24 @@ const Product = () => {
     }
   };
 
-  useEffect(() => {
-    getProduct();
-  }, []);
+  // useEffect(() => {
+  //   getProduct();
+  // }, []);
+
+  // useEffect(() => {
+  //   getProduct();    
+  //   showDetail();
+  // }, [products, product]);
 
   useEffect(() => {
+    getProduct();    
     showDetail();
-  }, [products, product]);
+  }, []);
 
   const onEdit = async (data) => {
     const formData = new FormData();
     formData.append("productId", data.productId);
-    formData.append("imageFile", data.imageFile);
+    formData.append("imageFile", data.imageFile[0]);
     formData.append("productName", data.productName);
     formData.append("price", data.price);
     formData.append("description", data.description);
@@ -121,7 +125,7 @@ const Product = () => {
                     {errors.productName && <p>{errors.productName.message}</p>}
                   </div>
                   <div className="text-left">
-                    <label className="block w-fit py-2">Price ($): </label>
+                    <label className="block w-fit py-2">Price (VND): </label>
                     <input
                       type="text"
                       className="py-1 px-2 border-2 rounded-md"

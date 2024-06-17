@@ -34,10 +34,11 @@ builder.Services.AddSession(options =>
 builder.Services.AddCors(options => options.AddPolicy("AllowAllOrigins",
             builder =>
             {
-                builder.WithOrigins("https://localhost:3000")
+                builder
+                .WithOrigins("http://localhost:3000", "https://localhost:7183")
                        .AllowAnyMethod()
-                       .AllowAnyHeader()
-                       .AllowCredentials();
+                       .AllowCredentials()
+                       .AllowAnyHeader();           
             }));
 
 
@@ -73,8 +74,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseCors(builder => builder.
-    AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+    //app.UseCors(builder => builder.
+    //AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 }
 
 app.UseHttpsRedirection();
@@ -85,9 +86,9 @@ app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(contentRootPath, "Images")),
     RequestPath = "/Images"
-
 });
 
+app.UseCors("AllowAllOrigins");
 
 app.UseAuthentication();
 
@@ -97,10 +98,7 @@ app.MapControllers();
 
 app.UseRouting();
 
+
 app.UseSession();
-
-app.UseCors("AllowAllOrigins");
-
-
 
 app.Run();

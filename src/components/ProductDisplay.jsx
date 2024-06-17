@@ -12,19 +12,24 @@ import Products from "./Products";
 import { ShopContext } from "../context/ShopContext";
 import { useDispatch } from "react-redux";
 import { ADD_TO_CART } from "../constants/cartSlice";
+import { errorMessage } from "../constants/message";
 
 const ProductDisplay = (props) => {
   const { products } = useContext(ShopContext);
   const { product } = props;
 
   const [quantity, setQuantity] = useState(1);
-  const [color, setColor] = useState();
-  const [size, setSize] = useState();
+  const [color, setColor] = useState(null);
+  const [size, setSize] = useState(null);
 
   
 
   const dispatch = useDispatch();
-  const handleAddToCart = ( product) => {
+  const handleAddToCart = (product) => {
+    if(size === null || color === null){
+      errorMessage("Please choose size and color");
+      return;
+    }
 
     return dispatch({
       type: "cart/ADD_TO_CART",

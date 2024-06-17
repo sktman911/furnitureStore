@@ -7,12 +7,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { customerAPI, orderAPI } from "../modules/apiClient";
 import { CLEAR_CART } from "../constants/cartSlice";
 import { toast } from "react-toastify";
+import { Navigate, useNavigate } from "react-router-dom";
+import { errorMessage } from "../constants/message";
 
 const Checkout = () => {
   const cart = useSelector((state) => state.cart);
   const user = useSelector((state) => state.user);
   const [shipFee, setShipFee] = useState(0);
   const [total, setTotal] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadInfo();
@@ -54,10 +57,13 @@ const Checkout = () => {
 
   const onCheckout = async () => {
     if (user == null) {
+      navigate("/login",{replace:true});
       return;
     }
+    console.group(cart)
 
-    if (cart == null) {
+    if (cart.cartItems.length === 0) {
+      errorMessage("Your cart is empty");
       return;
     }
 
@@ -76,26 +82,23 @@ const Checkout = () => {
     const data = {
       totalPrice: total,
       totalQuantity: cart.cartTotalQuantity,
-      omId: 2,
+      omId: 1,
       cusId: user.cusId,
       pscList: pscList,
     };
 
     await orderAPI()
       .POST(data)
-      .then((res) => {
-        // dispatch(CLEAR_CART());
-        toast.success(res.data.message, {
-          position: "top-center",
-          autoClose: 1500,
-          theme: "colored",
-        });
+      .then((res) => {    
         if(res.data.type === "Bank"){
           window.location.href = res.data.url;
         }
+        if(res.data.status === true && res.data.type === "Cash"){
+          navigate(res.data.url,{replace:true})
+        }
+        
       })
       .catch((err) =>{
-        // const message = err.response.data.message;
         toast.error(err, {
           position: "top-center",
           autoClose: 1500,
