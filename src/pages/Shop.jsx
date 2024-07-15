@@ -14,8 +14,8 @@ const Shop = (props) => {
       <div className="relative">
         <img className="w-full h-full" src={props.banner} alt="" />
         <div className="absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4 font-bold">
-          <h1 className="text-4xl my-3 text-white">Shop</h1>
-          <span className="uppercase text-white">
+          <h1 className="text-2xl md:text-4xl my-3 text-white">Shop</h1>
+          <span className="uppercase text-white text-sm md:text-lg">
             Home
             <span className="mx-2">&gt;</span>
             <span className="font-normal">Shop</span>
@@ -31,20 +31,20 @@ const Shop = (props) => {
         </div>
       </div>
 
-      <div className="w-full bg-yellow-50 max-lg:h-max grid grid-cols-2 items-center py-5">
+      <div className="w-full bg-yellow-50 max-lg:h-max grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-0 items-center py-5">
         <div className="grid grid-cols-2 gap-5 text-center">
           <div className="flex items-center justify-center gap-3">
             <HiOutlineAdjustmentsHorizontal className="text-lg" />
             <span>Filter</span>
           </div>
-          <div className="flex gap-6 items-center">
+          <div className="flex gap-6 items-center justify-center lg:justify-normal">
             <span className=" text-2xl">|</span>
             <span>Showing 1 - 10 of 100 results</span>
           </div>
         </div>
 
         <div className="grid grid-cols-2 items-center">
-          <div className="flex gap-5 justify-end items-center">
+          <div className="flex gap-5 justify-center lg:justify-end items-center">
             <span>Show</span>
             <input
               type="text"
@@ -63,7 +63,7 @@ const Shop = (props) => {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-4 gap-8 w-11/12 justify-around mx-auto my-5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 w-11/12 justify-around mx-auto my-5">
         {products.map((item, index) => {
           if (subCategoryName && subCategoryName === item.subCategoryName && props.category === item.categoryName) {
             return (

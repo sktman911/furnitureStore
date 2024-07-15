@@ -17,7 +17,7 @@ const PaymentReturn = () => {
           <ImCancelCircle className=" text-red-400 w-28 h-28 mx-auto mt-32 mb-8" />
         )}
 
-        <h1 className=" text-2xl font-semibold">Checkout successfully</h1>
+        <h1 className=" text-2xl font-semibold">{success === true?  "Checkout successfully" : "Checkout failed"}</h1>
 
         <div>
           <Button

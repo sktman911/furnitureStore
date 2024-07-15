@@ -30,7 +30,7 @@ const Login = () => {
       .post(url, data)
       .then((res) => {
         if (res.data.token) {
-          sessionStorage.setItem("token", res.data.token);
+          localStorage.setItem("token", res.data.token);
           const decoded = jwtDecode(res.data.token);
           dispatch(LOGIN_USER(decoded));
           if(decoded.role)

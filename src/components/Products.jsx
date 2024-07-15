@@ -6,11 +6,11 @@ const Products = (props) => {
   return (
     <div className="my-6 relative group">
       <div className="hidden group-hover:block absolute bg-gray-700 opacity-30 w-full h-full z-20"></div>
-      <img className="w-full h-96" src={props.img} alt="" />
+      <img className="w-full h-auto" src={props.img} alt="" />
       <div className=" w-full text-left ps-3 py-5 space-y-2 bg-gray-100">
-        <h1 className="font-bold text-lg tracking-wide">{props.name}</h1>
+        <h1 className="font-bold text-sm md:text-lg tracking-wide">{props.name}</h1>
         <div>
-          <p className="font-bold text-md">$ {props.price}</p>
+          <p className="font-bold text-sm md:text-md">{props.price} đ</p>
         </div>
       </div>
 
@@ -28,7 +28,7 @@ const Products = (props) => {
         />
       </div>
 
-      <div className="absolute top-5 right-5 z-10">
+      <div className="absolute top-2 right-2 md:top-5 md:right-5 z-10">
         <div className="w-10 h-10 flex items-center rounded-full text-sm 
         justify-center text-white bg-red-400">
           -30%

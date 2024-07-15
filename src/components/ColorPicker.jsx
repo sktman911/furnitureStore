@@ -11,7 +11,8 @@ const ColorPicker = (props) => {
       .GET_ID(productId)
       .then((res) => {setColor(res.data)})
       .catch((err) => console.log(err));
-  },[]);
+      console.log("A")
+  },[productId]);
 
   const selectedColor = (data) => {
     props.onChange(data);

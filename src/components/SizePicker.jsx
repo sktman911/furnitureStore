@@ -11,7 +11,7 @@ const SizePicker = (props) => {
       .GET_ID(productId)
       .then((res) => setSize(res.data))
       .catch((err) => console.log(err));
-  }, []);
+  }, [productId]);
 
   const selectedSize = (data) => {
     props.onChange(data);

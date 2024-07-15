@@ -26,23 +26,22 @@ const Product = () => {
 
   const getProduct = async () => {
     await productAPI()
-      .GET(productId)
+      .GET_ID(productId)
       .then((res) => {
         setProduct(res.data);
+        showDetail(res.data);
         setImg(res.data.images[0].imageLink);
       })
       .catch((err) => console.log(err));
   };
 
-  const showDetail = () => {
-    if (product != null) {
+  const showDetail = (product) => {
       setValue("productId", productId);
       setValue("productName", product.productName);
       setValue("price", product.price);
       setValue("description", product.description);
-      setValue("imageFile", product.imageSrc);
+      setValue("imageFile", product.images[0].imageLink);
       setValue("subCategoryId", product.subCategoryId);
-    }
   };
 
   const showPreview = (e) => {
@@ -56,24 +55,18 @@ const Product = () => {
     }
   };
 
-  // useEffect(() => {
-  //   getProduct();
-  // }, []);
-
-  // useEffect(() => {
-  //   getProduct();    
-  //   showDetail();
-  // }, [products, product]);
-
   useEffect(() => {
     getProduct();    
-    showDetail();
   }, []);
 
   const onEdit = async (data) => {
     const formData = new FormData();
+    let file = data.imageFile;
+    if(data.imageFile !== null && data.imageFile[0]){
+      file = data.imageFile[0];
+    }
     formData.append("productId", data.productId);
-    formData.append("imageFile", data.imageFile[0]);
+    formData.append("imageFile", file);
     formData.append("productName", data.productName);
     formData.append("price", data.price);
     formData.append("description", data.description);

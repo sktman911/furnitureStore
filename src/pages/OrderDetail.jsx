@@ -4,11 +4,16 @@ import { useParams } from "react-router";
 import { orderAPI, orderDetailAPI } from "../modules/apiClient";
 import { format, parseISO } from "date-fns";
 import numeral from "numeral";
+import Stepper from "../components/Stepper";
 
 export default function OrderDetail() {
   const { orderId } = useParams();
   const [orderDetail, setOrderDetail] = useState([]);
   const [order, setOrder] = useState([]);
+
+  // order status
+  const [currentStep, setCurrentStep] = useState(null);
+  const titles = ["Waiting for confirm", "On delivery", "Delivered"];
 
   useEffect(() => {
     getOrder();
@@ -20,6 +25,7 @@ export default function OrderDetail() {
       .GET_ID(orderId)
       .then((res) => {
         setOrder(res.data);
+        hanldeOrderStatus(res.data.orderStatusName);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -33,6 +39,12 @@ export default function OrderDetail() {
       .catch((err) => console.log(err));
   }, []);
 
+  const hanldeOrderStatus = (statusName) => {
+    const index = titles.findIndex((item) => item === statusName);
+    if (index !== -1) {
+      setCurrentStep(index);
+    }
+  };
 
   return orderDetail && order && order.orderDate ? (
     <div className="mt-24">
@@ -101,9 +113,15 @@ export default function OrderDetail() {
           <span>Order Status: {order.orderStatusName}</span>
         </div>
 
+        <Stepper
+          currentStep={currentStep}
+          steps={titles.length}
+          titles={titles}
+        />
+
         <div className="my-6 flex justify-center">
           <Link
-            to={"/account/history"}
+            to={"/history"}
             className="w-24 py-2 bg-slate-800 text-white rounded-md"
           >
             Back

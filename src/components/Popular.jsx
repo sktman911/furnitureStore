@@ -2,14 +2,15 @@ import React,{useContext} from "react";
 
 import { ShopContext } from "../context/ShopContext";
 import Products from "./Products";
+import numeral from "numeral";
 
 const Popular = () => {
   const {products} = useContext(ShopContext); 
 
   return (
     <section className="w-full mt-5 mb-8">
-      <h1 className="font-bold text-2xl pt-3 text-gray-700">Our Products</h1>
-      <div className="grid lg:grid-cols-4 gap-8 w-11/12 max-h-full justify-around mx-auto">
+      <h1 className="font-bold text-lg md:text-xl xl:text-2xl pt-3 text-gray-700">Our Products</h1>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 w-11/12 max-h-full justify-around mx-auto">
         {products.map((item, index) => {
           return (
             <Products
@@ -17,7 +18,7 @@ const Popular = () => {
               id={item.productId}
               img={item.images[0].imageLink}
               name={item.productName}
-              price={item.price}
+              price={numeral(item.price).format('0,0')}
             />
           );
         })}

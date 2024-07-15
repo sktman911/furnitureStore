@@ -36,6 +36,7 @@ namespace FurnitureAPI.Controllers
                     OdId = x.OdId,
                     OrderId = x.OrderId,
                     Quantity = x.Quantity,
+                    
                     ProductSizeColor = _context.ProductSizeColors.SingleOrDefault(y => y.PscId == x.PscId),
                     ProductName = _context.Products.SingleOrDefault(y => y.ProductId == x.ProductSizeColor!.ProductId)!.ProductName,
                     Price = _context.Products.SingleOrDefault(y => y.ProductId == x.ProductSizeColor!.ProductId)!.Price,

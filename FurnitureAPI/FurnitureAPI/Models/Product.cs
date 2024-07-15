@@ -10,6 +10,7 @@ namespace FurnitureAPI.Models
         {
             //OrderDetails = new HashSet<OrderDetail>();
             ProductSizeColors = new HashSet<ProductSizeColor>();
+            //Images = new HashSet<Image>();
         }
 
         public int ProductId { get; set; }
@@ -27,5 +28,7 @@ namespace FurnitureAPI.Models
         public virtual SubCategory? SubCategory { get; set; }
         //public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<ProductSizeColor> ProductSizeColors { get; set; }
+
+        //public virtual ICollection<Image> Images { get; set; }
     }
 }

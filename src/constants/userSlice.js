@@ -3,8 +3,8 @@ import {jwtDecode} from "jwt-decode"
 import { useNavigate } from "react-router";
 
 const initialState =
-    (sessionStorage.getItem("token"))
-? jwtDecode(sessionStorage.getItem("token"))
+    (localStorage.getItem("token"))
+? jwtDecode(localStorage.getItem("token"))
 : null
 
 const slice = createSlice({
@@ -15,7 +15,7 @@ const slice = createSlice({
             return action.payload
         },
         LOGOUT(state, action){
-            sessionStorage.removeItem("token");
+            localStorage.removeItem("token");
             return state = null
         }
     }

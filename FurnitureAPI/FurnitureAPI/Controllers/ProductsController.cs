@@ -32,8 +32,9 @@ namespace FurnitureAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductInfo>>> GetProducts()
         {
-            var products = _context.Images.Include(x => x.Product)
-                .Where(x => x.Product!.Status == true && x.ImageMain == true)
+            var products = _context.Images
+                .Where(x => x.Product!.Status == true && x.ImageMain == true && x.Product.ProductSizeColors.Any(p => p.ProductId == x.Product.ProductId))
+                .OrderByDescending(x => x.Product!.CreatedDate).Take(8)
                 .Select(s => new ProductInfo
                 {
                     ProductId = s.ProductId,
@@ -50,6 +51,34 @@ namespace FurnitureAPI.Controllers
                         ProductId = s.ProductId,
                         ImageLink = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, s.ImageSrc)
                     }).ToList() 
+                });
+
+            return await products.ToListAsync();
+        }
+
+        // Admin product list
+        [HttpGet("getProductsByAdmin")]
+        public async Task<ActionResult<IEnumerable<ProductInfo>>> GetProductsByAdmin()
+        {
+            var products = _context.Images
+                .Where(x => x.Product!.Status == true && x.ImageMain == true)
+                .Select(s => new ProductInfo
+                {
+                    ProductId = s.ProductId,
+                    ProductName = s.Product!.ProductName,
+                    Price = s.Product.Price,
+                    SubCategoryId = s.Product.SubCategoryId,
+                    SubCategoryName = s.Product.SubCategory!.SubCategoryName,
+                    CategoryId = s.Product.SubCategory.Category!.CategoryId,
+                    CategoryName = s.Product.SubCategory.Category!.CategoryName,
+                    Images = _context.Images.Where(x => x.ImageMain == true && x.ProductId == s.ProductId).Select(s => new Image
+                    {
+                        ImageId = s.ImageId,
+                        ImageMain = s.ImageMain,
+                        ImageSrc = s.ImageSrc,
+                        ProductId = s.ProductId,
+                        ImageLink = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, s.ImageSrc)
+                    }).ToList()
                 });
 
             return await products.ToListAsync();

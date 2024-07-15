@@ -21,7 +21,7 @@ const Cart = (props) => {
   return (
     <>
       {props.open === true ? (
-        <div className="z-30 bg-white fixed w-96 h-screen top-0 right-0 shadow-lg overflow-y-auto">
+        <div className="z-30 bg-white fixed w-96 h-screen top-0 right-0 shadow-lg overflow-y-auto ">
           <div className="flex items-center justify-between px-6 py-4">
             <h1 className="font-bold text-xl py-8 border-b-2 w-96 text-left">
               Shopping Cart

@@ -10956,11 +10956,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Giang\\FurnitureAPI\\FurnitureAPI\\FurnitureAPI.csproj",
+      "projectUniqueName": "E:\\Giang\\react-project\\FurnitureAPI\\FurnitureAPI\\FurnitureAPI.csproj",
       "projectName": "FurnitureAPI",
-      "projectPath": "E:\\Giang\\FurnitureAPI\\FurnitureAPI\\FurnitureAPI.csproj",
+      "projectPath": "E:\\Giang\\react-project\\FurnitureAPI\\FurnitureAPI\\FurnitureAPI.csproj",
       "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
-      "outputPath": "E:\\Giang\\FurnitureAPI\\FurnitureAPI\\obj\\",
+      "outputPath": "E:\\Giang\\react-project\\FurnitureAPI\\FurnitureAPI\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ASUS\\AppData\\Roaming\\NuGet\\NuGet.Config",

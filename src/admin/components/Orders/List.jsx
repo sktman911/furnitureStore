@@ -31,7 +31,7 @@ const List = ({ listData }) => {
               <td className="text-xl p-3 justify-center">
                 <button>
                   <Link to={`/admin/order/${item.orderId}`} >
-                    <IoIosInformationCircleOutline className="mx-1" />
+                    <IoIosInformationCircleOutline className="mx-1 w-6 h-6 rounded-full hover:bg-slate-700 hover:text-white" />
                   </Link>
                 </button>
               </td>

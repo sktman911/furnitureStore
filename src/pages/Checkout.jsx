@@ -5,10 +5,10 @@ import Button from "../components/Button";
 import Info from "../components/Info";
 import { useSelector, useDispatch } from "react-redux";
 import { customerAPI, orderAPI } from "../modules/apiClient";
-import { CLEAR_CART } from "../constants/cartSlice";
 import { toast } from "react-toastify";
-import { Navigate, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { errorMessage } from "../constants/message";
+import numeral from "numeral";
 
 const Checkout = () => {
   const cart = useSelector((state) => state.cart);
@@ -17,13 +17,15 @@ const Checkout = () => {
   const [total, setTotal] = useState(0);
   const navigate = useNavigate();
 
+  const [paymentMethod, setPaymentMethod] = useState(null);
+
   useEffect(() => {
     loadInfo();
     if (cart.cartTotalCost > 0) {
-      setShipFee(20);
+      // setShipFee(20);
       setTotal(shipFee + cart.cartTotalCost);
     } else {
-      setShipFee(0);
+      // setShipFee(0);
       setTotal(0);
     }
   }, [cart.cartTotalQuantity]);
@@ -47,7 +49,7 @@ const Checkout = () => {
   };
 
   const loadInfo = () => {
-    if (user != null) {
+    if (user != null && !user.role) {
       customerAPI()
         .GET_ID(user.cusId)
         .then((res) => setInfo(res.data))
@@ -56,11 +58,15 @@ const Checkout = () => {
   };
 
   const onCheckout = async () => {
-    if (user == null) {
+    if (user === null) {
       navigate("/login",{replace:true});
       return;
     }
-    console.group(cart)
+    
+    if(paymentMethod === null){
+      errorMessage("Please choose payment method!");
+      return;
+    }
 
     if (cart.cartItems.length === 0) {
       errorMessage("Your cart is empty");
@@ -82,7 +88,7 @@ const Checkout = () => {
     const data = {
       totalPrice: total,
       totalQuantity: cart.cartTotalQuantity,
-      omId: 1,
+      omId: paymentMethod,
       cusId: user.cusId,
       pscList: pscList,
     };
@@ -119,11 +125,11 @@ const Checkout = () => {
         </span>
       </div>
 
-      <div className="flex w-4/5 mx-auto max-h-max">
-        <div className="w-1/2">
-          <h2 className="font-semibold text-xl text-left">Billing details</h2>
+      <div className="flex flex-col lg:flex-row w-4/5 mx-auto max-h-max">
+        <div className="w-full lg:w-1/2">
+          <h2 className="font-semibold text-xl text-center lg:text-left">Billing details</h2>
           <form className="py-8" onSubmit={handleSubmit(onCheckout)}>
-            <div className="flex gap-6 text-left">
+            <div className="grid grid-cols-2 text-center lg:text-left">
               <div className="py-2">
                 <label className="my-2 block">Your name: </label>
                 <input
@@ -163,12 +169,13 @@ const Checkout = () => {
                 )}
               </div>
             </div>
-            <div className="text-left">
+
+            <div className="text-center lg:text-left">
               <div className="py-2">
                 <label className="my-2 block">Your Email: </label>
                 <input
                   type="email"
-                  className="py-2 px-6 border-2 rounded-md w-10/12"
+                  className="py-2 px-6 border-2 rounded-md w-11/12"
                   {...register("cusEmail", { required: "Please fill email" })}
                 />
                 {errors.cusEmail && (
@@ -178,12 +185,13 @@ const Checkout = () => {
                 )}
               </div>
             </div>
-            <div className="text-left">
+
+            <div className="text-center lg:text-left">
               <div className="py-2">
                 <label className="my-2 block">Your Address: </label>
                 <input
                   type="text"
-                  className="py-2 px-6 border-2 rounded-md w-10/12"
+                  className="py-2 px-6 border-2 rounded-md w-11/12"
                   {...register("cusAddress", {
                     required: "Please fill address",
                   })}
@@ -195,12 +203,13 @@ const Checkout = () => {
                 )}
               </div>
             </div>
-            <div className="text-left">
+
+            <div className="text-center lg:text-left">
               <div className="py-2">
                 <label className="my-2 block">Note: </label>
                 <textarea
                   rows="6.5"
-                  className="py-2 px-6 border-2 rounded-md w-10/12 resize-none"
+                  className="py-2 px-6 border-2 rounded-md w-11/12 resize-none"
                   {...register("cusNote", { required: false })}
                   placeholder="Note something for order"
                 />
@@ -209,40 +218,42 @@ const Checkout = () => {
           </form>
         </div>
 
-        <div className="w-1/2 pl-20 max-h-max">
+        <div className="w-full lg:w-1/2 lg:pl-12 xl:pl-20 max-h-max mb-8">
           <div className="flex flex-col gap-4 border-b-2 py-8 px-3 bg-yellow-50 rounded-t-lg">
-            <div className="text-lg font-semibold flex justify-between">
+            <div className="text-md md:text-lg font-semibold flex justify-between">
               <span>Product</span>
               <span>Subtotal</span>
             </div>
             {cart.cartItems.map((item, index) => (
-              <div className="flex justify-between items-end" key={index}>
+              <div className="flex justify-between items-end text-sm md:text-base" key={index}>
                 <div>
                   <span className="text-gray-400">{item.productName}</span>
                   <span> x {item.cartQuantity}</span>
                 </div>
-                <p>$ {item.cartQuantity * item.price}</p>
+                <p>{numeral(item.cartQuantity * item.price).format("0,0")} đ</p>
               </div>
             ))}
-            <div className="flex justify-between items-end">
+
+            {/* Shipping fee */}
+            {/* <div className="flex justify-between items-end">
               <div>
                 <span>Shipping</span>
               </div>
-              <p>$ {shipFee}</p>
-            </div>
-            <div className="flex justify-between items-end">
+              <p>{numeral(shipFee).format("0,0")} đ</p>
+            </div> */}
+            <div className="flex justify-between items-end ">
               <div>
                 <span>Total</span>
               </div>
-              <p className="text-yellow-600 text-xl font-semibold">${total}</p>
+              <p className="text-yellow-600 text-lg md:text-xl font-semibold">{numeral(total).format("0,0")} đ</p>
             </div>
           </div>
 
           <div className="pt-8 flex flex-col gap-4 px-3 bg-yellow-50 rounded-b-lg">
             <div>
               <div className="flex items-center gap-5">
-                <input type="radio" name="payment" />
-                <label className="text-sm">Direct Bank Transfer</label>
+                <input type="radio" name="payment" onChange={() => setPaymentMethod(2)} />
+                <label className="text-sm">Direct Bank Transfer (Vnpay)</label>
               </div>
               <p className="text-sm text-left text-gray-400 leading-6 py-2">
                 Make your payment directly into our bank account. Please use
@@ -251,7 +262,7 @@ const Checkout = () => {
               </p>
             </div>
             <div className="flex items-center gap-5">
-              <input type="radio" name="payment" />
+              <input type="radio" name="payment" onChange={() => setPaymentMethod(1)} />
               <label className="text-sm">Cash On Delivery</label>
             </div>
 

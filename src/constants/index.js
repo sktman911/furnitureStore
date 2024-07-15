@@ -17,7 +17,7 @@ export const navLinks = [
 
 
 export const navIcons = [
-  { name: <AiOutlineUser />, label: "User", href: "/account"},
+  { name: <AiOutlineUser />, label: "User", href: "/profile"},
   { name: <AiOutlineSearch />, label: "search", href: "/search" },
   { name: <AiOutlineHeart />, label: "heart", href: "/favorite" },
   { name: <AiOutlineShoppingCart />, label: "cart"},

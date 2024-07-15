@@ -75,6 +75,7 @@ const ProductSubImage = (props) => {
     }
   };
 
+  // event for handle upload sub images by click 
   const uploadSubImgs = async () => {
     if (subUpload.length === 0) {
       setSubUpload([]);
@@ -102,6 +103,7 @@ const ProductSubImage = (props) => {
 
     setSubUpload([]);
     setOpen(false);
+    setUploadPreview([]);
   };
 
   const editSubImgs = async () => {
@@ -139,6 +141,7 @@ const ProductSubImage = (props) => {
   const closeForm = () => {
     setOpen(false);
     setSubUpload([]);
+    setUploadPreview([]);
   }
 
   return (

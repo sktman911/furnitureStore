@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { customerAPI } from "../../modules/apiClient";
+import { useSelector } from "react-redux";
 import { format, parseISO, parse, formatISO } from "date-fns";
 import { useForm } from "react-hook-form";
 import { jwtDecode } from "jwt-decode";
 import { LOGIN_USER } from "../../constants/userSlice";
 import { useDispatch } from "react-redux";
 
+
 export default function Profile({ id }) {
+  const user = useSelector((state) => state.user);
+
   const {
     register,
     setValue,
@@ -23,16 +27,11 @@ export default function Profile({ id }) {
       doB: Date.now(),
     },
   });
+
+  
   const [edit, setEdit] = useState(true);
 
   const dispatch = useDispatch();
-
-  const getInfo = async () => {
-    await customerAPI()
-      .GET_ID(id)
-      .then((res) => renderInfo(res.data))
-      .catch((err) => console.log(err));
-  };
 
   const renderInfo = (data) => {
     if (data != null) {
@@ -46,7 +45,18 @@ export default function Profile({ id }) {
     }
   };
 
+  const getInfo = async () => {
+
+    if (user !== null) {
+      await customerAPI()
+        .GET_ID(id)
+        .then((res) => renderInfo(res.data))
+        .catch((err) => console.log(err));
+    }
+  };
+
   useEffect(() => {
+
     getInfo();
   }, []);
 

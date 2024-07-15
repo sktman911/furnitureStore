@@ -5,15 +5,15 @@ import des2 from "../assets/images/des2.png";
 const Description = () => {
   return (
     <div>
-      <div className="flex gap-10 text-lg justify-center">
+      <div className="flex gap-10 text-sm md:text-lg justify-center">
         <h1 className="font-bold">Description</h1>
         <h1 className="text-gray-400">Additional Information</h1>
         <h1 className="text-gray-400">
           Reviews <span>[5]</span>
-        </h1>
+        </h1> 
       </div>
 
-      <div className="w-9/12 mx-auto my-8 flex flex-col gap-10 text-left text-gray-400">
+      <div className="w-9/12 mx-auto my-8 flex flex-col gap-10 text-left text-gray-400 text-sm md:text-md">
         <p>
           Embodying the raw, wayward spirit of rock ‘n’ roll, the Kilburn
           portable active stereo speaker takes the unmistakable look and sound
@@ -31,9 +31,9 @@ const Description = () => {
         </p>
       </div>
 
-      <div className="w-10/12 flex mx-auto justify-around">
-        <img src={des1} className="bg-yellow-50 rounded-lg" alt="" />
-        <img src={des2} className="bg-yellow-50 rounded-lg" alt="" />
+      <div className="w-10/12 flex flex-col lg:flex-row mx-auto justify-around gap-2">
+        <img src={des1} className="bg-yellow-50 rounded-lg lg:w-1/2" alt="" />
+        <img src={des2} className="bg-yellow-50 rounded-lg lg:w-1/2" alt="" />
       </div>
     </div>
   );

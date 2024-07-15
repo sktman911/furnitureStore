@@ -3,9 +3,12 @@ using FurnitureAPI.Models;
 using FurnitureAPI.Models.VnPayModel;
 using FurnitureAPI.Services;
 using FurnitureAPI.TempModels;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Net.Http;
 
 namespace FurnitureAPI.Controllers
 {
@@ -20,7 +23,6 @@ namespace FurnitureAPI.Controllers
         public OrdersController(FurnitureContext context, IVnPayService vnPayService) {
             _context = context;
             _vpnPayService = vnPayService;
-          
         }
 
         [HttpGet]
@@ -65,6 +67,7 @@ namespace FurnitureAPI.Controllers
         }
 
         [HttpPost]
+        //[DisableCors]
         public async Task<ActionResult<Order>> AddOrder(Order order)
         {
             if (order.OmId == 2)
@@ -85,6 +88,8 @@ namespace FurnitureAPI.Controllers
                 };
 
                 var urlPayment = _vpnPayService.CreatePaymentUrl(HttpContext, vnPay);
+
+
 
                 return Ok(new { status = true, type = "Bank", url = urlPayment });
 
@@ -132,6 +137,8 @@ namespace FurnitureAPI.Controllers
             return Ok(new { status = true, url = "/paymentReturn?success=true", type = "Cash" });
 
         }
+
+        
 
         // checkout with vnpay payment
         [HttpGet("paymentCallback")]
@@ -193,6 +200,27 @@ namespace FurnitureAPI.Controllers
 
        
             return Redirect("http://localhost:3000/paymentReturn?success=true");
+        }
+
+        //update order status
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateOrderStatus(int id)
+        {
+            try
+            {
+                var order = await _context.Orders.SingleOrDefaultAsync(x => x.OrderId == id);
+                if(order == null)
+                {
+                    return NotFound();
+                }
+                order.OsId = 2;                
+                await _context.SaveChangesAsync();
+                return Ok(order);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }           
         }
     }
 }

@@ -5,24 +5,37 @@ import { orderAPI, orderDetailAPI } from "../modules/api/api";
 import { format, parseISO } from "date-fns";
 import numeral from "numeral";
 import { IoArrowBackOutline } from "react-icons/io5";
+import Stepper from "../../components/Stepper";
 
 export default function OrderDetail() {
   const { orderId } = useParams();
   const [orderDetail, setOrderDetail] = useState([]);
   const [order, setOrder] = useState([]);
 
+  // order status
+  const [currentStep, setCurrentStep] = useState(null);
+  const titles = ["Waiting for confirm", "On delivery", "Delivered"];
+
   useEffect(() => {
     getOrder();
     getOrderDetail();
-  }, []);
+  }, [order.osId]);
 
   const getOrder = async () => {
     await orderAPI()
       .GET_ID(orderId)
       .then((res) => {
         setOrder(res.data);
+        hanldeOrderStatus(res.data.orderStatusName);
       })
       .catch((err) => console.log(err));
+  };
+
+  const hanldeOrderStatus = (statusName) => {
+    const index = titles.findIndex((item) => item === statusName);
+    if (index !== -1) {
+      setCurrentStep(index);
+    }
   };
 
   const getOrderDetail = async () => {
@@ -34,17 +47,21 @@ export default function OrderDetail() {
       .catch((err) => console.log(err));
   };
 
+  const updateOrderStatus = () => {
+    orderAPI()
+      .PUT(order.orderId, order)
+      .then((res) => {setOrder(res.data)})
+      .catch((err) => console.log(err));
+  };
+
   return orderDetail && order && order.orderDate ? (
     <div className="pt-12">
       <div className="my-6 text-left w-4/5 mx-auto ">
-      
         <Link
           to={"/admin/orders"}
           className="w-24 bg-slate-800 text-white py-2 px-4 rounded-md flex items-center justify-around"
         >
-          <IoArrowBackOutline/>
-          {" "}
-          <span>Back</span>
+          <IoArrowBackOutline /> <span>Back</span>
         </Link>
       </div>
 
@@ -86,15 +103,17 @@ export default function OrderDetail() {
             </tr>
           </thead>
           <tbody>
-            {orderDetail.map((item,index) => (
+            {orderDetail.map((item, index) => (
               <tr key={index}>
-                <td className="p-2">{index+1}</td>
+                <td className="p-2">{index + 1}</td>
                 <td className="p-2">{item.productName}</td>
                 <td className="p-2">{item.sizeName}</td>
                 <td className="p-2">{item.colorName}</td>
-                <td className="p-2">{numeral(item.price).format('000,000.000')}</td>
+                <td className="p-2">{numeral(item.price).format("0,0")}</td>
                 <td className="p-2">{item.quantity}</td>
-                <td className="p-2">{numeral(item.quantity * item.price).format('000,000.000')}</td>
+                <td className="p-2">
+                  {numeral(item.quantity * item.price).format("0,0")}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -102,12 +121,28 @@ export default function OrderDetail() {
 
         <div className="mt-4 text-end w-11/12 text-lg">
           <span className="font-semibold">Total: </span>
-          <span>{numeral(order.totalPrice).format('0,0.000')} đ</span>
+          <span>{numeral(order.totalPrice).format("0,0.000")} đ</span>
         </div>
 
         <div className="text-start w-5/6 mx-auto">
           <span>Order Status:</span>
         </div>
+
+        <Stepper
+          steps={titles.length}
+          currentStep={currentStep}
+          titles={titles}
+        />
+
+        {currentStep === 0 ? (
+          <button
+            type="button"
+            onClick={updateOrderStatus}
+            className="mt-6 px-3 py-2 text-white bg-slate-700 rounded-lg active:bg-slate-800"
+          >
+            Confirm
+          </button>
+        ) : null}
       </div>
     </div>
   ) : (

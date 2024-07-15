@@ -21,7 +21,6 @@ builder.Services.AddSingleton<HandleImage>();
 // use Singleton for only 1 instance in system 
 builder.Services.AddSingleton<IVnPayService, VnPayService>();
 
-
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -31,15 +30,22 @@ builder.Services.AddSession(options =>
 });
 
 
-builder.Services.AddCors(options => options.AddPolicy("AllowAllOrigins",
-            builder =>
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("WebPolicy",
+            policy =>
             {
-                builder
-                .WithOrigins("http://localhost:3000", "https://localhost:7183")
+                policy.WithOrigins("http://localhost:3000")
                        .AllowAnyMethod()
                        .AllowCredentials()
-                       .AllowAnyHeader();           
-            }));
+                       .AllowAnyHeader().SetIsOriginAllowed((host) => true);
+            });
+
+    options.AddPolicy("VnpayPolicy", policy =>
+    {
+        policy.WithOrigins("https://sandbox.vnpayment.vn").AllowAnyMethod().AllowAnyHeader().AllowCredentials().SetIsOriginAllowed((host) => true); ;
+    });
+});
 
 
 
@@ -74,8 +80,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    //app.UseCors(builder => builder.
-    //AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 }
 
 app.UseHttpsRedirection();
@@ -88,7 +92,8 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/Images"
 });
 
-app.UseCors("AllowAllOrigins");
+app.UseCors("WebPolicy");
+app.UseCors("VnpayPolicy");
 
 app.UseAuthentication();
 

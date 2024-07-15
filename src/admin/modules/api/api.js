@@ -26,6 +26,9 @@ const productSizeColorAPI = (
   const colorAPI = (url = "https://localhost:7183/api/Colors/") => {
     return {
       GET: () => axios.get(url),
+      POST: (newData) => axios.post(url, newData),
+      PUT: (id, updateData) => axios.put(url + id, updateData),
+      DELETE: (id) => axios.delete(url + id),
     };
   };
 // End Color API
@@ -33,8 +36,11 @@ const productSizeColorAPI = (
 // Product API
 const productAPI = (url = "https://localhost:7183/api/Products/") => {
     return {
-      GET: (id) => axios.get(url + id),
+      GET_ID: (id) => axios.get(url + id),
       PUT: (id, data) => axios.put(url + id, data),
+      GET: () => axios.get(url + "getProductsByAdmin"),
+      POST: (newData) => axios.post(url, newData),
+      DELETE: (id) => axios.delete(url + id),
     };
   };
 // End Product API
@@ -61,12 +67,24 @@ const categoryAPI = (url = "https://localhost:7183/api/Categories/") => {
 };
 //End Categories API
 
+// SubCategories API
+const subCategoriesAPI = (url = "https://localhost:7183/api/SubCategories/") => {
+  return {
+    GET: () => axios.get(url),
+    POST: (newData) => axios.post(url, newData),
+    PUT: (id, updateData) => axios.put(url + id, updateData),
+    DELETE: (id) => axios.delete(url + id),
+  };
+};
+// End SubCategories API
+
 // Orders API
 const orderAPI = (url = "https://localhost:7183/api/Orders/") => {
   return {
     GET: () => axios.get(url),
     GET_ID: (id) => axios.get(url + id),
     POST: (newData) => axios.post(url, newData),
+    PUT: (id) => axios.put(url +id)
   };
 };
 //End Orders API
@@ -90,4 +108,4 @@ const customerAPI = (url = "https://localhost:7183/api/Customers/") => {
 //End Customers API
 
 
-  export {productSizeColorAPI, sizeAPI, colorAPI, productAPI, imageAPI, categoryAPI, orderAPI, customerAPI, orderDetailAPI}
+  export {productSizeColorAPI, sizeAPI, colorAPI, productAPI, imageAPI, categoryAPI, orderAPI, customerAPI, orderDetailAPI, subCategoriesAPI}

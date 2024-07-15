@@ -59,10 +59,9 @@ const Router = () => {
       <Route path="checkout" element={<Checkout />}></Route>
       <Route path="paymentReturn" element={<PaymentReturn />}></Route>
 
-      <Route path="account" element={<Navigate to="/account/profile" />}></Route>
-      <Route path="account/profile" element={<Account component={"profile"}/>}></Route>
-      <Route path="account/history" element={<Account component={"history"} />}></Route>
-      <Route path="account/history">
+      <Route path="profile" element={<Account component={"profile"}/>}></Route>
+      <Route path="history" element={<Account component={"history"} />}></Route>
+      <Route path="history">
         <Route path=":orderId" element={<OrderDetail />}></Route>
       </Route>
 
