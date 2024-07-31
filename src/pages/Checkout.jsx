@@ -20,6 +20,22 @@ const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState(null);
 
   useEffect(() => {
+    const loadInfo = () => {
+      if (user != null && !user.role) {
+        customerAPI()
+          .GET_ID(user.cusId)
+          .then((res) => setInfo(res.data))
+          .catch((err) => console.log(err));
+      }
+    };
+    const setInfo = (user) => {
+      if (user != null) {
+        setValue("cusName", user.cusName);
+        setValue("cusPhone", user.cusPhone);
+        setValue("cusEmail", user.email);
+        setValue("cusAddress", user.cusAddress);
+      }
+    };
     loadInfo();
     if (cart.cartTotalCost > 0) {
       // setShipFee(20);
@@ -39,34 +55,16 @@ const Checkout = () => {
     formState: { errors },
   } = useForm();
 
-  const setInfo = (user) => {
-    if (user != null) {
-      setValue("cusName", user.cusName);
-      setValue("cusPhone", user.cusPhone);
-      setValue("cusEmail", user.email);
-      setValue("cusAddress", user.cusAddress);
-    }
-  };
-
-  const loadInfo = () => {
-    if (user != null && !user.role) {
-      customerAPI()
-        .GET_ID(user.cusId)
-        .then((res) => setInfo(res.data))
-        .catch((err) => console.log(err));
-    }
-  };
-
   const onCheckout = async () => {
     if (user === null) {
       navigate("/login",{replace:true});
       return;
     }
     
-    if(paymentMethod === null){
-      errorMessage("Please choose payment method!");
-      return;
-    }
+    // if(paymentMethod === null){
+    //   errorMessage("Please choose payment method!");
+    //   return;
+    // }
 
     if (cart.cartItems.length === 0) {
       errorMessage("Your cart is empty");
@@ -88,10 +86,12 @@ const Checkout = () => {
     const data = {
       totalPrice: total,
       totalQuantity: cart.cartTotalQuantity,
-      omId: paymentMethod,
+      omId: 3,
       cusId: user.cusId,
       pscList: pscList,
     };
+
+    console.log(data)
 
     await orderAPI()
       .POST(data)

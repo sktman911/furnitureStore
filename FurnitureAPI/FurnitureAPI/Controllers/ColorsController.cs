@@ -87,8 +87,21 @@ namespace FurnitureAPI.Controllers
           {
               return Problem("Entity set 'FurnitureContext.Colors'  is null.");
           }
-            _context.Colors.Add(color);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var existsColor = await _context.Colors.SingleOrDefaultAsync(x => x.ColorName == color.ColorName && x.ColorHexcode == color.ColorHexcode);
+
+                if (existsColor != null)
+                {
+                    return BadRequest(new { message = "Color has existed!" });
+                }
+
+                _context.Colors.Add(color);
+                await _context.SaveChangesAsync();
+            }catch(Exception e)
+            {
+                return BadRequest(new {message="Something went wrong. Please try again!",error=e});
+            }
 
             return CreatedAtAction("GetColor", new { id = color.ColorId }, color);
         }

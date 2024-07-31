@@ -75,16 +75,18 @@ const ProductDisplay = (props) => {
     <>
       <div className="flex flex-col lg:flex-row gap-20 w-5/6 mx-auto py-10">
         <div className="flex gap-4 xl:gap-8 w-full lg:w-1/2">
-          <div className="flex flex-col gap-5 w-1/6 h-screen justify-between my-1">
+          <div className="flex flex-col gap-12 xl:gap-5 w-1/6 h-fit justify-between my-1">
             {subImages.map((item,index) => 
             (
-              <img key={index} className="rounded-lg w-full h-24" src={item.imageLink} alt="" />
+              <img key={index} className="rounded-lg w-full h-16 sm:h-24" src={item.imageLink} alt="" loading="lazy"/>
             )
             )}
           </div>
-          <div className="w-4/5 h-screen">
+
+          <div className="w-4/5 h-auto">
             <img
-              className="my-1 rounded-lg h-full w-full"
+              loading="lazy"
+              className=" rounded-lg h-full xl:h-auto w-full"
               src={product.images[0].imageLink}
               alt=""
             />
@@ -115,8 +117,8 @@ const ProductDisplay = (props) => {
 
           <ColorPicker onChange={handleColor} />
 
-          <div className="pt-5 flex items-center justify-between w-full xl:w-11/12">
-            <div className="w-16 md:w-28 lg:w-16 xl:w-28 h-10 md:h-14 lg:h-10 xl:h-14 border-2 border-gray-400 rounded-lg">
+          <div className="pt-5 flex items-center justify-between w-full xl:w-11/12 text-sm md:text-base relative">
+            <div className="w-16 sm:w-28 lg:w-16 xl:w-28 h-10 sm:h-14 lg:h-10 xl:h-14 border-2 border-gray-400 rounded-lg">
               <button
                 type="button"
                 className="w-1/4 h-full outline-none active:bg-gray-100 rounded-l-lg"
@@ -141,13 +143,13 @@ const ProductDisplay = (props) => {
             </div>
 
             <Button
-              className="border-2 border-slate-900 rounded-xl px-6 h-10 md:px-12 lg:px-6 xl:px-12 md:h-14 lg:h-10 xl:h-14"
+              className="border-2 border-slate-900 rounded-xl px-4 h-10 sm:px-12 lg:px-6 xl:px-12 sm:h-14 lg:h-10 xl:h-14 "
               title="Add to cart"
               onClick={() => handleAddToCart(product)}
             />
 
             <Button
-              className="border-2 border-slate-900 rounded-xl px-6 h-10 md:px-12 lg:px-6 xl:px-12 md:h-14 lg:h-10 xl:h-14"
+              className="border-2 border-slate-900 rounded-xl px-4 h-10 sm:px-12 lg:px-6 xl:px-12 sm:h-14 lg:h-10 xl:h-14 "
               title="+ Compare"
             />
           </div>

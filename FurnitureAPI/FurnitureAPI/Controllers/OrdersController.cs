@@ -1,7 +1,9 @@
 ﻿using FurnitureAPI.Config;
 using FurnitureAPI.Models;
+using FurnitureAPI.Models.MomoModel;
 using FurnitureAPI.Models.VnPayModel;
-using FurnitureAPI.Services;
+using FurnitureAPI.Services.Momo;
+using FurnitureAPI.Services.VnPay;
 using FurnitureAPI.TempModels;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -18,11 +20,13 @@ namespace FurnitureAPI.Controllers
     {
         private readonly FurnitureContext _context; 
         private readonly IVnPayService _vpnPayService;
+        private readonly IMomoService _momoService;
    
 
-        public OrdersController(FurnitureContext context, IVnPayService vnPayService) {
+        public OrdersController(FurnitureContext context, IVnPayService vnPayService, IMomoService momoService) {
             _context = context;
             _vpnPayService = vnPayService;
+            _momoService = momoService;
         }
 
         [HttpGet]
@@ -89,10 +93,42 @@ namespace FurnitureAPI.Controllers
 
                 var urlPayment = _vpnPayService.CreatePaymentUrl(HttpContext, vnPay);
 
-
-
                 return Ok(new { status = true, type = "Bank", url = urlPayment });
 
+            }
+            else if (order.OmId == 3)
+            {
+                List<MomoRequestInfo.MomoItem> items = new List<MomoRequestInfo.MomoItem>();
+                try
+                {
+                    foreach (var item in order.PscList)
+                    {
+                        var product = _context.Products.SingleOrDefault(x => x.ProductId == item.ProductId);
+                        MomoRequestInfo.MomoItem momoItem = new MomoRequestInfo.MomoItem
+                        {
+                            Id = item.ProductId.ToString(),
+                            Name = product!.ProductName,
+                            Price = (long)product.Price!,
+                            Quantity = (int)item.Quantity!,
+                            TotalPrice = (long)product.Price! * (int)item.Quantity!,
+                        };
+                        items.Add(momoItem);
+                    }
+                }
+                catch(Exception e)
+                {
+                    return BadRequest(e.Message);
+                }
+                var momoPay = new MomoOTRequestModel
+                {
+                    Amount = (long)order!.TotalPrice!,
+                    OrderId = new Random().Next(1000, 10000).ToString(),
+                    OrderInfo = "Momo payment",
+                    Items = items,
+                };
+
+                var urlPayment = _momoService.CreatePaymentUrl(HttpContext, momoPay);
+                return Ok(new { status = true, type = "Bank", url = urlPayment });
             }
             try
             {

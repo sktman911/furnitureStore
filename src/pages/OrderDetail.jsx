@@ -93,11 +93,11 @@ export default function OrderDetail() {
                 <td className="p-2">{item.sizeName}</td>
                 <td className="p-2">{item.colorName}</td>
                 <td className="p-2">
-                  {numeral(item.price).format("000,000.000")}
+                  {numeral(item.price).format("0,0")} <u>đ</u> 
                 </td>
                 <td className="p-2">{item.quantity}</td>
                 <td className="p-2">
-                  {numeral(item.quantity * item.price).format("000,000.000")}
+                  {numeral(item.quantity * item.price).format("0,0")} đ
                 </td>
               </tr>
             ))}

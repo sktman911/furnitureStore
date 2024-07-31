@@ -1,21 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { productSizeColorAPI, sizeAPI, colorAPI } from "../../modules/api/api";
+import { FaRegEdit } from "react-icons/fa";
 
 import { IoClose } from "react-icons/io5";
+import { errorMessage, successMessage } from "../../../constants/message";
 
 export default function ProductSubDetail(props) {
-    const [productSizeColor, setProductSizeColor] = useState(null);
-    const [size, setSize] = useState(null);
-    const [color, setColor] = useState(null);
-    const [open,setOpen] = useState(false);
+  const [productSizeColor, setProductSizeColor] = useState([]);
+  const [size, setSize] = useState(null);
+  const [color, setColor] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [quantity, setQuantity] = useState(0);
 
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: { errors },
-      } = useForm();
+  const [editItemId, setEditItemId] = useState(null);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   useEffect(() => {
     getProductSizeColor();
@@ -48,7 +54,6 @@ export default function ProductSubDetail(props) {
       .catch((err) => console.log(err));
   };
 
-  
   const hanldeProductDetail = () => {
     getSize();
     getColor();
@@ -66,14 +71,39 @@ export default function ProductSubDetail(props) {
     productSizeColorAPI()
       .POST(dataForm)
       .then((res) => getProductSizeColor())
-      .catch((err) => console.log(err));
+      .catch((err) => errorMessage(err.response.data.message));
 
     closeForm();
   };
 
   const closeForm = () => {
     setOpen(false);
-    reset({productSize: '',productColor: '', productQuantity: ''})
+    reset({ productSize: "", productColor: "", productQuantity: "" });
+  };
+
+  const onUpdateQuantity = (data) => {
+    productSizeColorAPI().PUT(data.pscId,data).then(res => successMessage("Updated quantity successfully")).catch(err => errorMessage("Updated fail.Please try again!"))
+  }
+
+  const handleEditClick = (item) => {
+    setEditItemId(item.pscId);
+    setIsEdit(!isEdit);
+    setQuantity(item.quantity);
+    if(isEdit === true){
+      item.quantity = quantity;
+      onUpdateQuantity(item);
+    }
+  };
+
+  const editQuantity = (e, itemData) => {
+    if(e.target.value.length > 5){
+      return;
+    }
+    let newQuantity = parseInt(e.target.value);
+    if (newQuantity === "" || newQuantity < 1 || !newQuantity) {
+      return newQuantity = 1;
+    }
+    setQuantity(newQuantity);
   };
 
   return (
@@ -112,9 +142,30 @@ export default function ProductSubDetail(props) {
                 </div>
                 <div className="flex items-center gap-10">
                   <label>Quantity: </label>
-                  <p className="border-2 py-1 px-3 w-14 rounded-lg">
-                    {item.quantity}
-                  </p>
+                  {isEdit && editItemId == item.pscId ? (
+                    <input
+                      id={item.pscId}
+                      type="text"
+                      className="border-2 py-1 px-3 w-20 rounded-lg text-center"
+                      value={
+                        isEdit && editItemId === item.pscId
+                          ? quantity
+                          : item.quantity
+                      }
+                      onChange={(e) => editQuantity(e, item)}
+                    />
+                  ) : (
+                    <div className="border-2 py-1 px-3 w-20 rounded-lg text-center">
+                      {item.quantity}
+                    </div>
+                  )}
+                </div>
+
+                <div
+                  className="px-4 py-0.5 rounded-md cursor-pointer bg-white border-2 border-slate-700 hover:bg-slate-700 hover:text-white"
+                  onClick={() => handleEditClick(item)}
+                >
+                  {isEdit && editItemId === item.pscId ? "Save" : "Edit"}
                 </div>
                 <div></div>
               </div>

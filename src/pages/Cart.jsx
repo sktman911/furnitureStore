@@ -7,6 +7,7 @@ import { FaTrashAlt } from "react-icons/fa";
 import Button from "../components/Button";
 import Info from "../components/Info";
 import { CLEAR_CART } from "../constants/cartSlice";
+import numeral from "numeral";
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
@@ -64,44 +65,44 @@ const Cart = () => {
           </Link>
         </div>
       ) : (
-        <div className="mt-10 mb-20 flex w-10/12 mx-auto">
-          <div className=" w-3/5">
+        <div className="mt-10 mb-20 flex flex-col xl:flex-row w-full md:w-10/12 mx-auto">
+          <div className="w-full xl:w-3/5">
             <table className="w-full">
-              <thead>
+              <thead className="max-md:hidden">
                 <tr className="bg-yellow-50 w-full h-full">
-                  <th className="p-3"></th>
+                  <th className="p-3">#</th>
                   <th className="p-3">Image</th>
                   <th className="p-3">Product</th>
-                  <th className="p-3">Color</th>
-                  <th className="p-3">Size</th>
                   <th className="p-3">Price</th>
                   <th className="p-3">Quantity</th>
                   <th className="p-3">Subtotal</th>
-                  <th className="p-3"></th>
+                  <th className="p-3">Delete</th>
                 </tr>
               </thead>
               <tbody>
                 {cart.cartItems.map((item, index) => (
-                  <tr key={index}>
-                    <th className="py-10 px-3">{index + 1}</th>
-                    <td className="py-10 px-3">
+                  <tr key={index} className="max-md:border max-md:relative">
+                    <th className="py-10 w-4 max-md:hidden">{index + 1}</th>
+                    <td className="py-10 w-20 max-sm:w-28">
                       <img
-                        className=" w-28 h-24 mx-auto"
+                        className="w-full h-20 mx-auto"
                         src={item.images[0].imageLink}
                         alt=""
                       />
                     </td>
-                    <td className="py-10 px-3">{item.productName}</td>
-                    <td className="py-10 px-3">
+                    <td className="py-10 w-32 md:w-36 text-sm md:text-base">
+                      <div>{item.productName}</div>
                       <div
                         style={{ backgroundColor: item.color[1] }}
-                        className="w-7 h-7 rounded-full mx-auto border-2 border-gray"
+                        className="w-7 h-7 rounded-full mx-auto border-2 border-gray my-1"
                       ></div>
+                      <div>{item.size[1]}</div>
                     </td>
-                    <td className="py-10 px-3">{item.size[1]}</td>
-                    <td className="py-10 px-3">$ {item.price}</td>
-                    <td className="py-10 px-3">
-                      <div className="flex justify-center items-center rounded-md border-2 w-3/4 mx-auto text-sm">
+                    <td className="py-10 w-32 md:w-36 text-sm md:text-base">
+                      {numeral(item.price).format("000,000")}đ
+                    </td>
+                    <td className="py-10 max-sm:pr-2 w-10">
+                      <div className="flex justify-center items-center rounded-md border-2 w-16 mx-auto text-sm">
                         <Button
                           className="w-3 h-8"
                           title="-"
@@ -119,15 +120,15 @@ const Cart = () => {
                         />
                       </div>
                     </td>
-                    <td className="py-10 px-3">
-                      $ {item.cartQuantity * Number(item.price)}
+                    <td className="py-10 w-36 max-md:hidden">
+                      {numeral(item.cartQuantity * Number(item.price)).format("000,000")}đ
                     </td>
-                    <td>
+                    <td className="w-4 px-1 max-sm:absolute max-sm:top-2 max-sm:right-3">
                       <FaTrashAlt
                         onClick={() => {
                           handleRemoveItem(item, index);
                         }}
-                        className="text-yellow-600 cursor-pointer"
+                        className="text-yellow-600 cursor-pointer mx-auto"
                       />
                     </td>
                   </tr>
@@ -135,30 +136,34 @@ const Cart = () => {
               </tbody>
             </table>
 
-            <div className="text-end">
+            <div className="text-end my-4">
               <Button
                 title="Clear"
-                className="border-2 border-black px-8 py-2 rounded-lg
+                className="border-2 border-black px-6 py-1 md:px-8 md:py-2 rounded-lg
                hover:border-yellow-700 hover:bg-yellow-700 hover:text-white
-               active:bg-yellow-700 active:border-yellow-700"
+               active:bg-yellow-700 active:border-yellow-700 text-sm md:text-base"
                 onClick={() => handleClear()}
               ></Button>
             </div>
           </div>
 
-          <div className="w-2/5">
+          <div className="w-full xl:w-2/5">
             <div className="w-9/12 bg-yellow-50 mx-auto pt-6 pb-10">
               <h1 className="font-semibold text-2xl pb-10">Cart Totals</h1>
-              <div className="py-5 flex w-1/2 mx-auto justify-between">
-                <span className="font-semibold">Subtotal</span>
+              <div className="py-5 flex w-2/3 lg:w-1/2 mx-auto justify-between items-center">
+                <span className="font-semibold text-sm md:text-base">
+                  Subtotal
+                </span>
                 <span className="text-sm text-gray-400">
-                  $ {cart.cartTotalCost}
+                {numeral(cart.cartTotalCost).format("000,000")}đ
                 </span>
               </div>
-              <div className="py-5 flex w-1/2 mx-auto justify-between">
-                <span className="font-semibold">Total</span>
-                <span className="text-yellow-600 text-lg">
-                  ${cart.cartTotalCost}
+              <div className="py-5 flex w-2/3 lg:w-1/2 mx-auto justify-between items-center">
+                <span className="font-semibold text-sm md:text-base">
+                  Total
+                </span>
+                <span className="text-yellow-600 text-md md:text-lg">
+                  {numeral(cart.cartTotalCost).format("000,000")}đ 
                 </span>
               </div>
               <Button

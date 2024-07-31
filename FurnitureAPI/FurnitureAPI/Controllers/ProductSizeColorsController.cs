@@ -28,7 +28,7 @@ namespace FurnitureAPI.Controllers
                 
                 if(check != null)
                 {
-                    return BadRequest();
+                    return BadRequest(new {message="Product detail has existed!"});
                 }
 
                 _context.ProductSizeColors.Add(productSizeColor);
@@ -36,7 +36,7 @@ namespace FurnitureAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new {message="Something went wrong. Please try again!"});
             }
 
             return StatusCode(200);
@@ -65,6 +65,32 @@ namespace FurnitureAPI.Controllers
             }
 
             return result;
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdatePscQuantity(int id, ProductSizeColor productSizeColor)
+        {
+            if(id != productSizeColor.PscId)
+            {
+                return NotFound();
+            }
+
+            if(productSizeColor.Quantity < 1)
+            {
+                return BadRequest();
+            }
+            
+            try
+            {
+                _context.Entry(productSizeColor).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
+            return NoContent();
         }
 
 

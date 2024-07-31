@@ -29,6 +29,7 @@ import ADOrderDetail from "../admin/pages/OrderDetail";
 import CustomerDetail from "../admin/pages/CustomerDetail";
 import Account from "../pages/Account";
 import OrderDetail from "../pages/OrderDetail";
+import Search from "../pages/Search";
 
 
 const Router = () => {
@@ -51,6 +52,7 @@ const Router = () => {
           <Route path={`:subCategoryName`} element={<Shop />}></Route>
         </Route>
       ))}
+      <Route path="search" element={<Search />}></Route>
 
       <Route path="product" element={<Product />}>
         <Route path=":productId" element={<Product />}></Route>

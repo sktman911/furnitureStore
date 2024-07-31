@@ -6,7 +6,7 @@ const Products = (props) => {
   return (
     <div className="my-6 relative group">
       <div className="hidden group-hover:block absolute bg-gray-700 opacity-30 w-full h-full z-20"></div>
-      <img className="w-full h-auto" src={props.img} alt="" />
+      <img className="w-full h-auto" src={props.img} alt="" loading="lazy"/>
       <div className=" w-full text-left ps-3 py-5 space-y-2 bg-gray-100">
         <h1 className="font-bold text-sm md:text-lg tracking-wide">{props.name}</h1>
         <div>

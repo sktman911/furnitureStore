@@ -1,6 +1,7 @@
 using FurnitureAPI.Helpers;
 using FurnitureAPI.Models;
-using FurnitureAPI.Services;
+using FurnitureAPI.Services.Momo;
+using FurnitureAPI.Services.VnPay;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -18,8 +19,21 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<HandleImage>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowOrigin",
+            policy =>
+            {
+                policy.WithOrigins("http://localhost:3000", "https://test-payment.momo.vn", "https://localhost:7183")
+                       .AllowAnyMethod()
+                       .AllowCredentials()
+                       .AllowAnyHeader().SetIsOriginAllowed((host) => true);
+            });
+});
+
 // use Singleton for only 1 instance in system 
 builder.Services.AddSingleton<IVnPayService, VnPayService>();
+builder.Services.AddSingleton<IMomoService, MomoService>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -28,25 +42,6 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("WebPolicy",
-            policy =>
-            {
-                policy.WithOrigins("http://localhost:3000")
-                       .AllowAnyMethod()
-                       .AllowCredentials()
-                       .AllowAnyHeader().SetIsOriginAllowed((host) => true);
-            });
-
-    options.AddPolicy("VnpayPolicy", policy =>
-    {
-        policy.WithOrigins("https://sandbox.vnpayment.vn").AllowAnyMethod().AllowAnyHeader().AllowCredentials().SetIsOriginAllowed((host) => true); ;
-    });
-});
-
 
 
 // JWT
@@ -92,8 +87,7 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/Images"
 });
 
-app.UseCors("WebPolicy");
-app.UseCors("VnpayPolicy");
+app.UseCors("AllowOrigin");
 
 app.UseAuthentication();
 

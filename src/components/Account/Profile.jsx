@@ -84,13 +84,13 @@ export default function Profile({ id }) {
   };
 
   return (
-    <div className="w-2/3 my-5">
-      <h2 className="text-2xl font-bold text-left w-3/4 mx-auto mb-2">
+    <div className="w-full lg:w-2/3 my-5">
+      <h2 className="text-2xl font-bold text-center lg:text-left w-3/4 mx-auto mb-2">
         Profile
       </h2>
       <form onSubmit={handleSubmit(editInfo)}>
-        <div className=" w-3/4 mx-auto rounded-lg flex my-6 justify-between">
-          <div className="w-2/4 ">
+        <div className="w-full lg:w-3/4 mx-auto rounded-lg flex flex-col lg:flex-row mb-2 lg:my-6 justify-between items-center">
+          <div className="w-2/3 lg:w-1/2 mb-2 lg:mb-0">
             <label className="text-left flex justify-start mb-1">Name:</label>
             <input
               type="text"
@@ -104,7 +104,8 @@ export default function Profile({ id }) {
               </p>
             )}
           </div>
-          <div className="w-1.5/4">
+
+          <div className="max-lg:w-2/3 max-xl:w-2/5">
             <label className="text-left flex justify-start mb-1">
               Phone number:
             </label>
@@ -121,8 +122,9 @@ export default function Profile({ id }) {
             )}
           </div>
         </div>
-        <div className=" w-3/4 mx-auto rounded-lg flex my-6 justify-between">
-          <div className="w-2/4 ">
+
+        <div className="w-full lg:w-3/4 mx-auto rounded-lg flex flex-col lg:flex-row mb-2 lg:my-6 justify-between items-center">
+          <div className="w-2/3 lg:w-1/2 mb-2 lg:mb-0">
             <label className="text-left flex justify-start mb-1">Email:</label>
             <input
               type="text"
@@ -136,7 +138,8 @@ export default function Profile({ id }) {
               </p>
             )}
           </div>
-          <div className="w-1.5/4">
+
+          <div className="max-lg:w-2/3 max-xl:w-2/5">
             <label className="text-left flex justify-start mb-1">
               Username:
             </label>
@@ -153,8 +156,9 @@ export default function Profile({ id }) {
             )}
           </div>
         </div>
-        <div className=" w-3/4 mx-auto rounded-lg flex my-6 justify-between">
-          <div className="w-2/4 ">
+
+        <div className="w-full lg:w-3/4 mx-auto rounded-lg flex flex-col lg:flex-row mb-2 lg:my-6 justify-between items-center">
+          <div className="w-2/3 lg:w-1/2 mb-2 lg:mb-0">
             <label className="text-left flex justify-start mb-1">
               Address:
             </label>
@@ -170,7 +174,7 @@ export default function Profile({ id }) {
               </p>
             )}
           </div>
-          <div className="w-1.5/4">
+          <div className="max-lg:w-2/3 max-xl:w-2/5">
             <label className="text-left flex justify-start mb-1">
               Birthday:
             </label>

@@ -61,11 +61,13 @@ export default function Account({ component }) {
   return (
     <section className="mt-24">
       {/* Account left  */}
-      <div className="flex w-4/5 mx-auto py-6 mt-36 mb-12 bg-yellow-50 rounded-md">
-        <div className="w-1/3 my-5py-4">
-          <img src={avatar} alt="" className="w-44 h-44 mx-auto" />
+      <div className="flex flex-col lg:flex-row w-4/5 mx-auto py-6 mt-36 mb-12 bg-yellow-50 rounded-md">
+        <div className="w-full lg:w-1/3 my-5">
+          <div>
+            <img src={avatar} alt="" className="w-44 h-44 mx-auto" />
+          </div>
           <h3 className="my-2">{user?.username}</h3>
-          <div className="w-2/5 mx-auto py-6">
+          <div className="w-3/5 md:w-2/5 mx-auto py-6">
             <ul className="space-y-6">
               {accountItems.map((item, index) => (
                 <AccountItem
