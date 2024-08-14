@@ -19,9 +19,8 @@ export default function CustomerDetail() {
   useEffect(() => {
     getCustomer();
   }, []);
-  console.log("a")
 
-  return customer !== null && customer.doB ?  (
+  return customer !== null  ?  (
     <div className="pt-12">
       <div className="my-6 text-left w-4/5 mx-auto ">
         <Link
@@ -60,7 +59,7 @@ export default function CustomerDetail() {
           </div>
           <div className="w-2/6">
             <span>Birthday: </span>
-            <span>{format(parseISO(customer.doB), "dd-MM-yyyy")}</span>
+            <span>{customer.doB ? format(parseISO(customer.doB), "dd-MM-yyyy") : ""}</span>
           </div>
         </div>
         <div className="py-6 w-10/12 mx-auto text-start">

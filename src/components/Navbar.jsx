@@ -4,16 +4,16 @@ import logo from "../assets/images/logo.jpg";
 import Button from "../components/Button";
 import Cart from "./Cart";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { useSpring, animated } from "@react-spring/web";
 
 import { navLinks } from "../constants";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { GET_CART_TOTAL } from "../constants/cartSlice";
-import { LOGOUT } from "../constants/userSlice";
+import { GET_CART_TOTAL } from "../reducer/cartSlice";
+import { LOGOUT } from "../reducer/userSlice";
 import { ShopContext } from "../context/ShopContext";
 import {
   AiOutlineUser,
-  AiOutlineSearch,
   AiOutlineHeart,
   AiOutlineShoppingCart,
 } from "react-icons/ai";
@@ -52,17 +52,14 @@ const Navbar = () => {
 
       <div className="flex items-center">
         <img src={logo} alt="Logo" className=" w-36 h-24 max-lg:mx-auto" />
-        <div
-          className="text-xl flex items-center"
-        >
-          <SearchBar
-          />
+        <div className="text-xl flex items-center max-lg:hidden">
+          <SearchBar />
         </div>
       </div>
 
       {/* responsive cart */}
       <div
-        className=" w-fit lg:hidden text-2xl cursor-pointer relative mx-auto"
+        className="w-fit lg:hidden text-2xl cursor-pointer relative mx-auto"
         onClick={() => setOpen(true)}
       >
         <AiOutlineShoppingCart />
@@ -85,7 +82,8 @@ const Navbar = () => {
                 {link.label}
               </Link>
               {link.subMenu && (
-                <div className="absolute top-24 text-left uppercase hidden group-hover:block">
+                <div className="absolute top-24 text-left uppercase opacity-0 transition-all translate-y-4 duration-300 ease-out 
+                group-hover:opacity-100 group-hover:translate-y-0 pointer-events-none group-hover:pointer-events-auto">
                   <div className="py-3">
                     <div className="absolute left-3 w-4 h-4 mt-1 bg-white rotate-45"></div>
                   </div>
@@ -95,7 +93,7 @@ const Navbar = () => {
                         <div key={index}>
                           <li>
                             <Link
-                              to={`shop/${(category.categoryName).toLowerCase()}`}
+                              to={`shop/${category.categoryName.toLowerCase()}`}
                               onClick={() => window.scrollTo(0, 0)}
                             >
                               <h1 className="text-lg py-2">
@@ -113,7 +111,7 @@ const Navbar = () => {
                                     className=" text-sm text-gray-400 py-1.5"
                                   >
                                     <Link
-                                      to={`shop/${(category.categoryName).toLowerCase()}/${(subCategory.subCategoryName).toLowerCase()}`}
+                                      to={`shop/${category.categoryName.toLowerCase()}/${subCategory.subCategoryName.toLowerCase()}`}
                                       onClick={() => window.scrollTo(0, 0)}
                                     >
                                       {subCategory.subCategoryName}
@@ -129,11 +127,10 @@ const Navbar = () => {
                 </div>
               )}
             </span>
+
             {active === link.label ? (
-              <hr className=" -translate-y-5 border-2 border-solid border-black rounded-2xl" />
-            ) : (
-              <></>
-            )}
+              <hr className="-translate-y-5 border-2 border-solid border-black rounded-2xl" />
+            ) : null}
           </li>
         ))}
       </ul>

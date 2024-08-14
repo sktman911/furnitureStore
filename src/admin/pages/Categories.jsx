@@ -164,6 +164,7 @@ const Categories = () => {
         renderOnZeroPageCount={null}
       />
 
+      {/* Add form  */}
       {addForm && (
         <Forms
           updateFunc={onUpdate}

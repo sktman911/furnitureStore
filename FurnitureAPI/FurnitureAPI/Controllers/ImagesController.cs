@@ -1,4 +1,5 @@
 ﻿using FurnitureAPI.Helpers;
+using FurnitureAPI.Interface;
 using FurnitureAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,27 +12,18 @@ namespace FurnitureAPI.Controllers
     [ApiController]
     public class ImagesController : ControllerBase
     {
-        private readonly FurnitureContext _context;
-        private readonly HandleImage handleImage;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ImagesController(FurnitureContext context, HandleImage handleImage)
+        public ImagesController( IUnitOfWork unitOfWork)
         {
-            _context = context;
-            this.handleImage = handleImage;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<IEnumerable<Image>>> GetSubImageById(int id)
         {
-            var images = await _context.Images.Where(x => x.ImageMain != true && x.ProductId == id).Select(s => new Image
-            {
-                ImageId = s.ImageId,
-                ImageMain = s.ImageMain,
-                ImageSrc = s.ImageSrc,
-                ImageLink = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, s.ImageSrc)
-            }).ToListAsync();
-
-            return images;
+            var listSubImage = await _unitOfWork.Images.GetListById(id,Request);
+            return Ok(listSubImage);
         }
 
         [HttpPost]
@@ -42,15 +34,15 @@ namespace FurnitureAPI.Controllers
                 return BadRequest();
             }
 
-            foreach (var file in image.ImageFiles)
+            try
             {
-                image.ImageId = 0;
-                image.ImageSrc = await handleImage.UploadImage(file);
-                await _context.Images.AddAsync(image);
-                await _context.SaveChangesAsync();
+                await _unitOfWork.Images.Add(image);
+                return StatusCode(200);
             }
-
-            return StatusCode(200);
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("{id}")]
@@ -66,23 +58,19 @@ namespace FurnitureAPI.Controllers
                 return NotFound();
             }
 
-            var files = image.ImageFiles;
-            var ids = image.Ids;
-
-            for (int i =0;i < files.Count; i++)
+            try
             {
-                var existImg = await _context.Images.FindAsync(ids![i]);
-                if(existImg == null)
+                var updatedImages = await _unitOfWork.Images.Update(id, image);
+                if (updatedImages == null)
                 {
                     // response
                     return NotFound();
                 }
-                existImg.ImageSrc = await handleImage.UploadImage(files[i]);
-                _context.Entry(existImg).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                return StatusCode(200);
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
-
-            return StatusCode(200);
         }
     }
 }

@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 
 import defaultImg from "../../assets/images/default_img.png"
 import { IoClose } from "react-icons/io5";
 import { ShopContext } from "../../../context/ShopContext";
+import FormInput from "../FormInput";
+
 
 const Forms = (props) => {
   
@@ -55,6 +57,7 @@ const Forms = (props) => {
               </p>
             )}
           </div>
+
 
           <div className="inline pb-2 w-1/2 mx-auto">
             <label>Price: </label>

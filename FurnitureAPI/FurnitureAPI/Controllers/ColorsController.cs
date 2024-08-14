@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FurnitureAPI.Models;
-using System.Runtime.CompilerServices;
+using FurnitureAPI.Interface;
 
 namespace FurnitureAPI.Controllers
 {
@@ -14,26 +14,20 @@ namespace FurnitureAPI.Controllers
     [ApiController]
     public class ColorsController : ControllerBase
     {
-        private readonly FurnitureContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ColorsController(FurnitureContext context)
+        public ColorsController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
-        // GET: api/Colors1
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Color>>> GetColors()
         {
-          if (_context.Colors == null)
-          {
-              return NotFound();
-          }
-            return await _context.Colors.ToListAsync();
+            var colors = await _unitOfWork.Colors.GetAll();
+            return Ok(colors);
         }
 
-        // PUT: api/Colors1/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutColor(int id, Color color)
         {
@@ -42,93 +36,64 @@ namespace FurnitureAPI.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(color).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ColorExists(id))
+                var updatedColor = await _unitOfWork.Colors.Update(id, color);
+                if (updatedColor == null)
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+                return NoContent();
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
-
-            return NoContent();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<Color>>> GetProductSuzeColorsByClient(int id)
+        public async Task<ActionResult<IEnumerable<Color>>> GetColorByProduct(int id)
         {
 
-            var result = await _context.Colors.Where(x => x.ProductSizeColors.Any(y => y.ColorId == x.ColorId && y.ProductId == id)).ToListAsync();
-
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return result;
+            var result = await _unitOfWork.Colors.GetColorsByProduct(id);
+            return Ok(result);
         }
 
-        // POST: api/Colors1
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Color>> PostColor(Color color)
         {
-          if (_context.Colors == null)
-          {
-              return Problem("Entity set 'FurnitureContext.Colors'  is null.");
-          }
             try
             {
-                var existsColor = await _context.Colors.SingleOrDefaultAsync(x => x.ColorName == color.ColorName && x.ColorHexcode == color.ColorHexcode);
+                var addedColor = await _unitOfWork.Colors.Add(color);
 
-                if (existsColor != null)
+                if (addedColor == null)
                 {
                     return BadRequest(new { message = "Color has existed!" });
                 }
-
-                _context.Colors.Add(color);
-                await _context.SaveChangesAsync();
-            }catch(Exception e)
-            {
-                return BadRequest(new {message="Something went wrong. Please try again!",error=e});
+                return CreatedAtAction("GetColorByProduct", new { id = color.ColorId }, color);
             }
-
-            return CreatedAtAction("GetColor", new { id = color.ColorId }, color);
+            catch (Exception e)
+            {
+                return BadRequest(new { message = "Something went wrong. Please try again!", error = e });
+            }
         }
 
-        // DELETE: api/Colors1/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteColor(int id)
         {
-            if (_context.Colors == null)
+            try
             {
-                return NotFound();
+                var color = await _unitOfWork.Colors.Delete(id);
+                if (color == null)
+                {
+                    return NotFound();
+                }
+                return NoContent();
             }
-            var color = await _context.Colors.FindAsync(id);
-            if (color == null)
+            catch(Exception ex)
             {
-                return NotFound();
+                return BadRequest(ex.Message);
             }
-
-            _context.Colors.Remove(color);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
         }
 
-        private bool ColorExists(int id)
-        {
-            return (_context.Colors?.Any(e => e.ColorId == id)).GetValueOrDefault();
-        }
     }
 }

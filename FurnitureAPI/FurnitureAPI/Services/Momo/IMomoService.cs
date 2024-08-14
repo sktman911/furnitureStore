@@ -6,6 +6,6 @@ namespace FurnitureAPI.Services.Momo
     {
         string CreatePaymentUrl(HttpContext context, MomoOTRequestModel momoOTRequestModel);
 
-        MomoOTResponseModel PaymentExcute(IQueryCollection collections);
+        MomoRequestResultModel PaymentExcute(IQueryCollection collections);
     }
 }

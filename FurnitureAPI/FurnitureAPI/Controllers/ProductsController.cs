@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using FurnitureAPI.TempModels;
 using Microsoft.Data.SqlClient;
 using FurnitureAPI.Helpers;
+using FurnitureAPI.Interface;
 
 namespace FurnitureAPI.Controllers
 {
@@ -17,117 +18,44 @@ namespace FurnitureAPI.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly FurnitureContext _context;
-        private readonly IWebHostEnvironment _hostEnvironment;
-        private readonly HandleImage handleImage;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ProductsController(FurnitureContext context, IWebHostEnvironment hostEnvironment, HandleImage handleImage)
+        public ProductsController(IUnitOfWork unitOfWork)
         {
-            _context = context;
-            this._hostEnvironment = hostEnvironment;
-            this.handleImage = handleImage;
+            _unitOfWork = unitOfWork;
         }
+        
 
-        // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductInfo>>> GetProducts()
+        public async Task<ActionResult<IEnumerable<ProductInfo>>> GetTopProductsByDesc()
         {
-            var products = _context.Images
-                .Where(x => x.Product!.Status == true && x.ImageMain == true && x.Product.ProductSizeColors.Any(p => p.ProductId == x.Product.ProductId))
-                .OrderByDescending(x => x.Product!.CreatedDate).Take(8)
-                .Select(s => new ProductInfo
-                {
-                    ProductId = s.ProductId,
-                    ProductName = s.Product!.ProductName,
-                    Price = s.Product.Price,
-                    SubCategoryId = s.Product.SubCategoryId,
-                    SubCategoryName = s.Product.SubCategory!.SubCategoryName,
-                    CategoryId = s.Product.SubCategory.Category!.CategoryId,
-                    CategoryName = s.Product.SubCategory.Category!.CategoryName,
-                    Images = _context.Images.Where(x => x.ImageMain == true && x.ProductId == s.ProductId).Select(s => new Image{ 
-                        ImageId = s.ImageId,
-                        ImageMain = s.ImageMain,
-                        ImageSrc = s.ImageSrc,
-                        ProductId = s.ProductId,
-                        ImageLink = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, s.ImageSrc)
-                    }).ToList() 
-                });
+            var products = await _unitOfWork.Products.GetTopProductsByDesc(Request);
 
-            return await products.ToListAsync();
+            return Ok(products);
         }
 
         // Admin product list
-        [HttpGet("getProductsByAdmin")]
-        public async Task<ActionResult<IEnumerable<ProductInfo>>> GetProductsByAdmin()
+        [HttpGet("getAll")]
+        public async Task<ActionResult<IEnumerable<ProductInfo>>> GetAll()
         {
-            var products = _context.Images
-                .Where(x => x.Product!.Status == true && x.ImageMain == true)
-                .Select(s => new ProductInfo
-                {
-                    ProductId = s.ProductId,
-                    ProductName = s.Product!.ProductName,
-                    Price = s.Product.Price,
-                    SubCategoryId = s.Product.SubCategoryId,
-                    SubCategoryName = s.Product.SubCategory!.SubCategoryName,
-                    CategoryId = s.Product.SubCategory.Category!.CategoryId,
-                    CategoryName = s.Product.SubCategory.Category!.CategoryName,
-                    Images = _context.Images.Where(x => x.ImageMain == true && x.ProductId == s.ProductId).Select(s => new Image
-                    {
-                        ImageId = s.ImageId,
-                        ImageMain = s.ImageMain,
-                        ImageSrc = s.ImageSrc,
-                        ProductId = s.ProductId,
-                        ImageLink = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, s.ImageSrc)
-                    }).ToList()
-                });
+            var products = await _unitOfWork.Products.GetAllCustom(Request);
 
-            return await products.ToListAsync();
+            return Ok(products);
         }
 
-        // GET: api/Products/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductInfo>> GetProduct(int id)
         {
 
-            var product = _context.Images.Include(x => x.Product)
-                .Where(x => x.Product!.ProductId == id)
-                .Select(s => new ProductInfo
-                {
-                    ProductId = s.ProductId,
-                    ProductName = s.Product!.ProductName,
-                    Price = s.Product.Price,
-                    SubCategoryId = s.Product.SubCategoryId,
-                    SubCategoryName = s.Product.SubCategory!.SubCategoryName,
-                    CategoryId = s.Product.SubCategory.Category!.CategoryId,
-                    CategoryName = s.Product.SubCategory.Category!.CategoryName,
-                    Images = _context.Images.Where(x => x.ProductId == id).Select(s => new Image
-                    {
-                        ImageId = s.ImageId,
-                        ImageMain = s.ImageMain,
-                        ImageSrc = s.ImageSrc,
-                        ProductId = s.ProductId,
-                        ImageLink = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, s.ImageSrc)
-                    }).ToList()
-                });
+            var product = _unitOfWork.Products.GetProductCustom(id, Request);
 
             if (product == null)
             {
                 return NotFound();
             }
-
-            return await product.FirstAsync();
+            return await product;
         }
 
-        [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<Product>>> SearchProduct(string text)
-        {
-            if(text != null)
-            {
-                var result = await _context.Products.Where(x => x.ProductName!.Contains(text)).ToListAsync();
-                return Ok(result);
-            }
-            return NoContent();
-        }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduct(int id, [FromForm]Product product)
@@ -137,42 +65,39 @@ namespace FurnitureAPI.Controllers
                 return BadRequest();
             }
 
-            product.Status = true;
-
-            if(product.ImageFile != null)
+            try
             {
-                var image = await _context.Images.SingleOrDefaultAsync(x => x.ImageMain && x.ProductId == product.ProductId);
-                image!.ImageSrc = await handleImage.UploadImage(product.ImageFile);
+                var updatedProduct = await _unitOfWork.Products.Update(id, product);
+                if(updatedProduct == null)
+                {
+                    return NotFound();
+                }
+                ActionResult<ProductInfo> getProduct = await GetProduct(id);
+                var result = getProduct.Value;
+                return Ok(result);
             }
-            
-            _context.Entry(product).State = EntityState.Modified;
-
-            await _context.SaveChangesAsync();
-
-            ActionResult<ProductInfo> getProduct = await GetProduct(id);
-            var result = getProduct.Value;
-
-            return Ok(result);
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 
         [HttpPost]
         public async Task<ActionResult<Product>> PostProduct([FromForm]Product product)
         {
+            if(product.ImageFile == null)
+            {
+                return BadRequest(new {message= "Image can not be null"});
+            }
             try
             {
-                product.Status = true;
-                product.CreatedDate = DateTime.Now;
-                _context.Products.Add(product);
-                await _context.SaveChangesAsync();
-                Image image = new Image();
-                image.ProductId = product.ProductId;
-                image.ImageMain = true;
-                image.ImageSrc = await handleImage!.UploadImage(product.ImageFile!);
-                _context.Images.Add(image);
-
-                await _context.SaveChangesAsync();
-            }catch(SqlException e)
+                var newProduct = await _unitOfWork.Products.Add(product);
+                if(newProduct == null)
+                {
+                    return BadRequest(new { message = "Product name has existed!" });
+                }
+            }catch(Exception e)
             {
                 return BadRequest(e.Message);
             }
@@ -180,26 +105,14 @@ namespace FurnitureAPI.Controllers
             return StatusCode(201);
         }
 
-        // DELETE: api/Products/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            // Xoa anh phu
-            var images = _context.Images.Where(x => x.ProductId == id && x.ImageMain == false).ToList();
-            foreach(var image in images)
+            var deletedProduct = await _unitOfWork.Products.Delete(id);
+            if(deletedProduct == null)
             {
-                _context.Images.Remove(image);
+                return NotFound(new {message="Product is not found"});
             }
-
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            product.Status = false;
-            _context.Entry(product).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }

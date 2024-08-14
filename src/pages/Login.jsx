@@ -6,7 +6,7 @@ import axios from "axios";
 
 import { useDispatch } from "react-redux";
 import { jwtDecode } from "jwt-decode";
-import { LOGIN_USER } from "../constants/userSlice";
+import { LOGIN_USER } from "../reducer/userSlice";
 import { errorMessage } from "../constants/message";
 
 const Login = () => {
@@ -80,7 +80,7 @@ const Login = () => {
             focus:outline-none appearance-none peer"
             placeholder=""
             {...register("password", { required: "Please fill password" })}
-            autoComplete="wrongPass"
+            autoComplete="off"
           />
           {errors.password && (
             <p className="my-1 text-red-500 text-left">

@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { format, parseISO, parse, formatISO } from "date-fns";
 import { useForm } from "react-hook-form";
 import { jwtDecode } from "jwt-decode";
-import { LOGIN_USER } from "../../constants/userSlice";
+import { LOGIN_USER } from "../../reducer/userSlice";
 import { useDispatch } from "react-redux";
 
 
@@ -40,13 +40,14 @@ export default function Profile({ id }) {
       setValue("cusPhone", data.cusPhone);
       setValue("email", data.email);
       setValue("username", data.username);
-      setValue("cusAddress", data.cusAddress);
-      setValue("doB", format(parseISO(data.doB), "dd-MM-yyyy"));
+      setValue("cusAddress", data.cusAddress ?? "");
+      if(data.doB != null){
+        setValue("doB", format(parseISO(data.doB), "dd-MM-yyyy"));
+      }
     }
   };
 
   const getInfo = async () => {
-
     if (user !== null) {
       await customerAPI()
         .GET_ID(id)

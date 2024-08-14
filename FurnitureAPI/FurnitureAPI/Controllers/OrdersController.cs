@@ -1,4 +1,6 @@
 ﻿using FurnitureAPI.Config;
+using FurnitureAPI.Helpers;
+using FurnitureAPI.Interface;
 using FurnitureAPI.Models;
 using FurnitureAPI.Models.MomoModel;
 using FurnitureAPI.Models.VnPayModel;
@@ -19,224 +21,91 @@ namespace FurnitureAPI.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly FurnitureContext _context; 
-        private readonly IVnPayService _vpnPayService;
-        private readonly IMomoService _momoService;
-   
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly PaymentURL _paymentURL;
 
-        public OrdersController(FurnitureContext context, IVnPayService vnPayService, IMomoService momoService) {
+        public OrdersController(FurnitureContext context, IUnitOfWork unitOfWork, PaymentURL paymentURL) {
             _context = context;
-            _vpnPayService = vnPayService;
-            _momoService = momoService;
+            _unitOfWork = unitOfWork;
+            _paymentURL = paymentURL;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
-            if (_context.Orders == null)
-            {
-                return NotFound();
-            }
-            return await _context.Orders.ToListAsync();
+            var orders = await _unitOfWork.Orders.GetAll();
+            return Ok(orders);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetOrder(int id)
         {
-            var order = await _context.Orders.SingleOrDefaultAsync(x => x.OrderId == id);
+            var order = await _unitOfWork.Orders.GetById(id);
             if(order == null)
             {
                 return NotFound();
-            }
-
-            var orderMethod = await _context.OrderMethods.SingleOrDefaultAsync(x => x.OmId == order.OmId);
-            var orderStatus = await _context.OrderStatuses.SingleOrDefaultAsync(x => x.OsId == order.OsId);
-
-            OrderInfo result = new OrderInfo
-            {
-                OrderId = order.OrderId,
-                OrderDate = order.OrderDate,
-                TotalPrice = order.TotalPrice,
-                TotalQuantity = order.TotalQuantity,
-                OrderMethodName = orderMethod!.OmName,
-                OrderStatusName = orderStatus!.OsName,
-            };
-            return result;
+            }      
+            return order;
         }
 
         [HttpGet("customer/getOrders/{id}")]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrdersByCustomer(int id)
         {
-            var result = _context.Orders.Where(x => x.CusId == id).ToListAsync();
-            return await result;
+            var result = await _unitOfWork.Orders.GetOrdersByCustomer(id);
+            return Ok(result);
         }
 
         [HttpPost]
-        //[DisableCors]
         public async Task<ActionResult<Order>> AddOrder(Order order)
         {
-            if (order.OmId == 2)
+            if(order.CusId == null)
             {
-                var customer = await _context.Customers.FindAsync(order.CusId);
-                if (customer == null)
-                {
-                    return BadRequest();
-                }
-                var vnPay = new VnPayRequestModel
-                {
-                    Amount = order.TotalPrice,
-                    CreatedDate = DateTime.Now,
-                    FullName = customer.CusName,
-                    Description = $"{customer.CusName} {customer.CusPhone}",
-                    OrderId = new Random().Next(1000, 10000),
-                    Order = order
-                };
-
-                var urlPayment = _vpnPayService.CreatePaymentUrl(HttpContext, vnPay);
-
-                return Ok(new { status = true, type = "Bank", url = urlPayment });
-
+                return BadRequest("Invalid customer");
             }
-            else if (order.OmId == 3)
-            {
-                List<MomoRequestInfo.MomoItem> items = new List<MomoRequestInfo.MomoItem>();
-                try
-                {
-                    foreach (var item in order.PscList)
-                    {
-                        var product = _context.Products.SingleOrDefault(x => x.ProductId == item.ProductId);
-                        MomoRequestInfo.MomoItem momoItem = new MomoRequestInfo.MomoItem
-                        {
-                            Id = item.ProductId.ToString(),
-                            Name = product!.ProductName,
-                            Price = (long)product.Price!,
-                            Quantity = (int)item.Quantity!,
-                            TotalPrice = (long)product.Price! * (int)item.Quantity!,
-                        };
-                        items.Add(momoItem);
-                    }
-                }
-                catch(Exception e)
-                {
-                    return BadRequest(e.Message);
-                }
-                var momoPay = new MomoOTRequestModel
-                {
-                    Amount = (long)order!.TotalPrice!,
-                    OrderId = new Random().Next(1000, 10000).ToString(),
-                    OrderInfo = "Momo payment",
-                    Items = items,
-                };
 
-                var urlPayment = _momoService.CreatePaymentUrl(HttpContext, momoPay);
-                return Ok(new { status = true, type = "Bank", url = urlPayment });
-            }
             try
             {
-                order.OrderDate = DateTime.Now;
-                order.OsId = 1;
-                
-                var result = await _context.Orders.AddAsync(order);
 
-          
-                foreach(var item in order.PscList)
-                {
-                   var index = _context.ProductSizeColors.SingleOrDefault(x => x.ProductId == item!.ProductId && x.ColorId == item!.ColorId && x.SizeId == item!.SizeId);
-                    if(index == null)
-                    {
-                        return BadRequest(new { status = false, message = $"Error" });
-                    }
-
-                    if (item.Quantity > index.Quantity)
-                    {
-                        // update - show which product is not enough quantity
-                        return BadRequest(new { status = false, message = $"Don't have enough quantity" });
-                    }
-
-                    index.Quantity -= item.Quantity;
-
-                    OrderDetail orderDetail = new OrderDetail();
-                    orderDetail.PscId = index.PscId;
-                    orderDetail.Quantity = item.Quantity;
-                    orderDetail.OrderId = result.Entity.OrderId;
-
-                    order.OrderDetails.Add(orderDetail);
+                var customer = await _unitOfWork.Customers.GetById((int)order.CusId);
+                if(customer == null){
+                    return BadRequest();
                 }
 
-                await _context.OrderDetails.AddRangeAsync(order.OrderDetails);
-                await _context.SaveChangesAsync();
-                
+
+                if (order.OmId != 1)
+                {
+                    var urlPayment = _paymentURL.CreatePaymentURL(HttpContext, order, customer);
+                    if(urlPayment == null)
+                    {
+                        return BadRequest(new { status = false, type = "Bank", url = urlPayment });
+                    }
+                    return Ok(new { status = true, type = "Bank", url = urlPayment });
+                }
+
+                var newOrder = await _unitOfWork.Orders.Add(order);
+
+                var listOrderDetail = _unitOfWork.OrderDetails.AddListOrderDetail(order);
+                if(listOrderDetail == null)
+                {
+                     return BadRequest(new { status = false, message = $"Error" });
+                }
+
+                if (listOrderDetail.Result.Count() == 0)
+                {
+                     // update - show which product is not enough quantity
+                     return BadRequest(new { status = false, message = $"Don't have enough quantity" });
+                }
+                return Ok(new { status = true, url = "/paymentReturn?success=true", type = "Cash" });
             }
             catch(Exception e)
             {
                return BadRequest(e.Message);
             }
-            return Ok(new { status = true, url = "/paymentReturn?success=true", type = "Cash" });
+            
 
         }
 
         
-
-        // checkout with vnpay payment
-        [HttpGet("paymentCallback")]
-        public async Task<ActionResult> vnPayCallback()
-        {
-            var res = _vpnPayService.PaymentExcute(Request.Query);
-            
-            if (res == null || res.VnPayResponseCode != "00")
-            {              
-                return Redirect("http://localhost:3000/paymentReturn?success=false");
-            }
-
-            var order = res.Order;
-            if(order == null)
-            {
-                return NotFound();
-            }
-            try
-            {
-                order.OrderDate = DateTime.Now;
-                order.OsId = 1;
-
-                var result = await _context.Orders.AddAsync(order);
-
-                foreach (var item in order.PscList)
-                {
-                    // find productSizeColor match 
-                    var index = _context.ProductSizeColors.SingleOrDefault(x => x.ProductId == item!.ProductId && x.ColorId == item!.ColorId && x.SizeId == item!.SizeId);
-                    if (index == null)
-                    {
-                        return BadRequest();
-                    }
-
-                    if (item.Quantity > index.Quantity)
-                    {
-
-                        return BadRequest(new { status = false, message = $"Don't have enough quantity" });
-                    }
-
-                    index.Quantity -= item.Quantity;
-
-                    OrderDetail orderDetail = new OrderDetail();
-                    orderDetail.PscId = index.PscId;
-                    orderDetail.Quantity = item.Quantity;
-                    orderDetail.OrderId = result.Entity.OrderId;
-
-                    order.OrderDetails.Add(orderDetail);
-                }
-
-                await _context.OrderDetails.AddRangeAsync(order.OrderDetails);
-                await _context.SaveChangesAsync();
-
-            }
-            catch (Exception e)
-            {
-
-                return BadRequest(e.Message);
-            }
-
-       
-            return Redirect("http://localhost:3000/paymentReturn?success=true");
-        }
 
         //update order status
         [HttpPut("{id}")]
@@ -244,19 +113,56 @@ namespace FurnitureAPI.Controllers
         {
             try
             {
-                var order = await _context.Orders.SingleOrDefaultAsync(x => x.OrderId == id);
-                if(order == null)
+                var updatedOrder = await _unitOfWork.Orders.UpdateStatus(id);
+                if(updatedOrder == null)
                 {
                     return NotFound();
                 }
-                order.OsId = 2;                
-                await _context.SaveChangesAsync();
-                return Ok(order);
+                return Ok(updatedOrder);
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }           
         }
+
+        //if (order.OmId == 2)
+        //{
+        //    var vnPay = new VnPayRequestModel
+        //    {
+        //        Amount = order.TotalPrice,
+        //        CreatedDate = DateTime.Now,
+        //        FullName = customer.CusName,
+        //        Description = $"{customer.CusName} {customer.CusPhone}",
+        //        OrderId = new Random().Next(1000, 10000),
+        //        Order = order
+        //    };
+
+        //    var urlPayment = _vpnPayService.CreatePaymentUrl(HttpContext, vnPay);
+
+        //    return Ok(new { status = true, type = "Bank", url = urlPayment });
+
+        //}
+        //else if (order.OmId == 3)
+        //{
+        //    var urlPayment = String.Empty;
+        //    try
+        //    {
+        //        var momoPay = new MomoOTRequestModel
+        //        {
+        //            Amount = (long)order!.TotalPrice!,
+        //            OrderId = new Random().Next(1000, 10000).ToString(),
+        //            OrderInfo = "Momo payment",
+        //            Order = order,
+        //        };
+        //        urlPayment = _momoService.CreatePaymentUrl(HttpContext, momoPay);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return BadRequest(e.Message);
+        //    }                                            
+
+        //    return Ok(new { status = true, type = "Bank", url = urlPayment });
+        //}
     }
 }

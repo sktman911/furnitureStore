@@ -9,6 +9,7 @@ import {
 
 import ProductSubDetail from "../components/Product/ProductSubDetail";
 import ProductSubImage from "../components/Product/ProductSubImage";
+import { successMessage } from "../../constants/message";
 
 const Product = () => {
   const { products, categories, subCategories } = useContext(ShopContext);
@@ -75,6 +76,7 @@ const Product = () => {
       .PUT(data.productId, formData)
       .then((res) => {
         setProduct(res.data);
+        successMessage("Updated Successfully")
       })
       .catch((err) => console.log(err));
   };

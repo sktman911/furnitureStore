@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import swal from "sweetalert";
 
@@ -38,7 +38,7 @@ const Colors = (props) => {
     renderColors();
   }, []);
 
-  const renderColors = () => {
+  const renderColors = useCallback(() => {
     colorAPI()
       .GET()
       .then((res) => {
@@ -46,7 +46,7 @@ const Colors = (props) => {
         setPageCount(Math.ceil(res.data.length / colorsPerPage));
       })
       .catch((err) => console.log(err));
-  };
+  },[]);
 
   const showEdit = (data) => {
     setEdit(data);
@@ -56,7 +56,7 @@ const Colors = (props) => {
     setIsColored(data.colorHexcode);
   };
 
-  const postAPI = async (data) => {
+  const postAPI = useCallback(async (data) => {
     colorAPI()
       .POST(data)
       .then((res) => {
@@ -66,9 +66,9 @@ const Colors = (props) => {
 
     reset();
     setAddForm(false);
-  };
+  },[]);
 
-  const putAPI = async (data) => {
+  const putAPI = useCallback(async (data) => {
     colorAPI()
       .PUT(data.colorId, data)
       .then((res) => {
@@ -78,9 +78,9 @@ const Colors = (props) => {
 
     setAddForm(false);
     setEdit(null);
-  };
+  },[]);
 
-  const deleteAPI = async (data) => {
+  const deleteAPI = useCallback(async (data) => {
     await swal({
       title: "Are you sure?",
       text: `Delete ${data.colorName} ?`,
@@ -101,18 +101,18 @@ const Colors = (props) => {
         }
       })
       .catch((err) => console.log(err));
-  };
+  },[]);
 
-  const closeForm = () => {
+  const closeForm = useCallback(() => {
     setAddForm(false);
     reset();
     setEdit(null);
-  };
+  },[]);
 
-  const handlePageClick = (e) => {
+  const handlePageClick = useCallback((e) => {
     setCurrentPage(e.selected);
     window.scrollTo(0, 0);
-  };
+  },[]);
 
   const offset = currentPage * colorsPerPage;
   const currentColors = colorList.slice(offset, offset + colorsPerPage);

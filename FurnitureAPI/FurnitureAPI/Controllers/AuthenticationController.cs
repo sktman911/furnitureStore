@@ -1,4 +1,5 @@
-﻿using FurnitureAPI.Models;
+﻿using FurnitureAPI.Helpers;
+using FurnitureAPI.Models;
 using FurnitureAPI.TempModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
@@ -29,96 +30,31 @@ namespace FurnitureAPI.Controllers
         [HttpPost]
         public IActionResult Login(LoginModel loginModel)
         {
-            var md5Hash = GenerateMD5(loginModel.Password!);
-
-            var customer = _context.Customers.FirstOrDefault(x => x.Username == loginModel.Username && x.Password == loginModel.Password);
+            var customer = _context.Customers.FirstOrDefault(x => x.Username == loginModel.Username);      
             if (customer != null)
             {
-                var key = configuration["Jwt:Key"];
-                var signKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-                var signCredential = new SigningCredentials(signKey, SecurityAlgorithms.HmacSha256);
-                var claims = new List<Claim>
+                var checkPassword = HashHelper.VerifyPasswordSHA256(loginModel.Password!, customer!.Password!);
+                if (!checkPassword)
                 {
-                    new Claim("cusId", customer.CusId.ToString()),
-                     new Claim("username", customer.Username!)
-                };
-
-                // create token
-                var token = new JwtSecurityToken(
-                    issuer: configuration["Jwt:Issuer"],
-                    audience: configuration["Jwt:Audience"],
-                    expires: DateTime.Now.AddMinutes(10),
-                    signingCredentials: signCredential,
-                    claims: claims
-                );
-
-                // new string token
-                var furnitureToken = new JwtSecurityTokenHandler().WriteToken(token);
+                    return Forbid();
+                }
+                var furnitureToken = TokenHelper.GenerateJWTToken(customer, configuration);
                 return new JsonResult(new { username = loginModel.Username, token = furnitureToken });
             }
 
-            var emp = _context.Employees.Include(x => x.Role).FirstOrDefault(x => x.Username == loginModel.Username && x.Password == loginModel.Password);
+            var emp = _context.Employees.Include(x => x.Role).FirstOrDefault(x => x.Username == loginModel.Username);
             if (emp != null)
             {
-
-                var key = configuration["Jwt:Key"];
-                var signKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-                var signCredential = new SigningCredentials(signKey, SecurityAlgorithms.HmacSha256);
-                var claims = new List<Claim>
+                var checkPassword = HashHelper.VerifyPasswordSHA256(loginModel.Password!, emp!.Password!);
+                if (!checkPassword)
                 {
-                     new Claim("empId", emp.EmpId.ToString()),
-                     new Claim("username", emp.Username!),
-                     new Claim("role", emp.Role!.RoleName!)
-                };
-
-                // create token
-                var token = new JwtSecurityToken(
-                    issuer: configuration["Jwt:Issuer"],
-                    audience: configuration["Jwt:Audience"],
-                    expires: DateTime.Now.AddMinutes(10),
-                    signingCredentials: signCredential,
-                    claims: claims
-                );
-
-                // new string token
-                var furnitureToken = new JwtSecurityTokenHandler().WriteToken(token);
+                    return Forbid();
+                }
+                var furnitureToken = TokenHelper.GenerateJWTToken(emp, configuration);
                 return new JsonResult(new { username = loginModel.Username, token = furnitureToken });
             }
 
             return new JsonResult(new { message = "Login Failed" });
-        }
-
-        //private static string Generate256(string rawData)
-        //{
-        //    // Create a SHA256
-        //    using (SHA256 sha256Hash = SHA256.Create())
-        //    {
-        //        // ComputeHash - returns byte array
-        //        byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
-
-        //        // Convert byte array to a string
-        //        StringBuilder builder = new StringBuilder();
-        //        for (int i = 0; i < bytes.Length; i++)
-        //        {
-        //            builder.Append(bytes[i].ToString("x2"));
-        //        }
-        //        return builder.ToString();
-        //    }
-        //}
-
-        private static string GenerateMD5(string input)
-        {
-            StringBuilder hash = new StringBuilder();
-            using (MD5 md5Hash = MD5.Create())
-            {
-                byte[] bytes = md5Hash.ComputeHash(new UTF8Encoding().GetBytes(input));
-
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    hash.Append(bytes[i].ToString("x2"));
-                }
-                return hash.ToString();
-            }
         }
 
         [HttpPost("signup")]
@@ -147,6 +83,9 @@ namespace FurnitureAPI.Controllers
                 return new JsonResult(new { message = "Username has been existed" });
             }
 
+            string hashPassword = HashHelper.HashPasswordSHA256(cus.Password!);
+            cus.Password = hashPassword;
+
             _context.Customers.Add(cus);
              _context.SaveChanges();
             return new JsonResult(new {message = "Sign up successfully"});
@@ -154,7 +93,7 @@ namespace FurnitureAPI.Controllers
 
         private bool CheckPhone(string phoneNum)
         {
-            var result = _context.Customers.First(x => x.CusPhone == phoneNum);
+            var result = _context.Customers.FirstOrDefault(x => x.CusPhone == phoneNum);
 
             if(result != null)
             {
@@ -165,7 +104,7 @@ namespace FurnitureAPI.Controllers
 
         private bool CheckUsername(string username)
         {
-            var result = _context.Customers.First(x => x.Username == username);
+            var result = _context.Customers.FirstOrDefault(x => x.Username == username);
 
             if (result != null)
             {
@@ -176,7 +115,7 @@ namespace FurnitureAPI.Controllers
 
         private bool CheckEmail(string email)
         {
-            var result = _context.Customers.First(x => x.Email == email);
+            var result = _context.Customers.FirstOrDefault(x => x.Email == email);
 
             if (result != null)
             {

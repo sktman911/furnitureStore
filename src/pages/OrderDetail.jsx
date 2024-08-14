@@ -1,50 +1,70 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { useParams } from "react-router";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { orderAPI, orderDetailAPI } from "../modules/apiClient";
 import { format, parseISO } from "date-fns";
 import numeral from "numeral";
 import Stepper from "../components/Stepper";
+import {Link} from "react-router-dom"
 
 export default function OrderDetail() {
   const { orderId } = useParams();
   const [orderDetail, setOrderDetail] = useState([]);
   const [order, setOrder] = useState([]);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // order status
   const [currentStep, setCurrentStep] = useState(null);
-  const titles = ["Waiting for confirm", "On delivery", "Delivered"];
+  const titles = useMemo(() => ["Waiting for confirm", "On delivery", "Delivered"],[]);
 
-  useEffect(() => {
-    getOrder();
-    getOrderDetail();
-  }, []);
-
-  const getOrder = useCallback(async () => {
-    await orderAPI()
-      .GET_ID(orderId)
-      .then((res) => {
-        setOrder(res.data);
-        hanldeOrderStatus(res.data.orderStatusName);
-      })
-      .catch((err) => console.log(err));
-  }, []);
-
-  const getOrderDetail = useCallback(async () => {
-    await orderDetailAPI()
-      .GET(orderId)
-      .then((res) => {
-        setOrderDetail(res.data);
-      })
-      .catch((err) => console.log(err));
-  }, []);
-
-  const hanldeOrderStatus = (statusName) => {
+  const hanldeOrderStatus = useCallback((statusName) => {
     const index = titles.findIndex((item) => item === statusName);
     if (index !== -1) {
       setCurrentStep(index);
     }
-  };
+  },[titles]);
+
+  useEffect(() => {
+    const getOrder = (async () => {
+      await orderAPI()
+        .GET_ID(orderId)
+        .then((res) => {
+          setOrder(res.data);
+          hanldeOrderStatus(res.data.orderStatusName);
+        })
+        .catch((err) => console.log(err));
+    });
+
+    const getOrderDetail = async () => {
+      await orderDetailAPI()
+        .GET(orderId)
+        .then((res) => {
+          setOrderDetail(res.data);
+        })
+        .catch((err) => console.log(err));
+    };
+
+    getOrder();
+    getOrderDetail();
+  }, []);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      navigate(`/history?page=${location.state.fromPage}`, { replace: true });
+    };
+
+    // window.onpopstate = () => {
+    //   if(location.state){
+    //     navigate(`/history?page=${location.state.fromPage}`)
+    //   }
+    // }
+
+    window.addEventListener('onpopstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('onpopstate', handlePopState);
+    };
+  },[navigate,location.state.fromPage])
 
   return orderDetail && order && order.orderDate ? (
     <div className="mt-24">
@@ -121,8 +141,10 @@ export default function OrderDetail() {
 
         <div className="my-6 flex justify-center">
           <Link
-            to={"/history"}
+            to={`/history?page=${location.state ? location.state.fromPage : 1}`}
+            state={ { fromPage: location.state ? location.state.fromPage : 1}}
             className="w-24 py-2 bg-slate-800 text-white rounded-md"
+            replace={true}
           >
             Back
           </Link>

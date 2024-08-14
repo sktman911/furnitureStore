@@ -9,23 +9,31 @@ import { Link } from "react-router-dom";
 import Profile from "../components/Account/Profile.jsx";
 import History from "../components/Account/History.jsx";
 
-export const AccountItem = React.memo(({ url, icon, title }) => {
-  return (
-    <li
-      key={title}
-      className=" hover:bg-white hover:text-yellow-600 rounded-md py-2 px-4 cursor-pointer"
-    >
-      <Link to={url} className="flex items-center justify-between">
-        <span className="w-1/3">{icon}</span>
-        <span className="w-2/3 text-center text-lg">{title}</span>
-      </Link>
-    </li>
-  );
-});
+export const AccountItem = React.memo(
+  ({ url, icon, title, active, setActive }) => {
+    return (
+      <li
+        key={title}
+        className={
+          active === title
+            ? "bg-white text-yellow-600 rounded-md py-2 px-4 cursor-pointer"
+            : "hover:bg-white hover:text-yellow-600 rounded-md py-2 px-4 cursor-pointer"
+        }
+        onClick={() => setActive(title)}
+      >
+        <Link to={url} className="flex items-center justify-between">
+          <span className="w-1/3">{icon}</span>
+          <span className="w-2/3 text-center text-lg">{title}</span>
+        </Link>
+      </li>
+    );
+  }
+);
 
 export default function Account({ component }) {
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const [active, setActive] = useState("Profile");
 
   useEffect(() => {
     if (user === null) {
@@ -47,7 +55,7 @@ export default function Account({ component }) {
       },
       {
         icon: <IoReceiptOutline className="w-5 h-5" />,
-        title: "Orders",
+        title: "History",
         path: "/history",
       },
       {
@@ -75,6 +83,8 @@ export default function Account({ component }) {
                   icon={item.icon}
                   title={item.title}
                   url={item.path}
+                  active={active}
+                  setActive={setActive}
                 />
               ))}
             </ul>

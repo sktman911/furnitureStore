@@ -31,7 +31,7 @@ export default function SearchBar() {
 
   return (
     <>
-      <div className="w-80">
+      <div className="w-64 xl:w-80">
         <div className="py-1 px-2 flex items-center border border-slate-400 rounded-md">
           <input
             type="text"

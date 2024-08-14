@@ -1,16 +1,50 @@
-import React,{useContext} from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useSpring, animated } from "react-spring";
 
 import { ShopContext } from "../context/ShopContext";
 import Products from "./Products";
 import numeral from "numeral";
 
 const Popular = () => {
-  const {products} = useContext(ShopContext); 
+  const [isShow, setIsShow] = useState(false);
+  const { products } = useContext(ShopContext);
+
+  const spring = useSpring({
+    opacity: isShow ? 1 : 0,
+    transform: isShow ? "translate3d(0,0,0)" : "translate3d(0,50px,0)",
+    from: { opacity: 0, transform: "translate3d(0,50px,0)" },
+    config: {tension: 180}
+
+  });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const section = document.getElementById("popular");
+      const rect = section.getBoundingClientRect();
+
+      if (rect.top > window.innerHeight || rect.bottom < window.innerHeight/2) {        
+        setIsShow(false);
+      } else {
+        setIsShow(true);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <section className="w-full mt-5 mb-8">
-      <h1 className="font-bold text-lg md:text-xl xl:text-2xl pt-3 text-gray-700">Our Products</h1>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 w-11/12 max-h-full justify-around mx-auto">
+      <h1 className="font-bold text-lg md:text-xl xl:text-2xl pt-3 text-gray-700">
+        Our Products
+      </h1>
+      <animated.div 
+        id="popular"    
+        style={spring}  
+        className="grid grid-cols-2 lg:grid-cols-4 gap-8 w-11/12 max-h-full justify-around mx-auto"
+      >
         {products.map((item, index) => {
           return (
             <Products
@@ -18,11 +52,11 @@ const Popular = () => {
               id={item.productId}
               img={item.images[0].imageLink}
               name={item.productName}
-              price={numeral(item.price).format('0,0')}
+              price={numeral(item.price).format("0,0")}
             />
           );
         })}
-      </div>
+      </animated.div>
 
       <button
         className=" text-yellow-600 border border-yellow-600

@@ -63,9 +63,10 @@ const Router = () => {
 
       <Route path="profile" element={<Account component={"profile"}/>}></Route>
       <Route path="history" element={<Account component={"history"} />}></Route>
-      <Route path="history">
+      {/* <Route path="history">
         <Route path=":orderId" element={<OrderDetail />}></Route>
-      </Route>
+      </Route> */}
+      <Route path="history/:orderId" element={<OrderDetail />}></Route>
 
 
       {/* Admin route */}

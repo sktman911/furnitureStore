@@ -1,4 +1,5 @@
-﻿using FurnitureAPI.Models;
+﻿using FurnitureAPI.Interface;
+using FurnitureAPI.Models;
 using FurnitureAPI.TempModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,11 +11,11 @@ namespace FurnitureAPI.Controllers
     [ApiController]
     public class ProductSizeColorsController : ControllerBase
     {
-        private readonly FurnitureContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ProductSizeColorsController(FurnitureContext context)
+        public ProductSizeColorsController(IUnitOfWork unitOfWork)
         {
-            this._context = context;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpPost]
@@ -22,24 +23,19 @@ namespace FurnitureAPI.Controllers
         {
             try
             {
-                var check = await _context.ProductSizeColors.Where(x => x.ProductId == productSizeColor.ProductId 
-                && x.SizeId == productSizeColor.SizeId 
-                && x.ColorId == productSizeColor.ColorId).FirstOrDefaultAsync();
+                var addedPsc = await _unitOfWork.ProductSizeColors.Add(productSizeColor);
                 
-                if(check != null)
+                if(addedPsc == null)
                 {
-                    return BadRequest(new {message="Product detail has existed!"});
+                    return BadRequest(new {message="This kind of product has existed!"});
                 }
-
-                _context.ProductSizeColors.Add(productSizeColor);
-                await _context.SaveChangesAsync();
+                return StatusCode(200);
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 return BadRequest(new {message="Something went wrong. Please try again!"});
-            }
+           }
 
-            return StatusCode(200);
         }
 
 
@@ -47,25 +43,10 @@ namespace FurnitureAPI.Controllers
         public async Task<ActionResult<IEnumerable<ProductSizeColor>>> GetProductSizeColors(int id)
         {
 
-            var result = await _context.ProductSizeColors.Where(x => x.ProductId == id).Select(s => new ProductSizeColorInfo
-            {
-                PscId = s.PscId,
-                ProductId = s.ProductId,
-                ColorId = s.ColorId,
-                ColorName = s.Color!.ColorName,
-                ColorHexcode = s.Color!.ColorHexcode,
-                SizeId = s.SizeId,
-                SizeName = s.Size!.SizeName,
-                Quantity = s.Quantity
-            }).ToListAsync();
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return result;
+            var result = await _unitOfWork.ProductSizeColors.GetAllCustom(id);
+            return Ok(result);
         }
+
 
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdatePscQuantity(int id, ProductSizeColor productSizeColor)
@@ -77,13 +58,12 @@ namespace FurnitureAPI.Controllers
 
             if(productSizeColor.Quantity < 1)
             {
-                return BadRequest();
+                return BadRequest(new {message="Quantity must more than 1."});
             }
             
             try
             {
-                _context.Entry(productSizeColor).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                await _unitOfWork.ProductSizeColors.Update(id, productSizeColor);
             }
             catch(Exception e)
             {

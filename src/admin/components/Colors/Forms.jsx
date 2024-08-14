@@ -1,26 +1,26 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import { IoClose } from "react-icons/io5";
-import { SketchPicker } from 'react-color'
+import { SketchPicker } from 'react-color';
+import FormInput from "../FormInput";
 
 const Forms = (props) => {
 
   const [color,setColor] = useState(props.isColored ?? "#FFFFFF");
 
-  const handleColor = (color) =>{
+  const handleColor = useCallback((color) =>{
     setColor(color.hex)
-  }
+  },[])
 
-  const onSubmit = async (data) => {
+  const onSubmit = useCallback( async (data) => {
     data.colorHexCode = color;
     props.postAPI(data);
+  },[props, color]);
 
-  };
-
-  const onUpdate = async (data) => {
+  const onUpdate = useCallback(async (data) => {
     data.colorHexCode = color;
     props.putAPI(data);
-  };
+  },[props,color]);
 
 
   return (
@@ -39,22 +39,18 @@ const Forms = (props) => {
           onClick={props.closeForm}
           className="absolute text-2xl top-3 right-4 cursor-pointer"
         />
-        <div className="flex justify-around items-center pt-8 pb-2 w-4/5 mx-auto">
-          <label htmlFor="">Color Name: </label>
-          <input
-            type="text"
-            className="py-1 px-3 w-3/5 h-full border-b focus:outline-none
-               focus:border-black"
-            {...props.register("colorName", { required: "Please fill input" })}
-          />
-        </div>
-        {props.errors.colorName && (
-          <p className="w-1/5 text-red-600 text-left mx-auto">
-            {props.errors.colorName.message}
-          </p>
-        )}
 
-        <div className="flex justify-around items-center pt-8 pb-2 w-4/5 mx-auto">
+
+        <FormInput
+          labelText={"Color Name"}
+          jsonText={"colorName"}
+          type={"text"}
+          requiredText={"Please fill input"}
+          registerProps={props.register}
+          errorsTitle={props.errors.colorName}
+        />
+
+        <div className="flex justify-between items-center pt-8 pb-2 w-4/5 mx-auto">
           <label className="">Hex code: </label>
           <div className="w-3/5 flex justify-end">
             <SketchPicker

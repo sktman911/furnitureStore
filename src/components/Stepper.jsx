@@ -12,14 +12,14 @@ export default function Stepper({ currentStep, steps, titles }) {
     <>
       <div className="w-1/2 mx-auto flex items-center justify-evenly">
         {Array.from({ length: steps }).map((_, index) => (
-          <React.Fragment key={index}>
-            <div
+          <React.Fragment>
+            <div 
               className={`w-10 h-10 rounded-full relative ${activeColor(index)}`}
             >
               {index === currentStep || index < currentStep ? completed : inCompleted}
             </div>
             {isFinalStep(index) ? null : (
-              <div className={`w-44 h-1 ${activeColor(index)}`}></div>
+              <div  className={`w-44 h-1 ${activeColor(index)}`}></div>
             )}
           </React.Fragment>
         ))}

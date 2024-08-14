@@ -8,6 +8,7 @@ import List from "../components/Products/List";
 import Forms from "../components/Products/Forms";
 import { productAPI } from "../modules/api/api";
 import ReactPaginate from "react-paginate";
+import { errorMessage } from "../../constants/message";
 
 const Products = (props) => {
   const {
@@ -87,10 +88,14 @@ const Products = (props) => {
           productAPI()
             .DELETE(data.productId)
             .then((res) => {
-              renderProducts();
-              swal(`Delete ${data.productName} successfully`, {
-                icon: "success",
-              });
+              if(res.status.valueOf(201)){
+                renderProducts();
+                swal(`Delete ${data.productName} successfully`, {
+                  icon: "success",
+                });
+              }else{
+                errorMessage("Delete fail.");
+              }
             });
         }
       })

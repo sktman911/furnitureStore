@@ -32,18 +32,24 @@ namespace FurnitureAPI.Models.MomoModel
 
         public int OrderExpireTime { get; set; }
 
+        // Note: Có thể sử dụng khi đc cấp Momo Business
+
         public List<MomoRequestInfo.MomoItem>? Items { get; set; }
+        //
 
         public string? Lang { get; set; }
 
         public string? Signature { get; set; }
+
+        // alternative attribute
+        public Order? Order { get; set; }
 
         public MomoOTRequestModel() { }
 
 
         public MomoOTRequestModel(string partnerCode, string requestId,
             long amount, string orderId, string orderInfo, string redirectUrl,
-            string ipnUrl,  string extraData, int orderExpireTime, List<MomoRequestInfo.MomoItem>? items, string requestType = "payWithMethod", string lang = "vi")
+            string ipnUrl,  string extraData, int orderExpireTime, Order order, string requestType = "payWithMethod", string lang = "vi")
         {
             PartnerCode = partnerCode;
             RequestId = requestId;
@@ -53,9 +59,9 @@ namespace FurnitureAPI.Models.MomoModel
             RedirectUrl = redirectUrl;
             IpnUrl = ipnUrl;
             RequestType = requestType;
-            ExtraData = extraData;          
+            ExtraData = extraData;     
             OrderExpireTime = orderExpireTime;
-            Items = Items;
+            Order = order;
             Lang = lang;
         }
 

@@ -10,7 +10,7 @@ namespace FurnitureAPI.Models
         {
             OrderDetails = new HashSet<OrderDetail>();
         }
-
+        
         public int OrderId { get; set; }
         public double? TotalPrice { get; set; }
         public short? TotalQuantity { get; set; }

@@ -1,9 +1,12 @@
 using FurnitureAPI.Helpers;
+using FurnitureAPI.Interface;
 using FurnitureAPI.Models;
+using FurnitureAPI.Respository;
 using FurnitureAPI.Services.Momo;
 using FurnitureAPI.Services.VnPay;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -13,11 +16,28 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<FurnitureContext>();
 
+// use Singleton for only 1 instance in systems
+builder.Services.AddSingleton<HandleImage>();
+builder.Services.AddSingleton<IVnPayService, VnPayService>();
+builder.Services.AddSingleton<IMomoService, MomoService>();
+builder.Services.AddSingleton<PaymentURL>();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<HandleImage>();
+
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(15);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+
+});
+
 
 builder.Services.AddCors(options =>
 {
@@ -31,17 +51,8 @@ builder.Services.AddCors(options =>
             });
 });
 
-// use Singleton for only 1 instance in system 
-builder.Services.AddSingleton<IVnPayService, VnPayService>();
-builder.Services.AddSingleton<IMomoService, MomoService>();
 
 builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(15);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});
 
 
 // JWT

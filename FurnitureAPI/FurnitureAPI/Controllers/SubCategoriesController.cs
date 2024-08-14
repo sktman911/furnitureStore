@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FurnitureAPI.Models;
 using FurnitureAPI.TempModels;
+using FurnitureAPI.Helpers;
+using FurnitureAPI.Interface;
 
 namespace FurnitureAPI.Controllers
 {
@@ -14,39 +16,30 @@ namespace FurnitureAPI.Controllers
     [ApiController]
     public class SubCategoriesController : ControllerBase
     {
-        private readonly FurnitureContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public SubCategoriesController(FurnitureContext context)
+        public SubCategoriesController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SubCategoryInfo>>> GetSubCategories()
         {
-            var subCategories = await _context.SubCategories
-                .Include(x => x.Category)
-                .Select(s => new SubCategoryInfo
-                {
-                    SubCategoryId = s.SubCategoryId,
-                    SubCategoryName = s.SubCategoryName,
-                    CategoryId = s.CategoryId,
-                    CategoryName = s.Category!.CategoryName
-                })
-                .ToListAsync();
+            var subCategories = await _unitOfWork.SubCategories.GetAllCustom();
 
-            return subCategories;
+            return Ok(subCategories);
         }
 
 
         [HttpGet("{id}")]
         public async Task<ActionResult<SubCategory>> GetSubCategory(int id)
         {
-            if (_context.SubCategories == null)
+            if (_unitOfWork.SubCategories == null)
             {
                 return NotFound();
             }
-            var subCategory = await _context.SubCategories.FindAsync(id);
+            var subCategory = await _unitOfWork.SubCategories.GetById(id);
 
             if (subCategory == null)
             {
@@ -65,22 +58,17 @@ namespace FurnitureAPI.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(subCategory).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SubCategoryExists(id))
+                var updatedSubCategory = await _unitOfWork.SubCategories.Update(id, subCategory);
+                if (updatedSubCategory == null)
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
             }
 
             return NoContent();
@@ -90,38 +78,43 @@ namespace FurnitureAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<SubCategory>> PostSubCategory(SubCategory subCategory)
         {
-            if (_context.SubCategories == null)
+            if(subCategory == null)
             {
-                return Problem("Entity set 'FurnitureContext.SubCategories'  is null.");
+                return BadRequest();
             }
-            _context.SubCategories.Add(subCategory);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var addedSubCategory = await _unitOfWork.SubCategories.Add(subCategory);
+                if (addedSubCategory == null)
+                {
+                    return BadRequest();
+                }
 
-            return CreatedAtAction("GetSubCategory", new { id = subCategory.SubCategoryId }, subCategory);
+                return CreatedAtAction("GetSubCategory", new { id = subCategory.SubCategoryId }, subCategory);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSubCategory(int id)
         {
-            if (_context.SubCategories == null)
+            try
             {
-                return NotFound();
-            }
-            var subCategory = await _context.SubCategories.FindAsync(id);
-            if (subCategory == null)
+                var deletedSubCategory = await _unitOfWork.SubCategories.Delete(id);
+                if(deletedSubCategory == null)
+                {
+                    return NotFound();
+                }
+            }catch(Exception ex)
             {
-                return NotFound();
+                return BadRequest(ex.Message);
             }
-
-            _context.SubCategories.Remove(subCategory);
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool SubCategoryExists(int id)
-        {
-            return (_context.SubCategories?.Any(e => e.SubCategoryId == id)).GetValueOrDefault();
-        }
     }
 }

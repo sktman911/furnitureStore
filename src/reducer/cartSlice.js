@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import { successMessage } from "./message";
+import { successMessage } from "../constants/message";
 
 const initialState = {
   cartItems: localStorage.getItem("cart")
@@ -41,7 +41,6 @@ const slice = createSlice({
       }
 
       successMessage(`Add ${action.payload.product.productName} successfully`)
-
       localStorage.setItem("cart", JSON.stringify(state.cartItems));
     },
 
@@ -92,12 +91,6 @@ const slice = createSlice({
 
     CLEAR_CART(state, action) {
       state.cartItems = [];
-      // toast.success(`Clear cart successfully`, {
-      //   position: "top-center",
-      //   autoClose: 1500,
-      //   theme: "colored",
-      // });
-
       localStorage.setItem("cart", JSON.stringify(state.cartItems));
     },
 
@@ -123,6 +116,7 @@ const slice = createSlice({
     },
   },
 });
+
 
 // check exist func
 const checkExisted = (state, action) => {

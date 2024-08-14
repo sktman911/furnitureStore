@@ -61,10 +61,10 @@ const Checkout = () => {
       return;
     }
     
-    // if(paymentMethod === null){
-    //   errorMessage("Please choose payment method!");
-    //   return;
-    // }
+    if(paymentMethod === null){
+      errorMessage("Please choose payment method!");
+      return;
+    }
 
     if (cart.cartItems.length === 0) {
       errorMessage("Your cart is empty");
@@ -86,12 +86,10 @@ const Checkout = () => {
     const data = {
       totalPrice: total,
       totalQuantity: cart.cartTotalQuantity,
-      omId: 3,
+      omId: paymentMethod,
       cusId: user.cusId,
       pscList: pscList,
     };
-
-    console.log(data)
 
     await orderAPI()
       .POST(data)
@@ -99,8 +97,11 @@ const Checkout = () => {
         if(res.data.type === "Bank"){
           window.location.href = res.data.url;
         }
-        if(res.data.status === true && res.data.type === "Cash"){
+        else if(res.data.status === true && res.data.type === "Cash"){
           navigate(res.data.url,{replace:true})
+        }
+        else{
+          errorMessage(res.data.message)
         }
         
       })

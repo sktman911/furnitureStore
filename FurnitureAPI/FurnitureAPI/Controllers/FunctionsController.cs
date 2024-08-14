@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FurnitureAPI.Models;
+using FurnitureAPI.Interface;
 
 namespace FurnitureAPI.Controllers
 {
@@ -13,39 +14,25 @@ namespace FurnitureAPI.Controllers
     [ApiController]
     public class FunctionsController : ControllerBase
     {
-        private readonly FurnitureContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public FunctionsController(FurnitureContext context)
+        public FunctionsController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
-        // GET: api/Functions
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Function>>> GetFunctions()
         {
-          if (_context.Functions == null)
-          {
-              return NotFound();
-          }
-            return await _context.Functions.ToListAsync();
+            var functions = await _unitOfWork.Functions.GetAll();
+            return Ok(functions);
         }
 
         [HttpGet("/api/Titles")]
         public async Task<ActionResult<IEnumerable<Function>>> GetFunctionsTitle()
         {
-            if (_context.Functions == null)
-            {
-                return NotFound();
-            }
-            var functions = await _context.Functions.ToListAsync();
-
-            var titles = functions
-                .GroupBy(x => x.FunctionTitle)
-                .Select(g => g.FirstOrDefault())
-                .OrderBy(x => x!.FunctionTitle)
-                .ToList();
-            return titles!;
+            var result = await _unitOfWork.Functions.GetListTitle();
+            return Ok(result);
         }
 
     }

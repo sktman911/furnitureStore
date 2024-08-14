@@ -38,7 +38,7 @@ const productAPI = (url = "https://localhost:7183/api/Products/") => {
     return {
       GET_ID: (id) => axios.get(url + id),
       PUT: (id, data) => axios.put(url + id, data),
-      GET: () => axios.get(url + "getProductsByAdmin"),
+      GET: () => axios.get(url + "getAll"),
       POST: (newData) => axios.post(url, newData),
       DELETE: (id) => axios.delete(url + id),
     };

@@ -6,7 +6,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { FaTrashAlt } from "react-icons/fa";
 import Button from "../components/Button";
 import Info from "../components/Info";
-import { CLEAR_CART } from "../constants/cartSlice";
+import { CLEAR_CART } from "../reducer/cartSlice";
 import numeral from "numeral";
 
 const Cart = () => {

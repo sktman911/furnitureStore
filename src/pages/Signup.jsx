@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 import { authAPI } from "../modules/apiClient";
@@ -47,14 +47,16 @@ const Signup = () => {
     },
   });
 
+  const navigate = useNavigate();
+
   const signup = (data) => {
     console.log(data)
-    // authAPI()
-    //   .SIGNUP(data)
-    //   .then((res) => {
-    //     console.log(res.data);
-    //   })
-    //   .catch((err) => console.log(err));
+    authAPI()
+      .SIGNUP(data)
+      .then((res) => {
+        navigate("/login",{replace:true})
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -99,7 +101,7 @@ const Signup = () => {
             title="Email"
             register={register}
             errors={errors.email}
-            field="email"
+            field="email"           
           />
         </div>
 

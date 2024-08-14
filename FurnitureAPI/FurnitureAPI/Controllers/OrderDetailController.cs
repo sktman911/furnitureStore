@@ -1,10 +1,9 @@
-﻿using FurnitureAPI.Models;
+﻿using FurnitureAPI.Interface;
+using FurnitureAPI.Models;
 using FurnitureAPI.TempModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Protocol;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace FurnitureAPI.Controllers
 {
@@ -12,38 +11,24 @@ namespace FurnitureAPI.Controllers
     [ApiController]
     public class OrderDetailController : ControllerBase
     {
-        private readonly FurnitureContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public OrderDetailController(FurnitureContext context)
+        public OrderDetailController(IUnitOfWork unitOfWork)
         {
-            this._context = context;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<IEnumerable<OrderDetail>>> GetOrderDetailByOrderId(int id)
         {
-
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
             try
             {
-                var result = await _context.OrderDetails.Where(x => x.OrderId == order.OrderId).Select(x => new OrderDetailInfo
+                var result = await _unitOfWork.OrderDetails.GetOrderDetailByOrderId(id);
+                if(result == null)
                 {
-                    OdId = x.OdId,
-                    OrderId = x.OrderId,
-                    Quantity = x.Quantity,
-                    
-                    ProductSizeColor = _context.ProductSizeColors.SingleOrDefault(y => y.PscId == x.PscId),
-                    ProductName = _context.Products.SingleOrDefault(y => y.ProductId == x.ProductSizeColor!.ProductId)!.ProductName,
-                    Price = _context.Products.SingleOrDefault(y => y.ProductId == x.ProductSizeColor!.ProductId)!.Price,
-                    SizeName = _context.Sizes.SingleOrDefault(y => y.SizeId == x.ProductSizeColor!.SizeId)!.SizeName,
-                    ColorName = _context.Colors.SingleOrDefault(y => y.ColorId == x.ProductSizeColor!.ColorId)!.ColorName,
-                }).ToListAsync();   
-                return result;
+                    return NotFound();
+                }
+                return Ok(result);
             }
             catch (Exception e)
             {

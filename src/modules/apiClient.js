@@ -4,7 +4,8 @@ import axios from "axios";
 // Authentication API
 const authAPI = (url = "https://localhost:7183/api/Authentication/") => {
   return {
-    SIGNUP: (data) => axios.post(url,data), 
+    LOGIN: (data) => axios.post(url,data), 
+    SIGNUP: (data) => axios.post(url + "signup",data)
   };
 };
 

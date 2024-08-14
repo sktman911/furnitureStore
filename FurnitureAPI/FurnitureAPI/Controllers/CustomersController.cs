@@ -1,4 +1,6 @@
-﻿using FurnitureAPI.Models;
+﻿using FurnitureAPI.Helpers;
+using FurnitureAPI.Interface;
+using FurnitureAPI.Models;
 using FurnitureAPI.TempModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,22 +20,20 @@ namespace FurnitureAPI.Controllers
     {
         private FurnitureContext _context;
         private readonly IConfiguration configuration;
-        public CustomersController(FurnitureContext _context, IConfiguration configuration)
+        private readonly IUnitOfWork _unitOfWork;
+        public CustomersController(FurnitureContext _context, IConfiguration configuration, IUnitOfWork unitOfWork)
         {
 
             this._context = _context;
             this.configuration = configuration;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
         {
-            if(_context.Customers == null)
-            {
-                return NotFound();
-            }
-
-            return await _context.Customers.ToListAsync();
+            var customers = await _unitOfWork.Customers.GetAll();
+            return Ok(customers);
         }
 
 
@@ -41,7 +41,7 @@ namespace FurnitureAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Customer>> GetCustomer(int id)
         {
-            var result = await _context.Customers.FindAsync(id);
+            var result = await _unitOfWork.Customers.GetById(id);
             if(result == null)
             {
                 return NotFound();
@@ -52,59 +52,31 @@ namespace FurnitureAPI.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> EditInfo(int id, Customer customerData)
+        public async Task<ActionResult> EditInfo(int id, Customer customer)
         {
             
-            if (id != customerData.CusId)
+            if (id != customer.CusId)
             {
                 return NotFound();
             }
 
-            var customer = await _context.Customers.FindAsync(id);
-            if(customer == null)
+            try
             {
-                return NotFound();
-            }
-
-            // request customer pass or do below
-
-            customer.CusName = customerData.CusName;
-            customer.CusPhone = customerData.CusPhone;
-            customer.CusAddress = customerData.CusAddress;
-            customer.DoB = customerData.DoB;
-            customer.Email = customerData.Email;          
-
-            if(customer.Username != customerData.Username)
-            {
-                customer.Username = customerData.Username;
-                await _context.SaveChangesAsync();
-
-                var key = configuration["Jwt:Key"];
-                var signKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-                var signCredential = new SigningCredentials(signKey, SecurityAlgorithms.HmacSha256);
-                var claims = new List<Claim>
+                var updatedCustomer = await _unitOfWork.Customers.Update(id, customer);
+                if (customer == null)
                 {
-                    new Claim("cusId", customer.CusId.ToString()),
-                     new Claim("username", customer.Username!)
-                };
-
-                // create token
-                var token = new JwtSecurityToken(
-                    issuer: configuration["Jwt:Issuer"],
-                    audience: configuration["Jwt:Audience"],
-                    expires: DateTime.Now.AddMinutes(10),
-                    signingCredentials: signCredential,
-                    claims: claims
-                );
-
-                // new string token
-                var furnitureToken = new JwtSecurityTokenHandler().WriteToken(token);
+                    return NotFound();
+                }
+                if (updatedCustomer!.CusId == 0)
+                {
+                    return BadRequest(new { message = "Username has existed" });
+                }
+                var furnitureToken = TokenHelper.GenerateJWTToken(updatedCustomer, configuration);
                 return new JsonResult(new { token = furnitureToken });
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
-
-            await _context.SaveChangesAsync();
-
-            return Ok();
         }
 
 
