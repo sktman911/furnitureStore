@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import avatar from "../../assets/images/default_avatar.png";
-import { format } from "date-fns";
 import { FaStar } from "react-icons/fa";
 import { reviewAPI } from "../../modules/apiClient";
 
@@ -32,7 +31,7 @@ export default function Review(props) {
             <div key={index} className="flex items-start h-auto">
               <div className="w-1/3">
                 <p className="text-center text-xs my-1">
-                  {format(review.reviewedDate, "dd-MM-yyyy HH:mm:ss")}
+                  {Intl.DateTimeFormat('us', {dateStyle: 'long',timeStyle: 'medium'}).format(new Date(review.reviewDate))}
                 </p>
                 <img className="w-14 h-14 mx-auto" src={avatar} alt="Alt" />
               </div>
