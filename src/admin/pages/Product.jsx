@@ -3,24 +3,22 @@ import { useParams } from "react-router";
 import { useForm } from "react-hook-form";
 
 import { ShopContext } from "../../context/ShopContext";
-import {
-  productAPI,
-} from "../modules/api/api";
+import { productAPI } from "../modules/api/api";
 
 import ProductSubDetail from "../components/Product/ProductSubDetail";
 import ProductSubImage from "../components/Product/ProductSubImage";
 import { successMessage } from "../../constants/message";
 
 const Product = () => {
-  const { products, categories, subCategories } = useContext(ShopContext);
+  const { categories, subCategories } = useContext(ShopContext);
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
-
-  const [img, setImg] = useState("");
+  const [image, setImage] = useState(null);
 
   const {
     register,
     handleSubmit,
+    trigger,
     setValue,
     formState: { errors },
   } = useForm();
@@ -31,59 +29,46 @@ const Product = () => {
       .then((res) => {
         setProduct(res.data);
         showDetail(res.data);
-        setImg(res.data.images[0].imageLink);
+        setImage(res.data.images[0].imageLink);     
       })
       .catch((err) => console.log(err));
   };
 
   const showDetail = (product) => {
-      setValue("productId", productId);
-      setValue("productName", product.productName);
-      setValue("price", product.price);
-      setValue("description", product.description);
-      setValue("imageFile", product.images[0].imageLink);
-      setValue("subCategoryId", product.subCategoryId);
-  };
-
-  const showPreview = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      URL.revokeObjectURL(img);
-      let file = e.target.files[0];
-      if (file) {
-        const imageUrl = URL.createObjectURL(file);
-        setImg(imageUrl);
-      }
-    }
+    setValue("productId", productId);
+    setValue("productName", product.productName);
+    setValue("price", product.price);
+    setValue("description", product.description);
+    setValue("imageFile", product.images[0].imageLink);
+    setValue("subCategoryId", product.subCategoryId);
+    setValue("sale", product.sale);
   };
 
   useEffect(() => {
-    getProduct();    
+    getProduct();
   }, []);
 
   const onEdit = async (data) => {
     const formData = new FormData();
-    let file = data.imageFile;
-    if(data.imageFile !== null && data.imageFile[0]){
-      file = data.imageFile[0];
-    }
     formData.append("productId", data.productId);
-    formData.append("imageFile", file);
     formData.append("productName", data.productName);
     formData.append("price", data.price);
     formData.append("description", data.description);
     formData.append("subCategoryid", data.subCategoryId);
+    formData.append("sale", data.sale);
+    console.log(data)
     productAPI()
       .PUT(data.productId, formData)
       .then((res) => {
         setProduct(res.data);
-        successMessage("Updated Successfully")
+        successMessage("Updated Successfully");
       })
       .catch((err) => console.log(err));
   };
 
   return (
     <>
-      {product && products.length > 0 ? (
+      {product !== null ? (
         <>
           {/* Note: Tách 1 component  */}
           <div className="mt-16 w-4/5 mx-auto">
@@ -93,17 +78,9 @@ const Product = () => {
             >
               <div className="flex flex-col gap-2">
                 <label>
-                  <img className="w-96 h-96" src={img} alt="" />
-                  <input
-                    type="file"
-                    className="sr-only"
-                    {...register("imageFile", {
-                      required: false,
-                      onChange: (e) => showPreview(e),
-                    })}
-                  />
+                  <img className="w-96 h-96" src={image} alt="" />
                 </label>
-                  <ProductSubImage productId={productId} />
+                <ProductSubImage product={product} reRender={getProduct} setImage={setImage}/>
               </div>
 
               <div>
@@ -133,7 +110,7 @@ const Product = () => {
                 </div>
 
                 {/* Note: 1 component */}
-                <div className="pb-4 ">
+                <div className="pb-4 flex gap-5 items-center">
                   <div className="text-left w-1/2">
                     <label className="block w-fit py-2">SubCategory: </label>
                     <select
@@ -154,6 +131,21 @@ const Product = () => {
                         </optgroup>
                       ))}
                     </select>
+                  </div>
+
+                  <div className="text-left">
+                    <label className="block w-fit py-2">Sale (%): </label>
+                    <input
+                      type="text"
+                      className="py-1 px-2 border-2 rounded-md"
+                      {...register("sale", { 
+                        validate: (value) => !isNaN(value) || "Invalid value",
+                        min:{value: 1, message: "Invalid value"},
+                        max: {value: 70 , message: "Value must be less than 70"},
+                        onBlur: () => trigger("sale"),
+                      })}
+                    />
+                    {errors.sale && <p className="text-red-600">{errors.sale.message}</p>}
                   </div>
                 </div>
                 {/* End note */}
@@ -180,10 +172,10 @@ const Product = () => {
           </div>
           {/* End note */}
 
-          <ProductSubDetail productId={productId}/>
+          <ProductSubDetail productId={productId} />
         </>
       ) : (
-        <></>
+        <div>Loading...</div>
       )}
     </>
   );

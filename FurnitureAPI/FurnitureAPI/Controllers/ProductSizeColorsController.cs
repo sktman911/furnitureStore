@@ -1,5 +1,6 @@
-﻿using FurnitureAPI.Interface;
-using FurnitureAPI.Models;
+﻿using FurnitureAPI.Models;
+using FurnitureAPI.Respository.Interface;
+using FurnitureAPI.Services.Interface;
 using FurnitureAPI.TempModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +12,11 @@ namespace FurnitureAPI.Controllers
     [ApiController]
     public class ProductSizeColorsController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IProductSizeColorService _productSizeColorService;
 
-        public ProductSizeColorsController(IUnitOfWork unitOfWork)
+        public ProductSizeColorsController(IProductSizeColorService productSizeColorService)
         {
-            _unitOfWork = unitOfWork;
+            _productSizeColorService = productSizeColorService;
         }
 
         [HttpPost]
@@ -23,13 +24,12 @@ namespace FurnitureAPI.Controllers
         {
             try
             {
-                var addedPsc = await _unitOfWork.ProductSizeColors.Add(productSizeColor);
-                
-                if(addedPsc == null)
-                {
-                    return BadRequest(new {message="This kind of product has existed!"});
-                }
+                await _productSizeColorService.AddProductSizeColor(productSizeColor);              
                 return StatusCode(200);
+            }
+            catch (DbUpdateException)
+            {
+                return BadRequest(new { message = "This kind of product has existed!" });
             }
             catch (Exception )
             {
@@ -40,10 +40,10 @@ namespace FurnitureAPI.Controllers
 
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<ProductSizeColor>>> GetProductSizeColors(int id)
+        public async Task<ActionResult<IEnumerable<ProductSizeColor>>> GetProductSizeColorsByProductId(int id)
         {
 
-            var result = await _unitOfWork.ProductSizeColors.GetAllCustom(id);
+            var result = await _productSizeColorService.GetProductSizeColorsByProductId(id);
             return Ok(result);
         }
 
@@ -63,14 +63,17 @@ namespace FurnitureAPI.Controllers
             
             try
             {
-                await _unitOfWork.ProductSizeColors.Update(id, productSizeColor);
+                await _productSizeColorService.UpdateProductSizeColor(id, productSizeColor);
+                return NoContent();
             }
-            catch(Exception e)
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
-
-            return NoContent();
         }
 
 

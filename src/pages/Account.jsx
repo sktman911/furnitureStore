@@ -16,12 +16,12 @@ export const AccountItem = React.memo(
         key={title}
         className={
           active === title
-            ? "bg-white text-yellow-600 rounded-md py-2 px-4 cursor-pointer"
-            : "hover:bg-white hover:text-yellow-600 rounded-md py-2 px-4 cursor-pointer"
+            ? "bg-white text-yellow-600 rounded-md py-2 px-4"
+            : "hover:bg-white hover:text-yellow-600 rounded-md py-2 px-4"
         }
         onClick={() => setActive(title)}
       >
-        <Link to={url} className="flex items-center justify-between">
+        <Link to={url} className="flex items-center justify-between cursor-pointer">
           <span className="w-1/3">{icon}</span>
           <span className="w-2/3 text-center text-lg">{title}</span>
         </Link>
@@ -38,6 +38,7 @@ export default function Account({ component }) {
   useEffect(() => {
     if (user === null) {
       navigate("/login", { replace: true });
+      return;
     }
   }, []);
 

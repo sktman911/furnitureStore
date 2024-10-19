@@ -1,13 +1,9 @@
-﻿namespace FurnitureAPI.TempModels
+﻿using FurnitureAPI.Models;
+
+namespace FurnitureAPI.TempModels
 {
-    public class SubCategoryInfo
+    public class SubCategoryInfo : SubCategory
     {
-        public int SubCategoryId { get; set; }
-
-        public string? SubCategoryName { get; set; }
-
-        public int? CategoryId { get; set; }
-
         public string? CategoryName { get; set; }
     }
 }

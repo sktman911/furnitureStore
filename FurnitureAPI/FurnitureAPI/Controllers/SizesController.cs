@@ -1,5 +1,6 @@
-﻿using FurnitureAPI.Interface;
-using FurnitureAPI.Models;
+﻿using FurnitureAPI.Models;
+using FurnitureAPI.Respository.Interface;
+using FurnitureAPI.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,16 +11,16 @@ namespace FurnitureAPI.Controllers
     [ApiController]
     public class SizesController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public SizesController(IUnitOfWork unitOfWork)
+        private readonly ISizeService _sizeService;
+        public SizesController(ISizeService sizeService)
         {
-            _unitOfWork = unitOfWork;
+            _sizeService = sizeService;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Size>>> GetSizes()
         {
-            var sizes = await _unitOfWork.Sizes.GetAll();
+            var sizes = await _sizeService.GetSizes();
             return Ok(sizes);
         }
 
@@ -27,7 +28,7 @@ namespace FurnitureAPI.Controllers
         public async Task<ActionResult<IEnumerable<Size>>> GetSizeByProduct(int id)
         {
 
-            var result = await _unitOfWork.Sizes.GetSizesByProduct(id);
+            var result = await _sizeService.GetSizesByProductId(id);
             return Ok(result);
         }
     }

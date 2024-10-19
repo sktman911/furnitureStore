@@ -4,7 +4,6 @@ import { IoClose } from "react-icons/io5";
 
 import defaultImg from "../../assets/images/default_img.png";
 import { imageAPI } from "../../modules/api/api";
-import { toBeEmpty } from "@testing-library/jest-dom/dist/matchers";
 
 const ProductSubImage = (props) => {
   const [imgs, setImgs] = useState([]);
@@ -16,17 +15,8 @@ const ProductSubImage = (props) => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    renderSubImage();
-  }, []);
-
-  const renderSubImage = async () => {
-    imageAPI()
-      .GET(props.productId)
-      .then((res) => {
-        setImgs(res.data)
-      })
-      .catch((err) => console.log(err));
-  };
+    setImgs(props.product.images);
+  },[props.product.images])
 
   const showSubPreview = (e, index) => {
     if (e.target.files && e.target.files[0]) {
@@ -38,6 +28,10 @@ const ProductSubImage = (props) => {
           newImgs[index].imageLink = URL.createObjectURL(file);
           return newImgs;
         });
+
+        if(index === 0){
+          props.setImage(URL.createObjectURL(file));
+        }
 
         setSubUpload((prev) => {
           const newUploads = [...prev];
@@ -89,7 +83,7 @@ const ProductSubImage = (props) => {
     }
 
     const formData = new FormData();
-    formData.append(`productId`, props.productId);
+    formData.append(`productId`, props.product.productId);
     subUpload.forEach((file) => {
       if (file !== null) {
         formData.append("imageFiles", file);
@@ -98,7 +92,7 @@ const ProductSubImage = (props) => {
 
     await imageAPI()
       .POST(formData)
-      .then((res) => renderSubImage())
+      .then((res) => {props.reRender();})
       .catch((err) => console.log(err));
 
     setSubUpload([]);
@@ -112,7 +106,7 @@ const ProductSubImage = (props) => {
     }
 
     const formData = new FormData();
-    formData.append(`productId`, props.productId);
+    formData.append(`productId`, props.product.productId);
     subUpload.forEach((file) => {
       if (file != null) {
         formData.append("imageFiles", file);
@@ -126,8 +120,8 @@ const ProductSubImage = (props) => {
     });
 
     await imageAPI()
-      .PUT(props.productId, formData)
-      .then((res) => renderSubImage())
+      .PUT(props.product.productId, formData)
+      .then((res) => {props.reRender();})
       .catch((err) => console.log(err));
 
     setSubUpload([]);
@@ -202,6 +196,7 @@ const ProductSubImage = (props) => {
               <input
                 type="file"
                 multiple
+                accept="image/*"
                 onChange={(e) => showUploadPreview(e)}
                 className="py-1 px-3 w-3/5 h-full file:border-none file:px-4 file:py-2 file:rounded-full 
               file:bg-gray-300 file:cursor-pointer cursor-pointer bg-gray-300 rounded-full file:text-black

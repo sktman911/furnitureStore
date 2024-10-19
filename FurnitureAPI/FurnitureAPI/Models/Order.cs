@@ -18,9 +18,11 @@ namespace FurnitureAPI.Models
         public int? OsId { get; set; }
         public int? OmId { get; set; }
         public int? CusId { get; set; }
+        public string? OrderAddress { get; set; }
+        public string? OrderPhone { get; set; }
 
         [NotMapped]
-        public List<ProductSizeColor> PscList { get; set; }
+        public List<ProductSizeColor>? PscList { get; set; }
 
         public virtual Customer? Cus { get; set; }
         public virtual OrderMethod? Om { get; set; }

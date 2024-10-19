@@ -8,6 +8,7 @@ namespace FurnitureAPI.Helpers
 {
     public class TokenHelper
     {
+
         public static string GenerateJWTToken(object model, IConfiguration configuration)
         {
             var key = configuration["Jwt:Key"];

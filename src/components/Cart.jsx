@@ -2,8 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "./Button";
 import {  animated, useTransition} from '@react-spring/web';
-
-import { REMOVE_ITEM } from "../reducer/cartSlice";
+import numeral from "numeral";
 
 import { IoMdClose } from "react-icons/io";
 import { MdCancel } from "react-icons/md";
@@ -79,13 +78,15 @@ const Cart = (props) => {
                             <p>{item.cartQuantity}</p>
                             <span>x</span>
                             <span className="text-yellow-600 text-sm">
-                              $ {item.price}
+                               {item.sale !== null ? 
+                               numeral(item.price - (item.price * item.sale /100)).format("0,0") 
+                               : numeral(item.price).format("0,0")} đ
                             </span>
                           </div>
                         </div>
                         <MdCancel
                           onClick={() => {
-                            props.removeItem(item, index);
+                            removeItem(item, index);
                           }}
                           className="text-gray-400 text-xl cursor-pointer"
                         />
@@ -97,7 +98,7 @@ const Cart = (props) => {
                     <div className="flex px-6 pb-5 justify-between border-b-2">
                       <p>Subtotal:</p>
                       <p className="text-yellow-600 font-semibold">
-                        $ {cart.cartTotalCost}
+                        $ {numeral(cart.cartTotalCost).format("0,0")} đ
                       </p>
                     </div>
                     <div className="text-xs p-6 flex justify-between">

@@ -1,5 +1,5 @@
-﻿using FurnitureAPI.Interface;
-using FurnitureAPI.Models;
+﻿using FurnitureAPI.Models;
+using FurnitureAPI.Respository.Interface;
 using FurnitureAPI.TempModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
@@ -14,47 +14,36 @@ namespace FurnitureAPI.Respository
             _context = context;
         }
 
-        public async Task<SubCategory?> Add(SubCategory subCategory)
+        public async Task Add(SubCategory subCategory)
         {
             await _context.SubCategories.AddAsync(subCategory);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task Delete(SubCategory subCategory)
+        {
+            _context.SubCategories.Remove(subCategory);
+             await _context.SaveChangesAsync();
+        }
+
+        public async Task<SubCategory?> GetById(int id)
+        {
+            var subCategory = await _context.SubCategories.SingleOrDefaultAsync(x => x.SubCategoryId == id);
             return subCategory;
         }
 
-        public async Task<SubCategory?> Delete(int id)
+        public async Task Update(SubCategory subCategory)
         {
-            var subCategory = await _context.SubCategories.SingleOrDefaultAsync(x => x.SubCategoryId == id);
-            if (subCategory == null)
-            {
-                return null;
-            }
-            _context.SubCategories.Remove(subCategory);
-             await _context.SaveChangesAsync();
-             return subCategory;
-        }
-
-        public async Task<SubCategory> GetById(int id)
-        {
-            var subCategory = await _context.SubCategories.SingleOrDefaultAsync(x => x.SubCategoryId == id);
-            return subCategory!;
-        }
-
-        public async Task<SubCategory?> Update(int id, SubCategory subCategory)
-        {
-            var result = await _context.SubCategories.SingleOrDefaultAsync(x => x.SubCategoryId == id);
-            if (result == null)
-            {
-                return null;
-            }
-
-            result.SubCategoryId = subCategory.SubCategoryId;
-            result.SubCategoryName = subCategory.SubCategoryName;
-            result.CategoryId = subCategory.CategoryId;
             await _context.SaveChangesAsync();
-            return result;
         }
 
-        public async Task<IEnumerable<SubCategoryInfo>> GetAllCustom()
+        public Task<SubCategory?> FindByName(string name)
+        {
+            var existedSubCategory = _context.SubCategories.SingleOrDefaultAsync(x => x.SubCategoryName == name);
+            return existedSubCategory;
+        }
+
+        public async Task<IEnumerable<SubCategory>> GetAll()
         {
             var subCategories = await _context.SubCategories
                                 .Include(x => x.Category)
@@ -67,11 +56,6 @@ namespace FurnitureAPI.Respository
                                 })
                                 .ToListAsync();
             return subCategories;
-        }
-
-        public Task<IEnumerable<SubCategory>> GetAll()
-        {
-            throw new NotImplementedException();
         }
     }
 }

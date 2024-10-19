@@ -1,5 +1,5 @@
-﻿using FurnitureAPI.Interface;
-using FurnitureAPI.Models;
+﻿using FurnitureAPI.Models;
+using FurnitureAPI.Respository.Interface;
 using FurnitureAPI.TempModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,30 +12,19 @@ namespace FurnitureAPI.Respository
         {
             _context = context;
         }
-        public async Task<ProductSizeColor?> Add(ProductSizeColor productSizeColor)
+        public async Task Add(ProductSizeColor productSizeColor)
         {
-            var existedPsc = await _context.ProductSizeColors.Where(x => x.ProductId == productSizeColor.ProductId
-                && x.SizeId == productSizeColor.SizeId
-                && x.ColorId == productSizeColor.ColorId).FirstOrDefaultAsync();
-
-            if (existedPsc != null)
-            {
-                return null;
-            }
-
             _context.ProductSizeColors.Add(productSizeColor);
             await _context.SaveChangesAsync();
-            return productSizeColor;
         }
 
-        public async Task<ProductSizeColor?> Update(int id, ProductSizeColor productSizeColor)
+        public async Task Update( ProductSizeColor productSizeColor)
         {
-            _context.Entry(productSizeColor).State = EntityState.Modified;
+            
               await _context.SaveChangesAsync();
-            return productSizeColor;
         }
 
-        public async Task<IEnumerable<ProductSizeColor>> GetAllCustom(int id)
+        public async Task<IEnumerable<ProductSizeColor>> GetListById(int id)
         {
             var result = await _context.ProductSizeColors.Where(x => x.ProductId == id).Select(s => new ProductSizeColorInfo
             {
@@ -51,7 +40,7 @@ namespace FurnitureAPI.Respository
             return result;
         }
 
-        public Task<ProductSizeColor?> Delete(int id)
+        public Task Delete(ProductSizeColor productSizeColor)
         {
             throw new NotImplementedException();
         }
@@ -61,7 +50,21 @@ namespace FurnitureAPI.Respository
             throw new NotImplementedException();
         }
 
-        public Task<ProductSizeColor> GetById(int id)
+        public async Task<ProductSizeColor?> GetById(int id)
+        {
+            var productSizeColor = await _context.ProductSizeColors.SingleOrDefaultAsync(x => x.PscId == id);
+            return productSizeColor;
+        }
+        
+        public async Task<ProductSizeColor?> GetById(int? productId, int? sizeId, int? colorId)
+        {
+            var existedPsc = await _context.ProductSizeColors.Where(x => x.ProductId == productId
+                && x.SizeId == sizeId
+                && x.ColorId == colorId).FirstOrDefaultAsync();
+            return existedPsc;
+        }
+
+        public Task<ProductSizeColor?> FindByName(string name)
         {
             throw new NotImplementedException();
         }

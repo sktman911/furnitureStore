@@ -10,7 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using FurnitureAPI.TempModels;
 using Microsoft.Data.SqlClient;
 using FurnitureAPI.Helpers;
-using FurnitureAPI.Interface;
+using FurnitureAPI.Respository.Interface;
+using FurnitureAPI.Services.Interface;
 
 namespace FurnitureAPI.Controllers
 {
@@ -18,18 +19,18 @@ namespace FurnitureAPI.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IProductService _productService;
 
-        public ProductsController(IUnitOfWork unitOfWork)
+        public ProductsController(IProductService productService)
         {
-            _unitOfWork = unitOfWork;
+            _productService = productService;
         }
         
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductInfo>>> GetTopProductsByDesc()
         {
-            var products = await _unitOfWork.Products.GetTopProductsByDesc(Request);
+            var products = await _productService.GetTopProducts();
 
             return Ok(products);
         }
@@ -38,22 +39,51 @@ namespace FurnitureAPI.Controllers
         [HttpGet("getAll")]
         public async Task<ActionResult<IEnumerable<ProductInfo>>> GetAll()
         {
-            var products = await _unitOfWork.Products.GetAllCustom(Request);
+            var products = await _productService.GetAllActiveProducts();
 
             return Ok(products);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductInfo>> GetProduct(int id)
+        public async Task<ActionResult<Product>> GetProduct(int id)
         {
 
-            var product = _unitOfWork.Products.GetProductCustom(id, Request);
+            var product = await _productService.GetProductInfo(id);
 
             if (product == null)
             {
                 return NotFound();
             }
-            return await product;
+            return product;
+        }
+
+        [HttpGet("getFavourite/{customerId}")]
+        public async Task<IEnumerable<Product>> GetFavouriteProducts(int customerId)
+        {
+            var imageLink = $"{Request.Scheme}://{Request.Host}{Request.PathBase}/Images/";
+            var products = await _productService.GetFavouriteProducts(customerId);
+            return products;
+        }
+
+        [HttpGet("exportExcel")]
+        public async Task<FileResult> ExportProductsInExcel()
+        {
+            var products = await _productService.GetAllActiveProducts();
+            var excelData = _productService.ExportExcel(products);
+            return File(excelData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Products.xlsx");
+        }
+
+        [HttpPost("importExcel")]
+        public async Task<IActionResult> ImportProductsFromExcel([FromForm]IFormFile file)
+        {
+ 
+            if(file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded");
+            }
+
+            await _productService.ImportExcel(file);
+            return Ok("Import successfully");
         }
 
 
@@ -67,16 +97,16 @@ namespace FurnitureAPI.Controllers
 
             try
             {
-                var updatedProduct = await _unitOfWork.Products.Update(id, product);
-                if(updatedProduct == null)
-                {
-                    return NotFound();
-                }
-                ActionResult<ProductInfo> getProduct = await GetProduct(id);
+                await _productService.UpdateProduct(id, product);
+                ActionResult<Product> getProduct = await GetProduct(id);
                 var result = getProduct.Value;
                 return Ok(result);
             }
-            catch(Exception ex)
+            catch (BadHttpRequestException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -92,28 +122,35 @@ namespace FurnitureAPI.Controllers
             }
             try
             {
-                var newProduct = await _unitOfWork.Products.Add(product);
-                if(newProduct == null)
-                {
-                    return BadRequest(new { message = "Product name has existed!" });
-                }
-            }catch(Exception e)
+                await _productService.AddProduct(product);
+                return StatusCode(201);
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
+
+            }
+            catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
-
-            return StatusCode(201);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            var deletedProduct = await _unitOfWork.Products.Delete(id);
-            if(deletedProduct == null)
+            try
             {
-                return NotFound(new {message="Product is not found"});
+                await _productService.DeleteProduct(id);
             }
-
+            catch(BadHttpRequestException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
             return NoContent();
         }
 

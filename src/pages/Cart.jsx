@@ -6,7 +6,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { FaTrashAlt } from "react-icons/fa";
 import Button from "../components/Button";
 import Info from "../components/Info";
-import { CLEAR_CART } from "../reducer/cartSlice";
+import { CLEAR_CART } from "../slice/cartSlice";
 import numeral from "numeral";
 
 const Cart = () => {
@@ -99,7 +99,21 @@ const Cart = () => {
                       <div>{item.size[1]}</div>
                     </td>
                     <td className="py-10 w-32 md:w-36 text-sm md:text-base">
-                      {numeral(item.price).format("000,000")}đ
+                      <p
+                        className={`${
+                          item.sale !== null ? "line-through" : null
+                        }`}
+                      >
+                        {numeral(item.price).format("0,0")}đ
+                      </p>
+                      {item.sale !== null ? (
+                        <p className="text-red-600">
+                          {numeral(
+                            item.price - (item.price * item.sale) / 100
+                          ).format("0,0")}
+                          đ
+                        </p>
+                      ) : null}
                     </td>
                     <td className="py-10 max-sm:pr-2 w-10">
                       <div className="flex justify-center items-center rounded-md border-2 w-16 mx-auto text-sm">
@@ -121,7 +135,22 @@ const Cart = () => {
                       </div>
                     </td>
                     <td className="py-10 w-36 max-md:hidden">
-                      {numeral(item.cartQuantity * Number(item.price)).format("000,000")}đ
+                      {item.sale !== null ? (
+                        <p>
+                          {numeral(
+                            item.cartQuantity *
+                              (item.price - (item.price * item.sale) / 100)
+                          ).format("0,0")}
+                          đ
+                        </p>
+                      ) : (
+                        <p>
+                          {numeral(
+                            item.cartQuantity * (item.price)
+                          ).format("0,0")}
+                          đ
+                        </p>
+                      )}
                     </td>
                     <td className="w-4 px-1 max-sm:absolute max-sm:top-2 max-sm:right-3">
                       <FaTrashAlt
@@ -155,7 +184,7 @@ const Cart = () => {
                   Subtotal
                 </span>
                 <span className="text-sm text-gray-400">
-                {numeral(cart.cartTotalCost).format("000,000")}đ
+                  {numeral(cart.cartTotalCost).format("0,0")}đ
                 </span>
               </div>
               <div className="py-5 flex w-2/3 lg:w-1/2 mx-auto justify-between items-center">
@@ -163,7 +192,7 @@ const Cart = () => {
                   Total
                 </span>
                 <span className="text-yellow-600 text-md md:text-lg">
-                  {numeral(cart.cartTotalCost).format("000,000")}đ 
+                  {numeral(cart.cartTotalCost).format("0,0")}đ
                 </span>
               </div>
               <Button

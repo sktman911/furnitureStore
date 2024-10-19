@@ -30,8 +30,10 @@ namespace FurnitureAPI.Models
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<Size> Sizes { get; set; } = null!;
         public virtual DbSet<SubCategory> SubCategories { get; set; } = null!;
+        public virtual DbSet<Favourite> Favourites { get; set; } = null!;
 
         public virtual DbSet<Image> Images { get; set; } = null!;
+        public virtual DbSet<Review> Reviews { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -205,6 +207,8 @@ namespace FurnitureAPI.Models
                 entity.Property(e => e.CusId).HasColumnName("cus_id");
 
                 entity.Property(e => e.OmId).HasColumnName("om_id");
+                entity.Property(e => e.OrderAddress).HasColumnName("order_address");
+                entity.Property(e => e.OrderPhone).HasColumnName("order_phone");
 
                 entity.Property(e => e.OrderDate)
                     .HasColumnType("datetime")
@@ -247,15 +251,21 @@ namespace FurnitureAPI.Models
 
                 entity.Property(e => e.Quantity).HasColumnName("quantity");
 
-                entity.HasOne(d => d.Order)
-                    .WithMany(p => p.OrderDetails)
-                    .HasForeignKey(d => d.OrderId)
-                    .HasConstraintName("FK__OrderDeta__order__6C190EBB");
+                entity.Property(e => e.ReviewStatus).HasColumnName("review_status");
+
+                entity.Property(e => e.UnitPrice).HasColumnName("unit_price");
+
+                //entity.HasOne(d => d.Order)
+                //    .WithMany(p => p.OrderDetails)
+                //    .HasForeignKey(d => d.OrderId)
+                //    .HasConstraintName("FK__OrderDeta__order__6C190EBB");
 
                 entity.HasOne(d => d.ProductSizeColor)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.PscId)
                     .HasConstraintName("FK_OrderDetail_ProductSizeColor");
+
+
             });
 
             modelBuilder.Entity<OrderMethod>(entity =>
@@ -405,6 +415,60 @@ namespace FurnitureAPI.Models
 
                 entity.Property(e => e.ImageMain)
                     .HasColumnName("image_main");
+            });
+
+            modelBuilder.Entity<Favourite>(entity =>
+            {
+                entity.HasKey(e => e.FavouriteId)
+                    .HasName("PK__Favourit__B3E742CEBCFD8025");
+
+                entity.ToTable("Favourite");
+                entity.Property(e => e.FavouriteId).HasColumnName("favourite_id");
+                entity.Property(e => e.CusId).HasColumnName("cus_id");
+                entity.Property(e => e.ProductId).HasColumnName("product_id");
+                entity.Property(e => e.IsFavourite).HasColumnName("is_favourite");
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.Favourites)
+                    .HasForeignKey(d => d.ProductId)
+                    .HasConstraintName("FK_Product_Favourite");
+
+
+                entity.HasOne(d => d.Customer)
+                    .WithMany(p => p.Favourites)
+                    .HasForeignKey(d => d.CusId)
+                    .HasConstraintName("FK_Customer_Favourite");
+
+            });
+
+            modelBuilder.Entity<Review>(entity =>
+            {
+                entity.HasKey(e => e.ReviewId)
+                    .HasName("PK_Review__PRIMARY");
+
+                entity.ToTable("Review");
+                entity.Property(e => e.ReviewId).HasColumnName("review_id");
+                entity.Property(e => e.CusId).HasColumnName("cus_id");
+                entity.Property(e => e.ProductId).HasColumnName("product_id");
+                entity.Property(e => e.Comment).HasColumnName("comment");
+                entity.Property(e => e.Rating).HasColumnName("rating");
+                entity.Property(e => e.ReviewedDate).HasColumnName("reviewed_date");
+                entity.Property(e => e.OdId).HasColumnName("od_id");
+
+                //entity.HasOne(d => d.Product)
+                //    .WithMany(p => p.Reviews)
+                //    .HasForeignKey(d => d.ProductId)
+                //    .HasConstraintName("FK_Product_Review");
+
+                entity.HasOne(d => d.Customer)
+                    .WithMany(p => p.Reviews)
+                    .HasForeignKey(d => d.CusId)
+                    .HasConstraintName("FK_Customer_Review");
+
+                entity.HasOne(d => d.OrderDetail)
+                    .WithOne(p => p.Review)
+                    .HasForeignKey<Review>(d => d.OdId)
+                    .HasConstraintName("FK_OrderDetail_Review");
+
             });
 
             OnModelCreatingPartial(modelBuilder);

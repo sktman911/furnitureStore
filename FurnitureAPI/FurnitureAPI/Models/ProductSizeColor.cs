@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FurnitureAPI.Models
 {
@@ -15,6 +16,9 @@ namespace FurnitureAPI.Models
         public int? ColorId { get; set; }
 
         public int? Quantity { get; set; }
+
+        [NotMapped]
+        public double? UnitPrice { get; set; }
 
         public virtual Color? Color { get; set; }
         public virtual Product? Product { get; set; }

@@ -1,7 +1,9 @@
 ﻿using FurnitureAPI.Helpers;
-using FurnitureAPI.Interface;
 using FurnitureAPI.Models;
+using FurnitureAPI.Respository.Interface;
+using FurnitureAPI.Services.Interface;
 using FurnitureAPI.TempModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -10,38 +12,32 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace FurnitureAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        private FurnitureContext _context;
-        private readonly IConfiguration configuration;
-        private readonly IUnitOfWork _unitOfWork;
-        public CustomersController(FurnitureContext _context, IConfiguration configuration, IUnitOfWork unitOfWork)
+        private readonly ICustomerService _customerService;
+        private readonly IConfiguration _configuration;
+        public CustomersController(ICustomerService customerService, IConfiguration configuration)
         {
-
-            this._context = _context;
-            this.configuration = configuration;
-            _unitOfWork = unitOfWork;
+            _customerService = customerService;
+            _configuration = configuration;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
         {
-            var customers = await _unitOfWork.Customers.GetAll();
+            var customers = await _customerService.GetAllCustomers();
             return Ok(customers);
         }
 
 
-        // GET api/<CustomersController>/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Customer>> GetCustomer(int id)
         {
-            var result = await _unitOfWork.Customers.GetById(id);
+            var result = await _customerService.GetCustomerById(id);
             if(result == null)
             {
                 return NotFound();
@@ -51,7 +47,7 @@ namespace FurnitureAPI.Controllers
         }
 
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<ActionResult> EditInfo(int id, Customer customer)
         {
             
@@ -62,18 +58,19 @@ namespace FurnitureAPI.Controllers
 
             try
             {
-                var updatedCustomer = await _unitOfWork.Customers.Update(id, customer);
-                if (customer == null)
-                {
-                    return NotFound();
-                }
-                if (updatedCustomer!.CusId == 0)
-                {
-                    return BadRequest(new { message = "Username has existed" });
-                }
-                var furnitureToken = TokenHelper.GenerateJWTToken(updatedCustomer, configuration);
+                await _customerService.UpdateCustomer(id, customer);
+                var furnitureToken = TokenHelper.GenerateJWTToken(customer, _configuration);
                 return new JsonResult(new { token = furnitureToken });
-            }catch(Exception ex)
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (DbUpdateException)
+            {
+                return BadRequest(new { message = "Username has existed" });
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

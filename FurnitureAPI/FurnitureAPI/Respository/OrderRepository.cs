@@ -1,8 +1,9 @@
-﻿using FurnitureAPI.Helpers;
-using FurnitureAPI.Interface;
+﻿
+using FurnitureAPI.Helpers;
 using FurnitureAPI.Models;
 using FurnitureAPI.Models.MomoModel;
 using FurnitureAPI.Models.VnPayModel;
+using FurnitureAPI.Respository.Interface;
 using FurnitureAPI.TempModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,24 +12,15 @@ namespace FurnitureAPI.Respository
     public class OrderRepository : IOrderRepository
     {
         private readonly FurnitureContext _context;
-        private readonly PaymentURL _paymentURL;
 
-        public OrderRepository(FurnitureContext context, PaymentURL paymentURL)
+        public OrderRepository(FurnitureContext context)
         {
             _context = context;
-            _paymentURL = paymentURL;
         }
 
-        public async Task<Order?> UpdateStatus(int id)
+        public async Task Update(int id)
         {
-            var existedOrder = await _context.Orders.SingleOrDefaultAsync(x => x.OrderId == id);
-            if (existedOrder == null)
-            {
-                return null;
-            }
-            existedOrder.OsId = 2;
             await _context.SaveChangesAsync();
-            return existedOrder;
         }
 
         public async Task<IEnumerable<Order>> GetAll()
@@ -37,26 +29,42 @@ namespace FurnitureAPI.Respository
             return orders;
         }
 
-        public async Task<Order> GetById(int id)
+        public async Task<Order?> GetById(int id)
         {
-            var order = await _context.Orders.SingleOrDefaultAsync(x => x.OrderId == id);
-            if (order == null)
-            {
-                return null!;
-            }
+            var result = await (from order in _context.Orders
+                                where order.OrderId == id
+                                join orderDetail in _context.OrderDetails on order.OrderId equals orderDetail.OrderId
+                                join productSizeColor in _context.ProductSizeColors on orderDetail.PscId equals productSizeColor.PscId
+                                join product in _context.Products on productSizeColor.ProductId equals product.ProductId
+                                join size in _context.Sizes on productSizeColor.SizeId equals size.SizeId
+                                join color in _context.Colors on productSizeColor.ColorId equals color.ColorId
+                                select new Order
+                                {
+                                    OrderId = order.OrderId,
+                                    OrderAddress = order.OrderAddress,
+                                    OrderDate = order.OrderDate,
+                                    TotalPrice = order.TotalPrice,
+                                    TotalQuantity = order.TotalQuantity,
+                                    OrderDetails = order.OrderDetails.Select(od => new OrderDetail
+                                    {
+                                        OdId = od.OdId,
+                                        PscId = od.PscId,
+                                        ReviewStatus = od.ReviewStatus,
+                                        Quantity = od.Quantity,
+                                        UnitPrice = od.UnitPrice,
+                                        ProductSizeColor = new ProductSizeColor
+                                        {
+                                            PscId = productSizeColor.PscId,
+                                            Product = product,
+                                            Size = productSizeColor.Size,
+                                            Color = productSizeColor.Color
+                                        },
+                                    }).ToList(),
+                                    Om = order.Om,
+                                    Os = order.Os,
+                                    OrderPhone = order.OrderPhone,
+                                }).FirstOrDefaultAsync();
 
-            var orderMethod = await _context.OrderMethods.SingleOrDefaultAsync(x => x.OmId == order.OmId);
-            var orderStatus = await _context.OrderStatuses.SingleOrDefaultAsync(x => x.OsId == order.OsId);
-
-            OrderInfo result = new OrderInfo
-            {
-                OrderId = order.OrderId,
-                OrderDate = order.OrderDate,
-                TotalPrice = order.TotalPrice,
-                TotalQuantity = order.TotalQuantity,
-                OrderMethodName = orderMethod!.OmName,
-                OrderStatusName = orderStatus!.OsName,
-            };
             return result;
         }
 
@@ -66,24 +74,41 @@ namespace FurnitureAPI.Respository
             return result;
         }
 
-        public Task<Order?> Update(int id, Order order)
+        public Task Update(Order order)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Order?> Delete(int id)
+        public Task Delete(Order order)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<Order?> Add(Order order)
+        public async Task Add(Order order)
         {
-            order.OrderDate = DateTime.Now;
-            order.OsId = 1;
-
-            var newOrder = await _context.Orders.AddAsync(order);
+            await _context.Orders.AddAsync(order);
             await _context.SaveChangesAsync();
-            return newOrder.Entity;
         }
+
+        public Task<Order?> FindByName(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        // update later
+
+        public async Task<OrderMethod?> GetOrderMethodByOrderId(int orderId)
+        {
+            var orderMethod = await _context.OrderMethods.SingleOrDefaultAsync(x => x.OmId == orderId);
+            return orderMethod;
+        }
+
+        public async Task<OrderStatus?> GetOrderStatusByOrderId(int orderId)
+        {
+            var orderStatus = await _context.OrderStatuses.SingleOrDefaultAsync(x => x.OsId == orderId);
+            return orderStatus;
+        }
+
+        // end update later
     }
 }

@@ -9,7 +9,7 @@ import { StateContextProvider } from "./context/StateContext";
 
 
 import { Provider } from "react-redux";
-import store from "./reducer/store"
+import store from "./slice/store"
 
 
 

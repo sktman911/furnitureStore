@@ -8,7 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using FurnitureAPI.Models;
 using FurnitureAPI.TempModels;
 using FurnitureAPI.Helpers;
-using FurnitureAPI.Interface;
+using FurnitureAPI.Respository.Interface;
+using FurnitureAPI.Services.Interface;
+using FurnitureAPI.Services;
 
 namespace FurnitureAPI.Controllers
 {
@@ -16,17 +18,17 @@ namespace FurnitureAPI.Controllers
     [ApiController]
     public class SubCategoriesController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly ISubCategoryService _subCategoryService;
 
-        public SubCategoriesController(IUnitOfWork unitOfWork)
+        public SubCategoriesController(ISubCategoryService subCategoryService)
         {
-            _unitOfWork = unitOfWork;
+            _subCategoryService = subCategoryService;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SubCategoryInfo>>> GetSubCategories()
         {
-            var subCategories = await _unitOfWork.SubCategories.GetAllCustom();
+            var subCategories = await _subCategoryService.GetSubCategories();
 
             return Ok(subCategories);
         }
@@ -35,11 +37,7 @@ namespace FurnitureAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<SubCategory>> GetSubCategory(int id)
         {
-            if (_unitOfWork.SubCategories == null)
-            {
-                return NotFound();
-            }
-            var subCategory = await _unitOfWork.SubCategories.GetById(id);
+            var subCategory = await _subCategoryService.GetSubCategoryById(id);
 
             if (subCategory == null)
             {
@@ -60,18 +58,17 @@ namespace FurnitureAPI.Controllers
 
             try
             {
-                var updatedSubCategory = await _unitOfWork.SubCategories.Update(id, subCategory);
-                if (updatedSubCategory == null)
-                {
-                    return NotFound();
-                }
+                await _subCategoryService.UpdateSubCategory(id, subCategory);
+                return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
-
-            return NoContent();
         }
 
 
@@ -84,15 +81,14 @@ namespace FurnitureAPI.Controllers
             }
             try
             {
-                var addedSubCategory = await _unitOfWork.SubCategories.Add(subCategory);
-                if (addedSubCategory == null)
-                {
-                    return BadRequest();
-                }
-
+                await _subCategoryService.AddSubCategory(subCategory);
                 return CreatedAtAction("GetSubCategory", new { id = subCategory.SubCategoryId }, subCategory);
             }
-            catch(Exception ex)
+            catch (KeyNotFoundException)
+            {
+                return BadRequest("SubCategory name has existed");
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -103,17 +99,18 @@ namespace FurnitureAPI.Controllers
         {
             try
             {
-                var deletedSubCategory = await _unitOfWork.SubCategories.Delete(id);
-                if(deletedSubCategory == null)
-                {
-                    return NotFound();
-                }
-            }catch(Exception ex)
+                await _subCategoryService.DeleteSubCategory(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-
-            return NoContent();
+            
         }
 
     }

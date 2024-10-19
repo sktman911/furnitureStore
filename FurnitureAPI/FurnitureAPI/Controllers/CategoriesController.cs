@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FurnitureAPI.Models;
-using FurnitureAPI.Interface;
+using FurnitureAPI.Respository.Interface;
+using FurnitureAPI.Services.Interface;
 
 namespace FurnitureAPI.Controllers
 {
@@ -14,22 +15,18 @@ namespace FurnitureAPI.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly ICategoryService _categoryService;
 
-        public CategoriesController(IUnitOfWork unitOfWork)
+        public CategoriesController(ICategoryService categoryService)
         {
-            _unitOfWork = unitOfWork;
+            _categoryService = categoryService;
         }
 
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
-          if (_unitOfWork.Categories == null)
-          {
-              return NotFound();
-          }
-          var categories = await _unitOfWork.Categories.GetAll();
+          var categories = await _categoryService.GetAllCategories();
            return Ok(categories);
         }
 
@@ -37,18 +34,19 @@ namespace FurnitureAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> GetCategory(int id)
         {
-          if (_unitOfWork.Categories == null)
-          {
-              return NotFound();
-          }
-            var category = await _unitOfWork.Categories.GetById(id);
-
-            if (category == null)
+            try
             {
-                return NotFound();
+                var category = await _categoryService.GetCategoryById(id);
+                if (category == null)
+                {
+                    return NotFound();
+                }
+                return category;
             }
-
-            return category;
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPut("{id}")]
@@ -61,28 +59,35 @@ namespace FurnitureAPI.Controllers
 
             try
             {
-                var updateCategory = await _unitOfWork.Categories.Update(id, category);
-                if (updateCategory == null)
-                {
-                    return BadRequest();
-                }
+                await _categoryService.UpdateCategory(id, category);
+                return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-
-            return NoContent();
         }
 
         [HttpPost]
         public async Task<ActionResult<Category>> PostCategory(Category category)
         {
-            var addedCategory = await _unitOfWork.Categories.Add(category);
-           if(addedCategory == null){
+            try
+            {
+                await _categoryService.AddCategory(category);
+                return CreatedAtAction("GetCategory", new { id = category.CategoryId }, category);
+            }
+            catch (KeyNotFoundException )
+            {
+                return BadRequest("Category name has existed");
+            }
+            catch (Exception)
+            {
                 return BadRequest();
             }
-            return CreatedAtAction("GetCategory", new { id = addedCategory.CategoryId }, addedCategory);
         }
 
 
@@ -90,12 +95,19 @@ namespace FurnitureAPI.Controllers
         public async Task<IActionResult> DeleteCategory(int id)
         {
 
-            var deletedCategory = await _unitOfWork.Categories.Delete(id);
-            if (deletedCategory == null) {
+            try
+            {
+                await _categoryService.DeleteCategory(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception)
+            {
                 return BadRequest();
             }
-
-            return NoContent();
         }
     }
 }

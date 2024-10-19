@@ -10,7 +10,9 @@ namespace FurnitureAPI.Models
         {
             //OrderDetails = new HashSet<OrderDetail>();
             ProductSizeColors = new HashSet<ProductSizeColor>();
-            //Images = new HashSet<Image>();
+            Favourites = new HashSet<Favourite>();
+            Images = new HashSet<Image>();
+            Reviews = new HashSet<Review>();
         }
 
         public int ProductId { get; set; }
@@ -18,7 +20,7 @@ namespace FurnitureAPI.Models
         public double? Price { get; set; }
         public string? Description { get; set; }
         public bool? Status { get; set; }
-        public bool? Sale { get; set; }
+        public byte? Sale { get; set; }
         public DateTime? CreatedDate { get; set; }
         public int? SubCategoryId { get; set; }
 
@@ -29,6 +31,10 @@ namespace FurnitureAPI.Models
         //public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<ProductSizeColor> ProductSizeColors { get; set; }
 
-        //public virtual ICollection<Image> Images { get; set; }
+        public virtual ICollection<Image> Images { get; set; }
+
+        public virtual ICollection<Favourite> Favourites { get; set; }
+        public virtual ICollection<Review> Reviews { get; set; }
+
     }
 }

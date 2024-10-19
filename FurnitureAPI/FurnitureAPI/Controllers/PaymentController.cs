@@ -1,7 +1,8 @@
 ﻿using FurnitureAPI.Helpers;
-using FurnitureAPI.Interface;
 using FurnitureAPI.Models;
 using FurnitureAPI.Models.MomoModel;
+using FurnitureAPI.Respository.Interface;
+using FurnitureAPI.Services.Interface;
 using FurnitureAPI.Services.Momo;
 using FurnitureAPI.Services.VnPay;
 using Microsoft.AspNetCore.Http;
@@ -16,13 +17,13 @@ namespace FurnitureAPI.Controllers
     {
         private readonly IMomoService _momoService;
         private readonly IVnPayService _vpnPayService;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IOrderService _orderService;
 
-        public PaymentController(IMomoService momoService, IVnPayService vnPayService, IUnitOfWork unitOfWork)
+        public PaymentController(IMomoService momoService, IVnPayService vnPayService, IOrderService orderService)
         {
             _momoService = momoService;
             _vpnPayService = vnPayService;
-            _unitOfWork = unitOfWork;
+            _orderService = orderService;
         }
 
         [HttpGet("momoReturn")]
@@ -33,21 +34,15 @@ namespace FurnitureAPI.Controllers
             {
                 return Redirect("http://localhost:3000/paymentReturn?success=false");
             }
-
-            var order = MomoService.GetOrder();
             try
             {
-                var addedOrder = await _unitOfWork.Orders.Add(order);
-                var listOrderDetail = await _unitOfWork.OrderDetails.AddListOrderDetail(order);
-                if(listOrderDetail.Count() == 0)
-                {
-                    return BadRequest("Don't have enough quantity");
-                }
-                if(listOrderDetail == null)
-                {
-                    return NotFound();
-                }
+                var order = MomoService.GetOrder();
+                await _orderService.AddOrder(order);
                 return Redirect("http://localhost:3000/paymentReturn?success=true");
+            }
+            catch (BadHttpRequestException e)
+            {
+                return StatusCode(e.StatusCode, e.Message);
             }
             catch (Exception e)
             {
@@ -66,32 +61,21 @@ namespace FurnitureAPI.Controllers
             {
                 return Redirect("http://localhost:3000/paymentReturn?success=false");
             }
-
-            var order = res.Order;
-            if (order == null)
-            {
-                return NotFound();
-            }
+       
             try
             {
-                var addedOrder = await _unitOfWork.Orders.Add(order);
-                var listOrderDetail = await _unitOfWork.OrderDetails.AddListOrderDetail(order);
-                if (listOrderDetail.Count() == 0)
-                {
-                    return BadRequest("Don't have enough quantity");
-                }
-                if (listOrderDetail == null)
-                {
-                    return NotFound();
-                }
+                var order = res.Order;
+                await _orderService.AddOrder(order!);
                 return Redirect("http://localhost:3000/paymentReturn?success=true");
-
+            }
+            catch (BadHttpRequestException e)
+            {
+                return StatusCode(e.StatusCode, e.Message);
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
-            
         }
 
     }

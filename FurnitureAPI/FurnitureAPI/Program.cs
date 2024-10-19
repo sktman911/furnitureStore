@@ -1,15 +1,19 @@
-using FurnitureAPI.Helpers;
-using FurnitureAPI.Interface;
+﻿using FurnitureAPI.Helpers;
+using FurnitureAPI.Hubs;
 using FurnitureAPI.Models;
 using FurnitureAPI.Respository;
+using FurnitureAPI.Respository.Interface;
+using FurnitureAPI.Services;
+using FurnitureAPI.Services.Interface;
 using FurnitureAPI.Services.Momo;
 using FurnitureAPI.Services.VnPay;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,11 +27,38 @@ builder.Services.AddSingleton<IMomoService, MomoService>();
 builder.Services.AddSingleton<PaymentURL>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ISubCategoryService, SubCategoryService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductSizeColorService, ProductSizeColorService>();
+builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IColorService, ColorService>();
+builder.Services.AddScoped<ISizeService, SizeService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
+builder.Services.AddScoped<IFunctionService, FunctionService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IFavouriteService, FavouriteService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+
 
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Oauth2", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+    });
+
+    options.OperationFilter<SecurityRequirementsOperationFilter>();
+});
 
 
 builder.Services.AddSession(options =>
@@ -44,10 +75,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowOrigin",
             policy =>
             {
-                policy.WithOrigins("http://localhost:3000", "https://test-payment.momo.vn", "https://localhost:7183")
+                policy.WithOrigins("http://localhost:3000")
                        .AllowAnyMethod()
                        .AllowCredentials()
-                       .AllowAnyHeader().SetIsOriginAllowed((host) => true);
+                       .AllowAnyHeader();
             });
 });
 
@@ -104,10 +135,10 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+app.MapHub<OrderHub>("/orderHub");
 app.MapControllers();
 
 app.UseRouting();
-
 
 app.UseSession();
 

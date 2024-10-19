@@ -6,8 +6,9 @@ import Info from "../components/Info";
 import { useSelector, useDispatch } from "react-redux";
 import { customerAPI, orderAPI } from "../modules/apiClient";
 import { toast } from "react-toastify";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { errorMessage } from "../constants/message";
+import { CLEAR_CART } from "../slice/cartSlice";
 import numeral from "numeral";
 
 const Checkout = () => {
@@ -16,8 +17,16 @@ const Checkout = () => {
   const [shipFee, setShipFee] = useState(0);
   const [total, setTotal] = useState(0);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [paymentMethod, setPaymentMethod] = useState(null);
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm();
 
   useEffect(() => {
     const loadInfo = () => {
@@ -28,6 +37,7 @@ const Checkout = () => {
           .catch((err) => console.log(err));
       }
     };
+    loadInfo();
     const setInfo = (user) => {
       if (user != null) {
         setValue("cusName", user.cusName);
@@ -36,7 +46,7 @@ const Checkout = () => {
         setValue("cusAddress", user.cusAddress);
       }
     };
-    loadInfo();
+
     if (cart.cartTotalCost > 0) {
       // setShipFee(20);
       setTotal(shipFee + cart.cartTotalCost);
@@ -44,24 +54,15 @@ const Checkout = () => {
       // setShipFee(0);
       setTotal(0);
     }
-  }, [cart.cartTotalQuantity]);
+  }, []);
 
-  const dispatch = useDispatch();
-
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm();
-
-  const onCheckout = async () => {
+  const onCheckout = async(data) => {
     if (user === null) {
-      navigate("/login",{replace:true});
+      navigate("/login", { replace: true });
       return;
     }
-    
-    if(paymentMethod === null){
+
+    if (paymentMethod === null) {
       errorMessage("Please choose payment method!");
       return;
     }
@@ -79,40 +80,42 @@ const Checkout = () => {
         quantity: item.cartQuantity,
         colorId: item.color[0],
         sizeId: item.size[0],
+        unitPrice: item.price,
       };
       pscList.push(detail);
     }
 
-    const data = {
+    const formData = {
       totalPrice: total,
       totalQuantity: cart.cartTotalQuantity,
       omId: paymentMethod,
       cusId: user.cusId,
+      orderAddress: data.cusAddress,
+      orderPhone: data.cusPhone,
+      note: data.cusNote,
       pscList: pscList,
     };
 
     await orderAPI()
-      .POST(data)
-      .then((res) => {    
-        if(res.data.type === "Bank"){
+      .POST(formData)
+      .then((res) => {
+        if (res.data.type === "Bank") {
           window.location.href = res.data.url;
+        } else if (res.data.status === true && res.data.type === "Cash") {
+          navigate(res.data.url, { replace: true });
+        } else {
+          errorMessage(res.data.message);
         }
-        else if(res.data.status === true && res.data.type === "Cash"){
-          navigate(res.data.url,{replace:true})
-        }
-        else{
-          errorMessage(res.data.message)
-        }
-        
       })
-      .catch((err) =>{
+      .catch((err) => {
         toast.error(err, {
           position: "top-center",
           autoClose: 1500,
           theme: "colored",
-        })
-      }
-      );
+        });
+      });
+
+      dispatch(CLEAR_CART());
   };
 
   return (
@@ -128,7 +131,9 @@ const Checkout = () => {
 
       <div className="flex flex-col lg:flex-row w-4/5 mx-auto max-h-max">
         <div className="w-full lg:w-1/2">
-          <h2 className="font-semibold text-xl text-center lg:text-left">Billing details</h2>
+          <h2 className="font-semibold text-xl text-center lg:text-left">
+            Billing details
+          </h2>
           <form className="py-8" onSubmit={handleSubmit(onCheckout)}>
             <div className="grid grid-cols-2 text-center lg:text-left">
               <div className="py-2">
@@ -226,12 +231,23 @@ const Checkout = () => {
               <span>Subtotal</span>
             </div>
             {cart.cartItems.map((item, index) => (
-              <div className="flex justify-between items-end text-sm md:text-base" key={index}>
+              <div
+                className="flex justify-between items-end text-sm md:text-base"
+                key={index}
+              >
                 <div>
                   <span className="text-gray-400">{item.productName}</span>
                   <span> x {item.cartQuantity}</span>
                 </div>
-                <p>{numeral(item.cartQuantity * item.price).format("0,0")} đ</p>
+                {item.sale !== null ? (
+                  <p>
+                    {numeral(item.cartQuantity * (item.price - (item.price * item.sale /100))).format("0,0")} đ
+                  </p>
+                ) : (
+                  <p>
+                    {numeral(item.cartQuantity * item.price).format("0,0")} đ
+                  </p>
+                )}
               </div>
             ))}
 
@@ -246,15 +262,21 @@ const Checkout = () => {
               <div>
                 <span>Total</span>
               </div>
-              <p className="text-yellow-600 text-lg md:text-xl font-semibold">{numeral(total).format("0,0")} đ</p>
+              <p className="text-yellow-600 text-lg md:text-xl font-semibold">
+                {numeral(total).format("0,0")} đ
+              </p>
             </div>
           </div>
 
           <div className="pt-8 flex flex-col gap-4 px-3 bg-yellow-50 rounded-b-lg">
             <div>
               <div className="flex items-center gap-5">
-                <input type="radio" name="payment" onChange={() => setPaymentMethod(2)} />
-                <label className="text-sm">Direct Bank Transfer (Vnpay)</label>
+                <input
+                  type="radio"
+                  name="payment"
+                  onChange={() => setPaymentMethod(2)}
+                />
+                <label className="text-sm">Vnpay payment</label>
               </div>
               <p className="text-sm text-left text-gray-400 leading-6 py-2">
                 Make your payment directly into our bank account. Please use
@@ -262,8 +284,31 @@ const Checkout = () => {
                 shipped until the funds have cleared in our account.
               </p>
             </div>
+
             <div className="flex items-center gap-5">
-              <input type="radio" name="payment" onChange={() => setPaymentMethod(1)} />
+              <input
+                type="radio"
+                name="payment"
+                onChange={() => setPaymentMethod(1)}
+              />
+              <label className="text-sm">Momo payment</label>
+            </div>
+
+            <div className="text-sm text-left leading-6">
+              <p>
+                Your personal data will be used to support your experience
+                throughout this website, to manage access to your account, and
+                for other purposes described in our {""}
+                <span className="font-bold">privacy policy</span>.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-5">
+              <input
+                type="radio"
+                name="payment"
+                onChange={() => setPaymentMethod(1)}
+              />
               <label className="text-sm">Cash On Delivery</label>
             </div>
 

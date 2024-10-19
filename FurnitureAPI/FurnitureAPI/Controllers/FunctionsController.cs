@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FurnitureAPI.Models;
-using FurnitureAPI.Interface;
+using FurnitureAPI.Respository.Interface;
+using FurnitureAPI.Services.Interface;
 
 namespace FurnitureAPI.Controllers
 {
@@ -14,24 +15,24 @@ namespace FurnitureAPI.Controllers
     [ApiController]
     public class FunctionsController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IFunctionService _functionService;
 
-        public FunctionsController(IUnitOfWork unitOfWork)
+        public FunctionsController(IFunctionService functionService)
         {
-            _unitOfWork = unitOfWork;
+            _functionService = functionService;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Function>>> GetFunctions()
         {
-            var functions = await _unitOfWork.Functions.GetAll();
+            var functions = await _functionService.GetAllFunctions();
             return Ok(functions);
         }
 
         [HttpGet("/api/Titles")]
         public async Task<ActionResult<IEnumerable<Function>>> GetFunctionsTitle()
         {
-            var result = await _unitOfWork.Functions.GetListTitle();
+            var result = await _functionService.GetFunctionsTitle();
             return Ok(result);
         }
 

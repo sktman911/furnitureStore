@@ -1,5 +1,6 @@
-﻿using FurnitureAPI.Interface;
-using FurnitureAPI.Models;
+﻿using FurnitureAPI.Models;
+using FurnitureAPI.Respository.Interface;
+using FurnitureAPI.Services.Interface;
 using FurnitureAPI.TempModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,11 +12,11 @@ namespace FurnitureAPI.Controllers
     [ApiController]
     public class OrderDetailController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IOrderDetailService _orderDetailService;
 
-        public OrderDetailController(IUnitOfWork unitOfWork)
+        public OrderDetailController( IOrderDetailService orderDetailService)
         {
-            _unitOfWork = unitOfWork;
+            _orderDetailService = orderDetailService;
         }
 
         [HttpGet("{id}")]
@@ -23,12 +24,12 @@ namespace FurnitureAPI.Controllers
         {
             try
             {
-                var result = await _unitOfWork.OrderDetails.GetOrderDetailByOrderId(id);
-                if(result == null)
-                {
-                    return NotFound();
-                }
+                var result = await _orderDetailService.GetOrderDetailByOrderId(id);
                 return Ok(result);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
             }
             catch (Exception e)
             {

@@ -41,6 +41,8 @@ const productAPI = (url = "https://localhost:7183/api/Products/") => {
       GET: () => axios.get(url + "getAll"),
       POST: (newData) => axios.post(url, newData),
       DELETE: (id) => axios.delete(url + id),
+      EXPORT: () => axios.get(url + "exportExcel",{responseType: 'blob'}),
+      IMPORT: (file) => axios.post(url + "importExcel", file),
     };
   };
 // End Product API
@@ -84,7 +86,7 @@ const orderAPI = (url = "https://localhost:7183/api/Orders/") => {
     GET: () => axios.get(url),
     GET_ID: (id) => axios.get(url + id),
     POST: (newData) => axios.post(url, newData),
-    PUT: (id) => axios.put(url +id)
+    PUT: (id, data) => axios.put(url +id, data)
   };
 };
 //End Orders API
@@ -102,7 +104,7 @@ const customerAPI = (url = "https://localhost:7183/api/Customers/") => {
   return {
     GET: () => axios.get(url),
     POST: (newData) => axios.post(url, newData),
-    GET_ID: (id) => axios.get(url + id)
+    GET_ID: (id) => axios.get(url + id),
   };
 };
 //End Customers API

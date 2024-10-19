@@ -1,5 +1,5 @@
-﻿using FurnitureAPI.Interface;
-using FurnitureAPI.Models;
+﻿using FurnitureAPI.Models;
+using FurnitureAPI.Respository.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,37 +13,22 @@ namespace FurnitureAPI.Respository
             _context = context;
         }
 
-        public async Task<Category?> Add(Category category)
+        public async Task Add(Category category)
         {
-            try
-            {
-                await _context.Categories.AddAsync(category);
-                await _context.SaveChangesAsync();
-                return category;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+              await _context.Categories.AddAsync(category);
+              await _context.SaveChangesAsync();
         }
 
-        public async Task<Category?> Delete(int id)
+        public async Task Delete(Category category)
         {
-            var category = await _context.Categories.SingleOrDefaultAsync(x => x.CategoryId == id);
-            if(category == null)
-            {
-                return null;
-            }
-            try
-            {
-                _context.Categories.Remove(category);
-                await _context.SaveChangesAsync();
-                return category;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+             _context.Categories.Remove(category);
+             await _context.SaveChangesAsync();
+        }
+
+        public async Task<Category?> FindByName(string name)
+        {
+            var existedCategory =  await _context.Categories.FirstOrDefaultAsync(x => x.CategoryName == name);
+            return existedCategory;
         }
 
         public async Task<IEnumerable<Category>> GetAll()
@@ -51,25 +36,16 @@ namespace FurnitureAPI.Respository
             return await _context.Categories.ToListAsync();
         }
 
-        public async Task<Category> GetById(int id)
+        public async Task<Category?> GetById(int id)
         {
             var category = await _context.Categories.SingleOrDefaultAsync(x => x.CategoryId == id);
-            return category!;
+            return category;
         }
 
-        public async Task<Category?> Update(int id, Category category)
+        public async Task Update(Category category)
         {
-            var existedCategory = await _context.Categories.SingleOrDefaultAsync(x => x.CategoryId == id);
-            if(existedCategory == null)
-            {
-                return null;
-            }
-
-            existedCategory.CategoryId = category.CategoryId;
-            existedCategory.CategoryName = category.CategoryName;
+            // update 
             await _context.SaveChangesAsync();
-            return existedCategory;
-
         }
     }
 }

@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { customerAPI } from "../../modules/apiClient";
-import { useSelector } from "react-redux";
-import { format, parseISO, parse, formatISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { useForm } from "react-hook-form";
 import { jwtDecode } from "jwt-decode";
-import { LOGIN_USER } from "../../reducer/userSlice";
+import { LOGIN_USER } from "../../slice/userSlice";
 import { useDispatch } from "react-redux";
+import { errorMessage } from "../../constants/message";
 
 
 export default function Profile({ id }) {
-  const user = useSelector((state) => state.user);
+  const current = new Date();
+  const maxDate = `${current.getFullYear()}-${(current.getMonth()+1).toString().padStart(2, '0')}-${current.getDate().toString().padStart(2, '0')}`;
 
   const {
     register,
@@ -24,40 +25,40 @@ export default function Profile({ id }) {
       email: "",
       username: "",
       cusAddress: "",
-      doB: Date.now(),
+      doB: "",
     },
   });
 
   
   const [edit, setEdit] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
 
   const renderInfo = (data) => {
-    if (data != null) {
       setValue("cusId", id);
       setValue("cusName", data.cusName);
       setValue("cusPhone", data.cusPhone);
       setValue("email", data.email);
       setValue("username", data.username);
-      setValue("cusAddress", data.cusAddress ?? "");
+      setValue("cusAddress", data.cusAddress);
       if(data.doB != null){
-        setValue("doB", format(parseISO(data.doB), "dd-MM-yyyy"));
+        setValue("doB", format(parseISO(data.doB), "yyyy-MM-dd"));
       }
-    }
   };
 
   const getInfo = async () => {
-    if (user !== null) {
-      await customerAPI()
-        .GET_ID(id)
-        .then((res) => renderInfo(res.data))
-        .catch((err) => console.log(err));
+    if(!id){
+      return;
     }
+       await customerAPI()
+        .GET_ID(id)
+        .then((res) => {renderInfo(res.data); setLoading(true);})
+        .catch((err) => console.log(err + "eror"));
+        setLoading(true);     
   };
 
   useEffect(() => {
-
     getInfo();
   }, []);
 
@@ -67,11 +68,23 @@ export default function Profile({ id }) {
       return;
     }
 
-    const date = parse(data.doB, "dd-MM-yyyy", new Date());
-    const isoDate = format(date, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-    data.doB = isoDate;
+    if(data.doB.length > 0){
+      const today = new Date(Date.now());
+      const birthday = new Date(data.doB);
+      let year = today.getFullYear() - birthday.getFullYear();    
+      const month = today.getMonth() - birthday.getMonth();
+      if(year < 10 || (year === 10 && month < 0) || (month === 0 && today.getDate() < birthday.getDate())){
+          errorMessage("Invalid age");
+          return;
+      }
+      const isoDate = format(data.doB, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+      data.doB = isoDate;
+    }
+    else{
+      data.doB = null;
+    }
 
-    await customerAPI()
+      await customerAPI()
       .PUT(id, data)
       .then((res) => {
         if (res.data.token) {
@@ -85,11 +98,11 @@ export default function Profile({ id }) {
   };
 
   return (
-    <div className="w-full lg:w-2/3 my-5">
+    <div className="w-full lg:w-2/3 my-5">      
       <h2 className="text-2xl font-bold text-center lg:text-left w-3/4 mx-auto mb-2">
         Profile
       </h2>
-      <form onSubmit={handleSubmit(editInfo)}>
+      {loading ? (<form onSubmit={handleSubmit(editInfo)}>
         <div className="w-full lg:w-3/4 mx-auto rounded-lg flex flex-col lg:flex-row mb-2 lg:my-6 justify-between items-center">
           <div className="w-2/3 lg:w-1/2 mb-2 lg:mb-0">
             <label className="text-left flex justify-start mb-1">Name:</label>
@@ -106,7 +119,7 @@ export default function Profile({ id }) {
             )}
           </div>
 
-          <div className="max-lg:w-2/3 max-xl:w-2/5">
+          <div className="w-1/3 max-lg:w-2/3 max-xl:w-2/5">
             <label className="text-left flex justify-start mb-1">
               Phone number:
             </label>
@@ -140,12 +153,12 @@ export default function Profile({ id }) {
             )}
           </div>
 
-          <div className="max-lg:w-2/3 max-xl:w-2/5">
+          <div className="w-1/3 max-lg:w-2/3 max-xl:w-2/5">
             <label className="text-left flex justify-start mb-1">
               Username:
             </label>
             <input
-              type="tel"
+              type="text"
               className="p-1 w-full  border rounded-md border-gray-400"
               {...register("username", { required: "Please fill username" })}
               readOnly={edit}
@@ -166,27 +179,28 @@ export default function Profile({ id }) {
             <input
               type="text"
               className="p-1 w-full  border rounded-md border-gray-400"
-              {...register("cusAddress", { required: "Please fill address" })}
+              {...register("cusAddress")}
               readOnly={edit}
             />
             {errors.cusAddress && (
-              <p className="w-2/4 text-red-600 text-right mx-auto">
+              <p className="text-left text-red-600">
                 {errors.cusAddress.message}
               </p>
             )}
           </div>
-          <div className="max-lg:w-2/3 max-xl:w-2/5">
+          <div className="w-1/3 max-lg:w-2/3 max-xl:w-2/5">
             <label className="text-left flex justify-start mb-1">
               Birthday:
             </label>
             <input
-              type="tel"
+              type="date"
+              max={maxDate}
               className="p-1 w-full  border rounded-md border-gray-400"
-              {...register("doB", { required: "Please fill birthday" })}
+              {...register("doB")}
               readOnly={edit}
             />
             {errors.doB && (
-              <p className="w-2/4 text-red-600 text-right mx-auto">
+              <p className="text-left text-red-600">
                 {errors.doB.message}
               </p>
             )}
@@ -200,7 +214,8 @@ export default function Profile({ id }) {
             {edit === true ? "Edit" : "Save"}
           </button>
         </div>
-      </form>
+      </form>) : <div>Loading...</div>}
     </div>
+    
   );
 }

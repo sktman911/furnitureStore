@@ -6,7 +6,7 @@ import axios from "axios";
 
 import { useDispatch } from "react-redux";
 import { jwtDecode } from "jwt-decode";
-import { LOGIN_USER } from "../reducer/userSlice";
+import { LOGIN_USER } from "../slice/userSlice";
 import { errorMessage } from "../constants/message";
 
 const Login = () => {

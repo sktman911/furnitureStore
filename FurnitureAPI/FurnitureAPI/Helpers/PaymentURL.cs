@@ -3,6 +3,7 @@ using FurnitureAPI.Models.MomoModel;
 using FurnitureAPI.Models.VnPayModel;
 using FurnitureAPI.Services.Momo;
 using FurnitureAPI.Services.VnPay;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FurnitureAPI.Helpers
@@ -45,6 +46,16 @@ namespace FurnitureAPI.Helpers
                 return result = _momoService.CreatePaymentUrl(context, momoPay);
             }
             return result;
+        }
+
+        public string? PaymentProcess(HttpContext context, Order order, Customer customer)
+        {
+            if (order.OrderId != 1)
+            {
+                var urlPayment = CreatePaymentURL(context, order, customer); 
+                if(urlPayment != String.Empty) return urlPayment;
+            }
+            return null;
         }
     }
 }

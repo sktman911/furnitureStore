@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FurnitureAPI.Models;
-using FurnitureAPI.Interface;
+using FurnitureAPI.Respository.Interface;
+using FurnitureAPI.Services.Interface;
 
 namespace FurnitureAPI.Controllers
 {
@@ -14,17 +15,17 @@ namespace FurnitureAPI.Controllers
     [ApiController]
     public class ColorsController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IColorService _colorService;
 
-        public ColorsController(IUnitOfWork unitOfWork)
+        public ColorsController(IColorService colorService)
         {
-            _unitOfWork = unitOfWork;
+            _colorService = colorService;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Color>>> GetColors()
         {
-            var colors = await _unitOfWork.Colors.GetAll();
+            var colors = await _colorService.GetColors();
             return Ok(colors);
         }
 
@@ -38,13 +39,15 @@ namespace FurnitureAPI.Controllers
 
             try
             {
-                var updatedColor = await _unitOfWork.Colors.Update(id, color);
-                if (updatedColor == null)
-                {
-                    return NotFound();
-                }
+                await _colorService.UpdateColor(id, color);
                 return NoContent();
-            }catch(Exception ex)
+
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -54,7 +57,7 @@ namespace FurnitureAPI.Controllers
         public async Task<ActionResult<IEnumerable<Color>>> GetColorByProduct(int id)
         {
 
-            var result = await _unitOfWork.Colors.GetColorsByProduct(id);
+            var result = await _colorService.GetColorsByProductId(id);
             return Ok(result);
         }
 
@@ -63,13 +66,12 @@ namespace FurnitureAPI.Controllers
         {
             try
             {
-                var addedColor = await _unitOfWork.Colors.Add(color);
-
-                if (addedColor == null)
-                {
-                    return BadRequest(new { message = "Color has existed!" });
-                }
+                await _colorService.AddColor(color);
                 return CreatedAtAction("GetColorByProduct", new { id = color.ColorId }, color);
+            }
+            catch (KeyNotFoundException)
+            {
+                return BadRequest(new { message = "Color name has existed" });
             }
             catch (Exception e)
             {
@@ -82,11 +84,7 @@ namespace FurnitureAPI.Controllers
         {
             try
             {
-                var color = await _unitOfWork.Colors.Delete(id);
-                if (color == null)
-                {
-                    return NotFound();
-                }
+                await _colorService.DeleteColor(id);
                 return NoContent();
             }
             catch(Exception ex)

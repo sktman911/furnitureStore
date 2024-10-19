@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router";
-import { orderAPI, orderDetailAPI } from "../modules/api/api";
-import { format, parseISO } from "date-fns";
-import numeral from "numeral";
+import { orderAPI } from "../modules/api/api";
 import { IoArrowBackOutline } from "react-icons/io5";
-import Stepper from "../../components/Stepper";
+import Stepper from "../../components/OrderDetail/Stepper";
 
 export default function OrderDetail() {
   const { orderId } = useParams();
-  const [orderDetail, setOrderDetail] = useState([]);
   const [order, setOrder] = useState([]);
 
   // order status
@@ -18,15 +15,14 @@ export default function OrderDetail() {
 
   useEffect(() => {
     getOrder();
-    getOrderDetail();
-  }, [order.osId]);
+  }, [order.os.osId]);
 
   const getOrder = async () => {
     await orderAPI()
       .GET_ID(orderId)
       .then((res) => {
         setOrder(res.data);
-        hanldeOrderStatus(res.data.orderStatusName);
+        hanldeOrderStatus(res.data.os.osName);
       })
       .catch((err) => console.log(err));
   };
@@ -38,15 +34,6 @@ export default function OrderDetail() {
     }
   };
 
-  const getOrderDetail = async () => {
-    await orderDetailAPI()
-      .GET(orderId)
-      .then((res) => {
-        setOrderDetail(res.data);
-      })
-      .catch((err) => console.log(err));
-  };
-
   const updateOrderStatus = () => {
     orderAPI()
       .PUT(order.orderId, order)
@@ -54,7 +41,7 @@ export default function OrderDetail() {
       .catch((err) => console.log(err));
   };
 
-  return orderDetail && order && order.orderDate ? (
+  return order && order.orderDate ? (
     <div className="pt-12">
       <div className="my-6 text-left w-4/5 mx-auto ">
         <Link
@@ -75,7 +62,7 @@ export default function OrderDetail() {
           <div className="w-2/6">
             <span>Order Date: </span>
             <span>
-              {format(parseISO(order.orderDate), "dd-MM-yyyy HH:mm:ss")}
+              {Intl.DateTimeFormat('us', {dateStyle: 'long', timeStyle: 'medium'}).format(new Date(order.orderDate))}
             </span>
           </div>
         </div>
@@ -86,7 +73,7 @@ export default function OrderDetail() {
           </div>
           <div className="w-2/6">
             <span>Order Method: </span>
-            <span>{order.orderMethodName}</span>
+            <span>{order.om.omName}</span>
           </div>
         </div>
 
@@ -103,25 +90,28 @@ export default function OrderDetail() {
             </tr>
           </thead>
           <tbody>
-            {orderDetail.map((item, index) => (
+            {order.orderDetails.map((item, index) =>{
+            const formatPrice = new Intl.NumberFormat('vi-VI', {style:'currency',currency:'VND'}).format(item.unitPrice);
+            const formatSubPrice = new Intl.NumberFormat('vi-VI', {style:'currency',currency:'VND'}).format(item.unitPrice * item.quantity);
+            return (
               <tr key={index}>
                 <td className="p-2">{index + 1}</td>
-                <td className="p-2">{item.productName}</td>
-                <td className="p-2">{item.sizeName}</td>
-                <td className="p-2">{item.colorName}</td>
-                <td className="p-2">{numeral(item.price).format("0,0")}</td>
+                <td className="p-2">{item.productSizeColor.product.productName}</td>
+                <td className="p-2">{item.productSizeColor.size.sizeName}</td>
+                <td className="p-2">{item.productSizeColor.color.colorName}</td>
+                <td className="p-2">{formatPrice}</td>
                 <td className="p-2">{item.quantity}</td>
                 <td className="p-2">
-                  {numeral(item.quantity * item.price).format("0,0")}
+                  {formatSubPrice}
                 </td>
               </tr>
-            ))}
+            )})}
           </tbody>
         </table>
 
         <div className="mt-4 text-end w-11/12 text-lg">
           <span className="font-semibold">Total: </span>
-          <span>{numeral(order.totalPrice).format("0,0.000")} đ</span>
+          <span>{Intl.NumberFormat('vi-VI', {style:'currency',currency:'VND'}).format(order.totalPrice)}</span>
         </div>
 
         <div className="text-start w-5/6 mx-auto">

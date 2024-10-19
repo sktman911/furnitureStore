@@ -4,13 +4,12 @@ import logo from "../assets/images/logo.jpg";
 import Button from "../components/Button";
 import Cart from "./Cart";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { useSpring, animated } from "@react-spring/web";
 
 import { navLinks } from "../constants";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { GET_CART_TOTAL } from "../reducer/cartSlice";
-import { LOGOUT } from "../reducer/userSlice";
+import { GET_CART_TOTAL } from "../slice/cartSlice";
+import { LOGOUT } from "../slice/userSlice";
 import { ShopContext } from "../context/ShopContext";
 import {
   AiOutlineUser,
@@ -82,8 +81,10 @@ const Navbar = () => {
                 {link.label}
               </Link>
               {link.subMenu && (
-                <div className="absolute top-24 text-left uppercase opacity-0 transition-all translate-y-4 duration-300 ease-out 
-                group-hover:opacity-100 group-hover:translate-y-0 pointer-events-none group-hover:pointer-events-auto">
+                <div
+                  className="absolute top-24 text-left uppercase opacity-0 transition-all translate-y-4 duration-300 ease-out 
+                group-hover:opacity-100 group-hover:translate-y-0 pointer-events-none group-hover:pointer-events-auto"
+                >
                   <div className="py-3">
                     <div className="absolute left-3 w-4 h-4 mt-1 bg-white rotate-45"></div>
                   </div>
@@ -149,16 +150,19 @@ const Navbar = () => {
           </li>
         </Link>
 
-        <li className="cursor-pointer">
-          <div
-            className="text-xl"
-            onClick={() => {
-              window.scroll(0, 0);
-            }}
-          >
-            <AiOutlineHeart />
-          </div>
-        </li>
+        <Link to={"/favourite"}>
+          <li className="cursor-pointer">
+            <div
+              className="text-xl"
+              onClick={() => {
+                window.scroll(0, 0);
+              }}
+            >
+              <AiOutlineHeart />
+            </div>
+          </li>
+        </Link>
+
         <li className="relative cursor-pointer">
           <div
             className="text-xl"

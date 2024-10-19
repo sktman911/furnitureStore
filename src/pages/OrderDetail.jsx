@@ -1,74 +1,103 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  useMemo,
+  Suspense,
+} from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
-import { orderAPI, orderDetailAPI } from "../modules/apiClient";
-import { format, parseISO } from "date-fns";
-import numeral from "numeral";
-import Stepper from "../components/Stepper";
-import {Link} from "react-router-dom"
+import { orderAPI } from "../modules/apiClient";
+import Stepper from "../components/OrderDetail/Stepper";
+import * as signalR from "@microsoft/signalr";
+import { Link } from "react-router-dom";
+import { MdOutlineRateReview } from "react-icons/md";
+import { apiUrl } from "../constants";
+import { differenceInDays } from "../helper/dayHelper";
 
 export default function OrderDetail() {
   const { orderId } = useParams();
-  const [orderDetail, setOrderDetail] = useState([]);
-  const [order, setOrder] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
 
+  const ReviewForm = React.lazy(() =>
+    import("../components/OrderDetail/ReviewForm")
+  );
+
+  const [order, setOrder] = useState({});
+  const [isOpen, setIsOpen] = useState({
+    state: false,
+    productName: "",
+    productId: "",
+    odId: "",
+  });
+
   // order status
   const [currentStep, setCurrentStep] = useState(null);
-  const titles = useMemo(() => ["Waiting for confirm", "On delivery", "Delivered"],[]);
+  const titles = useMemo(
+    () => ["Waiting for confirm", "On delivery", "Delivered"],
+    []
+  );
 
-  const hanldeOrderStatus = useCallback((statusName) => {
-    const index = titles.findIndex((item) => item === statusName);
-    if (index !== -1) {
-      setCurrentStep(index);
-    }
-  },[titles]);
+  const hanldeOrderStatus = useCallback(
+    (statusName) => {
+      const index = titles.findIndex((item) => item === statusName);
+      if (index !== -1) {
+        setCurrentStep(index);
+      }
+    },
+    [titles]
+  );
 
   useEffect(() => {
-    const getOrder = (async () => {
-      await orderAPI()
-        .GET_ID(orderId)
-        .then((res) => {
-          setOrder(res.data);
-          hanldeOrderStatus(res.data.orderStatusName);
-        })
-        .catch((err) => console.log(err));
+    // create connection to signalR
+    const connection = new signalR.HubConnectionBuilder()
+      .withUrl(apiUrl + "orderHub")
+      .build();
+    // start connection
+    connection.start();
+    // .then().catch()
+
+    // listen for update status
+    connection.on("ReceiveUpdateOrderStatus", (order) => {
+      setOrder(order);
+      hanldeOrderStatus(order.os.osName);
     });
 
-    const getOrderDetail = async () => {
-      await orderDetailAPI()
-        .GET(orderId)
-        .then((res) => {
-          setOrderDetail(res.data);
-        })
-        .catch((err) => console.log(err));
+    // disconnect signalR when component unmount
+    return () => {
+      connection.stop();
     };
-
-    getOrder();
-    getOrderDetail();
   }, []);
+
+  useEffect(() => {
+    getOrder();
+  }, []);
+
+  const getOrder = async () => {
+    await orderAPI()
+      .GET_ID(orderId)
+      .then((res) => {
+        setOrder(res.data);
+        hanldeOrderStatus(res.data.os.osName);
+      })
+      .catch((err) => console.log(err));
+  };
 
   useEffect(() => {
     const handlePopState = () => {
       navigate(`/history?page=${location.state.fromPage}`, { replace: true });
     };
 
-    // window.onpopstate = () => {
-    //   if(location.state){
-    //     navigate(`/history?page=${location.state.fromPage}`)
-    //   }
-    // }
-
-    window.addEventListener('onpopstate', handlePopState);
+    window.addEventListener("onpopstate", handlePopState);
 
     return () => {
-      window.removeEventListener('onpopstate', handlePopState);
+      window.removeEventListener("onpopstate", handlePopState);
     };
-  },[navigate,location.state.fromPage])
+  }, [navigate, location.state.fromPage]);
 
-  return orderDetail && order && order.orderDate ? (
+  return order && order.orderDate ? (
     <div className="mt-24">
-      <div className="w-4/5 py-5 shadow-2xl rounded-md mx-auto bg-yellow-50 mt-32 mb-8">
+      <div className="w-4/5 py-5 shadow-2xl rounded-sm mx-auto border-2 border-gray-200 mt-32 mb-8">
         <h2 className=" text-2xl font-bold mb-4">Order</h2>
         <div className="flex justify-between w-10/12 mx-auto text-start">
           <div className="w-4/6">
@@ -78,7 +107,7 @@ export default function OrderDetail() {
           <div className="w-2/6">
             <span>Order Date: </span>
             <span>
-              {format(parseISO(order.orderDate), "dd-MM-yyyy HH:mm:ss")}
+              {Intl.DateTimeFormat('us', {dateStyle: 'long',timeStyle: 'medium'}).format(new Date(order.orderDate))}
             </span>
           </div>
         </div>
@@ -89,9 +118,9 @@ export default function OrderDetail() {
           </div>
           <div className="w-2/6">
             <span>Order Method: </span>
-            <span>{order.orderMethodName}</span>
+            <span>{order.om.omName}</span>
           </div>
-        </div>
+        </div>       
 
         <table className="py-3 table-auto border-collapse border border-black mx-auto w-5/6">
           <thead>
@@ -103,34 +132,70 @@ export default function OrderDetail() {
               <th className="p-2">Price</th>
               <th className="p-2">Quantity</th>
               <th className="p-2">SubPrice</th>
+              <th className="p-2">Review</th>
             </tr>
           </thead>
           <tbody>
-            {orderDetail.map((item, index) => (
-              <tr key={index}>
-                <td className="p-2">{index + 1}</td>
-                <td className="p-2">{item.productName}</td>
-                <td className="p-2">{item.sizeName}</td>
-                <td className="p-2">{item.colorName}</td>
-                <td className="p-2">
-                  {numeral(item.price).format("0,0")} <u>đ</u> 
-                </td>
-                <td className="p-2">{item.quantity}</td>
-                <td className="p-2">
-                  {numeral(item.quantity * item.price).format("0,0")} đ
-                </td>
-              </tr>
-            ))}
+            {order.orderDetails.map((item, index) => {
+              const formatPrice = new Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(item.unitPrice);
+              const formatSubPrice = new Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(item.unitPrice * item.quantity);
+              return (
+                <tr key={index}>
+                  <td className="p-2">{index + 1}</td>
+                  <td className="p-2">
+                    {item.productSizeColor.product.productName}
+                  </td>
+                  <td className="p-2">{item.productSizeColor.size.sizeName}</td>
+                  <td className="p-2">
+                    {item.productSizeColor.color.colorName}
+                  </td>
+                  <td className="p-2">
+                    {formatPrice}
+                  </td>
+                  <td className="p-2">{item.quantity}</td>
+                  <td className="p-2">
+                    {formatSubPrice}
+                  </td>
+                  {item.reviewStatus === null &&
+                  differenceInDays(new Date(order.orderDate), new Date()) <=
+                    14 ? (
+                    <td className="p-2">
+                      <div className="w-10 h-10 hover:rounded-full hover:bg-gray-200 cursor-pointer mx-auto">
+                        <MdOutlineRateReview
+                          size={36}
+                          className="mx-auto p-2 pb-1"
+                          onClick={() =>
+                            setIsOpen({
+                              state: true,
+                              productName:
+                                item.productSizeColor.product.productName,
+                              productId: item.productId,
+                              odId: item.odId,
+                            })
+                          }
+                        />
+                      </div>
+                    </td>
+                  ) : (
+                    <td className="p-2">
+                      <p>Expired</p>
+                    </td>
+                  )}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
 
         <div className="mt-4 text-end w-11/12 text-lg">
           <span className="font-semibold">Total: </span>
-          <span>{numeral(order.totalPrice).format("0,0.000")} đ</span>
+          <span>         
+            {Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(order.totalPrice)}
+          </span>
         </div>
 
         <div className="text-start w-5/6 mx-auto">
-          <span>Order Status: {order.orderStatusName}</span>
+          <span>Order Status:</span>
         </div>
 
         <Stepper
@@ -142,7 +207,7 @@ export default function OrderDetail() {
         <div className="my-6 flex justify-center">
           <Link
             to={`/history?page=${location.state ? location.state.fromPage : 1}`}
-            state={ { fromPage: location.state ? location.state.fromPage : 1}}
+            state={{ fromPage: location.state ? location.state.fromPage : 1 }}
             className="w-24 py-2 bg-slate-800 text-white rounded-md"
             replace={true}
           >
@@ -150,6 +215,17 @@ export default function OrderDetail() {
           </Link>
         </div>
       </div>
+
+      {/* Review form  */}
+      {isOpen.state && (
+        <Suspense fallback={<div className="mx-auto w-full fixed top-1/2">Loading...</div>}>
+          <ReviewForm
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            getOrder={getOrder}
+          />
+        </Suspense>
+      )}
     </div>
   ) : (
     <div className="mx-auto w-1/2">Loading</div>

@@ -1,5 +1,5 @@
-﻿using FurnitureAPI.Interface;
-using FurnitureAPI.Models;
+﻿using FurnitureAPI.Models;
+using FurnitureAPI.Respository.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace FurnitureAPI.Respository
@@ -11,12 +11,17 @@ namespace FurnitureAPI.Respository
         {
             _context = context;
         }
-        public Task<Size?> Add(Size entity)
+        public Task Add(Size size)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Size?> Delete(int id)
+        public Task Delete(Size entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Size?> FindByName(string name)
         {
             throw new NotImplementedException();
         }
@@ -26,18 +31,19 @@ namespace FurnitureAPI.Respository
             return await _context.Sizes.ToListAsync();
         }
 
-        public Task<Size> GetById(int id)
+        public async Task<Size?> GetById(int id)
         {
-            throw new NotImplementedException();
+            var size = await _context.Sizes.SingleOrDefaultAsync(x => x.SizeId == id);
+            return size;
         }
 
-        public async Task<IEnumerable<Size>> GetSizesByProduct(int id)
+        public async Task<IEnumerable<Size>> GetSizesByProductId(int id)
         {
             var result = await _context.Sizes.Where(x => x.ProductSizeColors.Any(y => y.SizeId == x.SizeId && y.ProductId == id)).ToListAsync();
             return result;
         }
 
-        public Task<Size?> Update(int id, Size entity)
+        public Task Update(Size size)
         {
             throw new NotImplementedException();
         }

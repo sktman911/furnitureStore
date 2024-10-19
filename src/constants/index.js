@@ -8,6 +8,8 @@ import { FaUserGroup, FaRegMoneyBill1 } from "react-icons/fa6";
 import { FaReceipt } from "react-icons/fa";
 
 
+export const apiUrl = "https://localhost:7183/";
+
 export const navLinks = [
   { href: "/", label: "Home", subMenu: false },
   { href: "/shop", label: "Shop", subMenu: true },
@@ -15,13 +17,6 @@ export const navLinks = [
   { href: "/contact", label: "Contact", subMenu: false },
 ];
 
-
-export const navIcons = [
-  { name: <AiOutlineUser />, label: "User", href: "/profile"},
-  { name: <AiOutlineSearch />, label: "search", href: "/search" },
-  { name: <AiOutlineHeart />, label: "heart", href: "/favorite" },
-  { name: <AiOutlineShoppingCart />, label: "cart"},
-];
 
 export const footerLinks = [
   { key: "#home", name: "Home" },

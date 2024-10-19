@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext} from "react";
 import { Routes, Route, Navigate } from "react-router";
 import PrivateRoute from "./PrivateRoute";
 
@@ -30,6 +30,7 @@ import CustomerDetail from "../admin/pages/CustomerDetail";
 import Account from "../pages/Account";
 import OrderDetail from "../pages/OrderDetail";
 import Search from "../pages/Search";
+import Favourite from "../pages/Favourite";
 
 
 const Router = () => {
@@ -60,12 +61,10 @@ const Router = () => {
       <Route path="cart" element={<Cart />}></Route>
       <Route path="checkout" element={<Checkout />}></Route>
       <Route path="paymentReturn" element={<PaymentReturn />}></Route>
+      <Route path="favourite" element={<Favourite/>}></Route>
 
       <Route path="profile" element={<Account component={"profile"}/>}></Route>
       <Route path="history" element={<Account component={"history"} />}></Route>
-      {/* <Route path="history">
-        <Route path=":orderId" element={<OrderDetail />}></Route>
-      </Route> */}
       <Route path="history/:orderId" element={<OrderDetail />}></Route>
 
 

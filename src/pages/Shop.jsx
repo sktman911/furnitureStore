@@ -6,13 +6,14 @@ import Info from "../components/Info";
 import { useParams } from "react-router";
 import ReactPaginate from "react-paginate";
 import { useSearchParams } from "react-router-dom";
+import numeral from "numeral";
 
 const Shop = (props) => {
   const { products } = useContext(ShopContext);
   const { subCategoryName } = useParams();
   const [sort, setSort] = useSearchParams();
+  
   const [sortBy, setSortBy] = useState("");
-
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [productsPerPage, setProductsPerPage] = useState(10);
@@ -171,6 +172,8 @@ const Shop = (props) => {
             name={item.productName}
             des={item.description}
             price={item.price}
+            sale = {item.sale}
+            salePrice={numeral(item.price - (item.price * item.sale /100)).format("0,0")}
           />
         ))}
       </div>
