@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { customerAPI } from "../modules/api/api";
-import { format, parseISO } from "date-fns";
 
 export default function CustomerDetail() {
   const { customerId } = useParams();
@@ -59,7 +58,7 @@ export default function CustomerDetail() {
           </div>
           <div className="w-2/6">
             <span>Birthday: </span>
-            <span>{customer.doB ? format(parseISO(customer.doB), "dd-MM-yyyy") : ""}</span>
+            {customer.doB ? Intl.DateTimeFormat('us', {dateStyle: 'long'}).format(new Date(customer.doB)) : ""}
           </div>
         </div>
         <div className="py-6 w-10/12 mx-auto text-start">
