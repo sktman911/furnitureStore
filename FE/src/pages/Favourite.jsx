@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Products from "../components/Products";
-import numeral from "numeral";
 import { productAPI } from "../modules/apiClient";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
@@ -38,11 +37,10 @@ export default function Favourite() {
                 id={item.productId}
                 img={item.images[0].imageLink}
                 name={item.productName}
-                price={numeral(item.price).format("0,0")}
+                
+                price={Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(item.price)}
                 sale={item.sale}
-                salePrice={numeral(
-                  item.price - (item.price * item.sale) / 100
-                ).format("0,0")}
+                salePrice={Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format( item.price - (item.price * item.sale) / 100)}
               />
             );
           })}

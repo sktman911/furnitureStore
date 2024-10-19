@@ -6,7 +6,6 @@ import Info from "../components/Info";
 import { useParams } from "react-router";
 import ReactPaginate from "react-paginate";
 import { useSearchParams } from "react-router-dom";
-import numeral from "numeral";
 
 const Shop = (props) => {
   const { products } = useContext(ShopContext);
@@ -171,9 +170,9 @@ const Shop = (props) => {
             img={item.images[0].imageLink}
             name={item.productName}
             des={item.description}
-            price={item.price}
-            sale = {item.sale}
-            salePrice={numeral(item.price - (item.price * item.sale /100)).format("0,0")}
+            price={Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(item.price)}
+            sale = {item.sale}           
+            salePrice={Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(item.price - (item.price * item.sale) / 100)}
           />
         ))}
       </div>
