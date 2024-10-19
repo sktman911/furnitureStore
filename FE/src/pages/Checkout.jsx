@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { errorMessage } from "../constants/message";
 import { CLEAR_CART } from "../slice/cartSlice";
-import numeral from "numeral";
+
 
 const Checkout = () => {
   const cart = useSelector((state) => state.cart);
@@ -241,11 +241,11 @@ const Checkout = () => {
                 </div>
                 {item.sale !== null ? (
                   <p>
-                    {numeral(item.cartQuantity * (item.price - (item.price * item.sale /100))).format("0,0")} đ
+                    {Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(item.cartQuantity * (item.price - (item.price * item.sale /100)))}
                   </p>
                 ) : (
                   <p>
-                    {numeral(item.cartQuantity * item.price).format("0,0")} đ
+                    {Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(item.cartQuantity * item.price)}
                   </p>
                 )}
               </div>
@@ -263,7 +263,7 @@ const Checkout = () => {
                 <span>Total</span>
               </div>
               <p className="text-yellow-600 text-lg md:text-xl font-semibold">
-                {numeral(total).format("0,0")} đ
+              {Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(total)}
               </p>
             </div>
           </div>

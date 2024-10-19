@@ -2,7 +2,6 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "./Button";
 import {  animated, useTransition} from '@react-spring/web';
-import numeral from "numeral";
 
 import { IoMdClose } from "react-icons/io";
 import { MdCancel } from "react-icons/md";
@@ -79,8 +78,8 @@ const Cart = (props) => {
                             <span>x</span>
                             <span className="text-yellow-600 text-sm">
                                {item.sale !== null ? 
-                               numeral(item.price - (item.price * item.sale /100)).format("0,0") 
-                               : numeral(item.price).format("0,0")} đ
+                               Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(item.price - (item.price * item.sale /100))
+                               : Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(item.price)}
                             </span>
                           </div>
                         </div>
@@ -98,7 +97,7 @@ const Cart = (props) => {
                     <div className="flex px-6 pb-5 justify-between border-b-2">
                       <p>Subtotal:</p>
                       <p className="text-yellow-600 font-semibold">
-                        $ {numeral(cart.cartTotalCost).format("0,0")} đ
+                        {Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(cart.cartTotalCost)}
                       </p>
                     </div>
                     <div className="text-xs p-6 flex justify-between">

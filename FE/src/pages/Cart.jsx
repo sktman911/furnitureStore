@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -7,7 +7,6 @@ import { FaTrashAlt } from "react-icons/fa";
 import Button from "../components/Button";
 import Info from "../components/Info";
 import { CLEAR_CART } from "../slice/cartSlice";
-import numeral from "numeral";
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
@@ -104,14 +103,19 @@ const Cart = () => {
                           item.sale !== null ? "line-through" : null
                         }`}
                       >
-                        {numeral(item.price).format("0,0")}đ
+                        {Intl.NumberFormat("vi-VI", {
+                          style: "currency",
+                          currency: "VND",
+                        }).format(item.price)}
                       </p>
                       {item.sale !== null ? (
                         <p className="text-red-600">
-                          {numeral(
+                          {Intl.NumberFormat("vi-VI", {
+                            style: "currency",
+                            currency: "VND",
+                          }).format(
                             item.price - (item.price * item.sale) / 100
-                          ).format("0,0")}
-                          đ
+                          )}
                         </p>
                       ) : null}
                     </td>
@@ -137,18 +141,19 @@ const Cart = () => {
                     <td className="py-10 w-36 max-md:hidden">
                       {item.sale !== null ? (
                         <p>
-                          {numeral(
-                            item.cartQuantity *
-                              (item.price - (item.price * item.sale) / 100)
-                          ).format("0,0")}
-                          đ
+                          {Intl.NumberFormat("vi-VI", {
+                            style: "currency",
+                            currency: "VND",
+                          }).format(
+                            item.price - (item.price * item.sale) / 100
+                          )}
                         </p>
                       ) : (
                         <p>
-                          {numeral(
-                            item.cartQuantity * (item.price)
-                          ).format("0,0")}
-                          đ
+                          {Intl.NumberFormat("vi-VI", {
+                            style: "currency",
+                            currency: "VND",
+                          }).format(item.cartQuantity * item.price)}
                         </p>
                       )}
                     </td>
@@ -184,7 +189,10 @@ const Cart = () => {
                   Subtotal
                 </span>
                 <span className="text-sm text-gray-400">
-                  {numeral(cart.cartTotalCost).format("0,0")}đ
+                  {Intl.NumberFormat("vi-VI", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(cart.cartTotalCost)}
                 </span>
               </div>
               <div className="py-5 flex w-2/3 lg:w-1/2 mx-auto justify-between items-center">
@@ -192,7 +200,10 @@ const Cart = () => {
                   Total
                 </span>
                 <span className="text-yellow-600 text-md md:text-lg">
-                  {numeral(cart.cartTotalCost).format("0,0")}đ
+                  {Intl.NumberFormat("vi-VI", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(cart.cartTotalCost)}
                 </span>
               </div>
               <Button

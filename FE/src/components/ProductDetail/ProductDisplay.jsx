@@ -12,7 +12,6 @@ import RelatedProducts from "../ProductDetail/RelatedProducts";
 
 import { useDispatch, useSelector } from "react-redux";
 import { errorMessage } from "../../constants/message";
-import numeral from "numeral";
 import { favouriteAPI } from "../../modules/apiClient";
 import { useNavigate } from "react-router";
 import useQuantity from "../../hooks/useQuantity";
@@ -158,11 +157,11 @@ const ProductDisplay = (props) => {
           <h1 className="text-3xl py-3">{product.productName}</h1>
           <div className=" text-gray-400 flex gap-6">
             <p className={` ${salePrice !== null ? "line-through" : null}`}>
-              {numeral(product.price).format("0,0")} đ
+              {Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(product.price)}
             </p>
             {salePrice !== null ? (
               <p className="text-red-600">
-                {numeral(salePrice).format("0,0")} đ{" "}
+                {Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(salePrice)}
               </p>
             ) : null}
           </div>

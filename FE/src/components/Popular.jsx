@@ -2,9 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useSpring, animated } from "react-spring";
 
 import Products from "./Products";
-import numeral from "numeral";
 import { useNavigate } from "react-router-dom";
-import { productAPI } from "../modules/apiClient";
 import { ShopContext } from "../context/ShopContext";
 
 const Popular = () => {
@@ -57,9 +55,9 @@ const Popular = () => {
               id={item.productId}
               img={item.images[0].imageLink}
               name={item.productName}
-              price={numeral(item.price).format("0,0")}
+              price={Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(item.price)}
               sale = {item.sale}
-              salePrice={numeral(item.price - (item.price * item.sale /100)).format("0,0")}
+              salePrice={Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(item.price - (item.price * item.sale /100))}
               // date={new Date(item.createdDate)}
             />
           );
