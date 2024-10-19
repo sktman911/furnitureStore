@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { customerAPI } from "../../modules/apiClient";
-import { format, parseISO } from "date-fns";
 import { useForm } from "react-hook-form";
 import { jwtDecode } from "jwt-decode";
 import { LOGIN_USER } from "../../slice/userSlice";
@@ -43,7 +42,7 @@ export default function Profile({ id }) {
       setValue("username", data.username);
       setValue("cusAddress", data.cusAddress);
       if(data.doB != null){
-        setValue("doB", format(parseISO(data.doB), "yyyy-MM-dd"));
+        setValue("doB", Intl.DateTimeFormat('us', {dateStyle: 'long',timeStyle: 'medium'}).format(new Date(data.doB)));
       }
   };
 
@@ -77,7 +76,8 @@ export default function Profile({ id }) {
           errorMessage("Invalid age");
           return;
       }
-      const isoDate = format(data.doB, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+      const isoDate = Intl.DateTimeFormat('us', {dateStyle: 'long',timeStyle: 'medium'}).format(new Date(data.doB))
+      // format(data.doB, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
       data.doB = isoDate;
     }
     else{
