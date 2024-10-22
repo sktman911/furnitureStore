@@ -1,7 +1,7 @@
 import axios from "axios";
-import {apiURL} from "../constants/index";
+import { apiUrl } from "../constants";
 
-const baseURL = apiURL;
+const baseURL = apiUrl;
 
 // Authentication API
 const authAPI = (url = `${baseURL}/api/Authentication/`) => {
