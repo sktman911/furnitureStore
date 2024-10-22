@@ -1,5 +1,6 @@
 import React,{createContext, useState, useEffect} from 'react'
 import axios from "axios"
+import { apiUrl } from '../constants';
 
 const ShopContext = createContext(null);
 
@@ -9,15 +10,15 @@ const ShopContextProvider = (props) => {
   const[categories, setCategories] = useState([]);
   const[subCategories, setSubCategories] = useState([]);
 
-  const  getProducts = async (url = "https://localhost:7183/api/Products/") => {
+  const  getProducts = async (url = apiUrl+"api/Products/") => {
     axios.get(url).then(res => {setProducts(res.data)}).catch(err => console.log(err));
   }
 
-  const getCategories = async (url = "https://localhost:7183/api/Categories/") => {
+  const getCategories = async (url = apiUrl+"api/Categories/") => {
     axios.get(url).then(res => {setCategories(res.data)}).catch(err => console.log(err))
   }
 
-  const getSubCategories = (url = "https://localhost:7183/api/SubCategories/") => {
+  const getSubCategories = (url = apiUrl+"api/SubCategories/") => {
     axios.get(url).then((res) => {setSubCategories(res.data)}).catch(err => console.log(err))
   }
 
