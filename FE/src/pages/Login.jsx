@@ -2,12 +2,12 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router";
-import axios from "axios";
 
 import { useDispatch } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import { LOGIN_USER } from "../slice/userSlice";
 import { errorMessage } from "../constants/message";
+import { authAPI } from "../modules/apiClient";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -25,9 +25,8 @@ const Login = () => {
   });
 
   const onSubmit = async (data) => {
-    const url = "https://localhost:7183/api/Authentication/";
-    axios
-      .post(url, data)
+    authAPI()
+      .LOGIN(data)
       .then((res) => {
         if (res.data.token) {
           localStorage.setItem("token", res.data.token);

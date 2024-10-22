@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>E:\Giang\FurniturePublish</_PublishTargetUrl>
+    <History>True|2024-10-20T17:24:43.0235103Z;True|2024-10-21T00:08:24.8713095+07:00;True|2024-10-20T18:27:46.8419156+07:00;True|2024-10-20T17:53:03.3562815+07:00;True|2024-10-20T17:31:46.1329291+07:00;True|2024-10-20T17:23:46.1704349+07:00;</History>
+    <LastFailureDetails />
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="Furniture">
+      <Value>Data Source=SQL5110.site4now.net%3bInitial Catalog=db_aae6ea_furnituredb%3bUser Id=db_aae6ea_furnituredb_admin%3bPassword=20022606G%3bTrustServerCertificate=True</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>E:\Giang\FurniturePublish</_PublishTargetUrl>
+    <History>True|2024-10-22T14:46:48.3782795Z;True|2024-10-22T21:13:14.8732452+07:00;True|2024-10-22T21:12:19.5858469+07:00;True|2024-10-22T20:19:30.0306106+07:00;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="Furniture">
+      <Value>Server=luxurySG_db.mssql.somee.com%3bworkstation id=luxurySG_db.mssql.somee.com%3bpacket size=4096%3buser id=sktman911_SQLLogin_1%3bpwd=2gl2cal3wc%3bdata source=luxurySG_db.mssql.somee.com%3bpersist security info=False%3binitial catalog=luxurySG_db%3bTrustServerCertificate=True</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>

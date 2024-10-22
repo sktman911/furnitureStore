@@ -7,6 +7,7 @@ using FurnitureAPI.Services;
 using FurnitureAPI.Services.Interface;
 using FurnitureAPI.Services.Momo;
 using FurnitureAPI.Services.VnPay;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
@@ -75,7 +76,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowOrigin",
             policy =>
             {
-                policy.WithOrigins("http://localhost:3000")
+                policy.WithOrigins("http://localhost:3000", "https://furniture-store-tawny.vercel.app")
                        .AllowAnyMethod()
                        .AllowCredentials()
                        .AllowAnyHeader();
@@ -121,11 +122,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+if (app.Environment.IsProduction())
+{
+    app.UseDeveloperExceptionPage();
+}
 
-var contentRootPath = builder.Environment.ContentRootPath;
+
+//var contentRootPath = builder.Environment.ContentRootPath;
+var rootPath = builder.Environment.WebRootPath;
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new PhysicalFileProvider(Path.Combine(contentRootPath, "Images")),
+    FileProvider = new PhysicalFileProvider(Path.Combine(rootPath, "Images")),
     RequestPath = "/Images"
 });
 
@@ -133,12 +140,18 @@ app.UseCors("AllowOrigin");
 
 app.UseAuthentication();
 
-app.UseAuthorization();
-
 app.MapHub<OrderHub>("/orderHub");
 app.MapControllers();
 
 app.UseRouting();
+
+app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
+
 
 app.UseSession();
 

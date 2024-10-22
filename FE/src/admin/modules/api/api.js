@@ -1,9 +1,9 @@
 import axios from "axios";
-
+import { apiUrl } from "../../../constants";
 
 // Product Size Color API 
 const productSizeColorAPI = (
-    url = "https://localhost:7183/api/ProductSizeColors/"
+    url = apiUrl+"api/ProductSizeColors/"
   ) => {
     return {
       GET: (id) => axios.get(url + id),
@@ -14,7 +14,7 @@ const productSizeColorAPI = (
 // End Product Size Color API 
 
 // Size API
-  const sizeAPI = (url = "https://localhost:7183/api/Sizes/") => {
+  const sizeAPI = (url = apiUrl+"api/Sizes/") => {
     return {
       GET: () => axios.get(url),
     };
@@ -23,7 +23,7 @@ const productSizeColorAPI = (
 
 
 // Color API
-  const colorAPI = (url = "https://localhost:7183/api/Colors/") => {
+  const colorAPI = (url = apiUrl+ "api/Colors/") => {
     return {
       GET: () => axios.get(url),
       POST: (newData) => axios.post(url, newData),
@@ -34,7 +34,7 @@ const productSizeColorAPI = (
 // End Color API
 
 // Product API
-const productAPI = (url = "https://localhost:7183/api/Products/") => {
+const productAPI = (url = apiUrl+"api/Products/") => {
     return {
       GET_ID: (id) => axios.get(url + id),
       PUT: (id, data) => axios.put(url + id, data),
@@ -49,7 +49,7 @@ const productAPI = (url = "https://localhost:7183/api/Products/") => {
 
 
 // Image API
-  const imageAPI = (url = "https://localhost:7183/api/Images/") => {
+  const imageAPI = (url = apiUrl+"api/Images/") => {
     return {
       GET: (id) => axios.get(url + id),
       POST: (data) => axios.post(url, data),
@@ -59,7 +59,7 @@ const productAPI = (url = "https://localhost:7183/api/Products/") => {
 // End Image API
 
 // Categories API
-const categoryAPI = (url = "https://localhost:7183/api/Categories/") => {
+const categoryAPI = (url = apiUrl+"api/Categories/") => {
   return {
     GET: () => axios.get(url),
     POST: (newData) => axios.post(url, newData),
@@ -70,7 +70,7 @@ const categoryAPI = (url = "https://localhost:7183/api/Categories/") => {
 //End Categories API
 
 // SubCategories API
-const subCategoriesAPI = (url = "https://localhost:7183/api/SubCategories/") => {
+const subCategoriesAPI = (url = apiUrl+"api/SubCategories/") => {
   return {
     GET: () => axios.get(url),
     POST: (newData) => axios.post(url, newData),
@@ -81,7 +81,7 @@ const subCategoriesAPI = (url = "https://localhost:7183/api/SubCategories/") => 
 // End SubCategories API
 
 // Orders API
-const orderAPI = (url = "https://localhost:7183/api/Orders/") => {
+const orderAPI = (url = apiUrl+"api/Orders/") => {
   return {
     GET: () => axios.get(url),
     GET_ID: (id) => axios.get(url + id),
@@ -92,7 +92,7 @@ const orderAPI = (url = "https://localhost:7183/api/Orders/") => {
 //End Orders API
 
 // OrderDetail API
-const orderDetailAPI = (url = "https://localhost:7183/api/OrderDetail/") => {
+const orderDetailAPI = (url = apiUrl+"api/OrderDetail/") => {
   return {
     GET: (id) => axios.get(url + id),
   };
@@ -100,7 +100,7 @@ const orderDetailAPI = (url = "https://localhost:7183/api/OrderDetail/") => {
 //End OrderDetail API
 
 // Customers API
-const customerAPI = (url = "https://localhost:7183/api/Customers/") => {
+const customerAPI = (url = apiUrl+"api/Customers/") => {
   return {
     GET: () => axios.get(url),
     POST: (newData) => axios.post(url, newData),

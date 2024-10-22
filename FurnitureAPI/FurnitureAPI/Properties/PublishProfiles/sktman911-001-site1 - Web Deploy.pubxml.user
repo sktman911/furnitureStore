@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAZ/zqqG9wUUSUAOzWoxvfBAAAAAACAAAAAAAQZgAAAAEAACAAAACXTzTNcopqba9iJBxEN+tzpcGaaVog91SmoESY756RHAAAAAAOgAAAAAIAACAAAACZQzkP6trUoMOuabmdZHYOk9imXgZRtF5QqYDJGbab9iAAAACVtAcYf1Rv1QIrsuaSjWhckIDEe6LXiUvrAHAycQxUdUAAAAAabGJOlkawWqY/1pdQ13CIgujPmAwvkyM58tHQa2yxuXrxlzGoIMY9m2M9ICjqj0qXBCy/cAwurypLg8sa7jge</EncryptedPassword>
+    <History>True|2024-10-21T16:45:21.9490558Z;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="Furniture">
+      <Value>Data Source=SQL5110.site4now.net%3bInitial Catalog=db_aae6ea_furnituredb%3bUser Id=db_aae6ea_furnituredb_admin%3bPassword=20022606G%3bTrustServerCertificate=True</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>

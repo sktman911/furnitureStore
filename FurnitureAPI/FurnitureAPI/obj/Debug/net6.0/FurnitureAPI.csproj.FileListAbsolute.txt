@@ -508,3 +508,4 @@ E:\Giang\react-project\FurnitureAPI\FurnitureAPI\bin\Debug\net6.0\System.IO.Pipe
 E:\Giang\react-project\FurnitureAPI\FurnitureAPI\bin\Debug\net6.0\System.Text.Encodings.Web.dll
 E:\Giang\react-project\FurnitureAPI\FurnitureAPI\bin\Debug\net6.0\System.Text.Json.dll
 E:\Giang\react-project\FurnitureAPI\FurnitureAPI\bin\Debug\net6.0\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll
+E:\Giang\react-project\FurnitureAPI\FurnitureAPI\bin\Debug\net6.0\FurnitureAPI.staticwebassets.runtime.json

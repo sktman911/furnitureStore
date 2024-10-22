@@ -84,7 +84,6 @@ namespace FurnitureAPI.Services
                 CategoryName = p.SubCategory.Category.CategoryName,
                 Sale = p.Sale,
                 CreatedDate = p.CreatedDate,
-                Reviews = p.Reviews,
                 Images = p.Images.Select(i => new Image
                 {
                     ImageId = i.ImageId,

@@ -8,7 +8,8 @@ import { FaUserGroup, FaRegMoneyBill1 } from "react-icons/fa6";
 import { FaReceipt } from "react-icons/fa";
 
 
-export const apiUrl = "https://localhost:7183/";
+// export const apiUrl = "https://localhost:7183/";
+export const apiUrl = "http://luxurySG.somee.com/";
 
 export const navLinks = [
   { href: "/", label: "Home", subMenu: false },

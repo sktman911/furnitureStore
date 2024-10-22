@@ -1,7 +1,7 @@
 import axios from "axios";
+import {apiURL} from "../constants/index";
 
-const baseURL = "https://localhost:7183";
-
+const baseURL = apiURL;
 
 // Authentication API
 const authAPI = (url = `${baseURL}/api/Authentication/`) => {
