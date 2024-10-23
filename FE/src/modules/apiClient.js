@@ -4,7 +4,7 @@ import { apiUrl } from "../constants";
 const baseURL = apiUrl;
 
 // Authentication API
-const authAPI = (url = `${baseURL}/api/Authentication/`) => {
+const authAPI = (url = `${baseURL}api/Authentication/`) => {
   return {
     LOGIN: (data) => axios.post(url,data), 
     SIGNUP: (data) => axios.post(url + "signup",data)
@@ -13,7 +13,7 @@ const authAPI = (url = `${baseURL}/api/Authentication/`) => {
 
 // Product Size Color API 
 const productSizeColorAPI = (
-    url = `${baseURL}/api/ProductSizeColors/`
+    url = `${baseURL}api/ProductSizeColors/`
   ) => {
     return {
       GET: (id) => axios.get(url + id),
@@ -24,7 +24,7 @@ const productSizeColorAPI = (
 // End Product Size Color API 
 
 // Size API
-  const sizeAPI = (url = `${baseURL}/api/Sizes/`) => {
+  const sizeAPI = (url = `${baseURL}api/Sizes/`) => {
     return {
       GET: () => axios.get(url),
       GET_ID: (id)=> axios.get(url + id),
@@ -34,7 +34,7 @@ const productSizeColorAPI = (
 
 
 // Color API
-  const colorAPI = (url = `${baseURL}/api/Colors/`) => {
+  const colorAPI = (url = `${baseURL}api/Colors/`) => {
     return {
       GET: () => axios.get(url),
       GET_ID: (id) => axios.get(url + id)
@@ -43,7 +43,7 @@ const productSizeColorAPI = (
 // End Color API
 
 // Product API
-const productAPI = (url = `${baseURL}/api/Products/`) => {
+const productAPI = (url = `${baseURL}api/Products/`) => {
     return {
       GET:() => axios.get(url),
       GET_ID: (id) => axios.get(url + id),
@@ -55,7 +55,7 @@ const productAPI = (url = `${baseURL}/api/Products/`) => {
 
 
 // Image API
-  const imageAPI = (url = `${baseURL}/api/Images/`) => {
+  const imageAPI = (url = `${baseURL}api/Images/`) => {
     return {
       GET: (id) => axios.get(url + id),
       POST: (data) => axios.post(url, data),
@@ -64,7 +64,7 @@ const productAPI = (url = `${baseURL}/api/Products/`) => {
 // End Image API
 
 // Categories API
-const categoryAPI = (url = `${baseURL}/api/Categories/`) => {
+const categoryAPI = (url = `${baseURL}api/Categories/`) => {
   return {
     GET: () => axios.get(url),
     POST: (newData) => axios.post(url, newData),
@@ -76,7 +76,7 @@ const categoryAPI = (url = `${baseURL}/api/Categories/`) => {
 
 // Customers API
 
-const customerAPI = (url = `${baseURL}/api/Customers/`) => {
+const customerAPI = (url = `${baseURL}api/Customers/`) => {
   return {
     GET_ID: (id) => axios.get(url + id),
     PUT: (id, data) => axios.put(url+id, data),
@@ -87,7 +87,7 @@ const customerAPI = (url = `${baseURL}/api/Customers/`) => {
 
 // Orders API
 
-const orderAPI = (url = `${baseURL}/api/Orders/`) => {
+const orderAPI = (url = `${baseURL}api/Orders/`) => {
   return {
     POST: (newData) => axios.post(url, newData),
     GET_ID: (id) => axios.get(url + id),
@@ -98,7 +98,7 @@ const orderAPI = (url = `${baseURL}/api/Orders/`) => {
 // End Orders API
 
 // OrderDetail API
-const orderDetailAPI = (url = `${baseURL}/api/OrderDetail/`) => {
+const orderDetailAPI = (url = `${baseURL}api/OrderDetail/`) => {
   return {
     GET: (id) => axios.get(url + id),
   };
@@ -107,7 +107,7 @@ const orderDetailAPI = (url = `${baseURL}/api/OrderDetail/`) => {
 
 // Favourites API
 
-const favouriteAPI = (url = `${baseURL}/api/Favourites/`) => {
+const favouriteAPI = (url = `${baseURL}api/Favourites/`) => {
   return {
     GET: (cusId,productId) => axios.get(`${url}${cusId}&&${productId}`),
     PUT: (id, data) => axios.put(url+id, data),
@@ -119,7 +119,7 @@ const favouriteAPI = (url = `${baseURL}/api/Favourites/`) => {
 
 // Reviews API
 
-const reviewAPI = (url = `${baseURL}/api/Review/`) => {
+const reviewAPI = (url = `${baseURL}api/Review/`) => {
   return {
     POST: (data) => axios.post(url, data),
     GET: (productId) => axios.get(url + productId)
