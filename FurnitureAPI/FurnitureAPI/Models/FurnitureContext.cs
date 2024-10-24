@@ -39,8 +39,8 @@ namespace FurnitureAPI.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=.;Database=Furniture;Trusted_Connection=True;");
-                //optionsBuilder.UseSqlServer("Server=luxurySG_db.mssql.somee.com;workstation id=luxurySG_db.mssql.somee.com;packet size=4096;user id=sktman911_SQLLogin_1;pwd=2gl2cal3wc;data source=luxurySG_db.mssql.somee.com;persist security info=False;initial catalog=luxurySG_db;TrustServerCertificate=True");
+                //optionsBuilder.UseSqlServer("Server=.;Database=Furniture;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=luxurySG_db.mssql.somee.com;workstation id=luxurySG_db.mssql.somee.com;packet size=4096;user id=sktman911_SQLLogin_1;pwd=2gl2cal3wc;data source=luxurySG_db.mssql.somee.com;persist security info=False;initial catalog=luxurySG_db;TrustServerCertificate=True");
             }
         }
 
