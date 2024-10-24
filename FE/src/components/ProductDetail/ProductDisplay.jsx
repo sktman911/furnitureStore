@@ -12,14 +12,21 @@ import RelatedProducts from "../ProductDetail/RelatedProducts";
 
 import { useDispatch, useSelector } from "react-redux";
 import { errorMessage } from "../../constants/message";
-import { favouriteAPI } from "../../modules/apiClient";
+import { favouriteAPI, reviewAPI } from "../../modules/apiClient";
 import { useNavigate } from "react-router";
 import useQuantity from "../../hooks/useQuantity";
 
 const ProductDisplay = (props) => {
   const user = useSelector((state) => state.user);
-
   const { product } = props;
+
+  const [color, setColor] = useState({});
+  const [size, setSize] = useState({});
+  const [favor, setFavor] = useState({});
+  const [active, setActive] = useState("Description");
+  const [reviews, setReviews] = useState([]);
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { quantity, handlePlus, handleMinus, handleTypeQuantity } = useQuantity(
     1,
@@ -27,12 +34,12 @@ const ProductDisplay = (props) => {
     99
   );
 
-  const sum = useMemo(() => product.reviews.reduce((initial, item) => {
+  const sum = useMemo(() => reviews.reduce((initial, item) => {
     return initial + item.rating;
   }, 0)
-  ,[product.reviews]);
+  ,[reviews]);
 
-  const rating = useMemo(() => (sum / product.reviews.length).toFixed(1),[sum,product.reviews.length])
+  const rating = useMemo(() => (sum / reviews.length).toFixed(1),[sum,reviews.length])
 
   const salePrice = useMemo(
     () =>
@@ -42,13 +49,6 @@ const ProductDisplay = (props) => {
     [product.price, product.sale]
   );
 
-  const [color, setColor] = useState(null);
-  const [size, setSize] = useState(null);
-  const [hover, setHover] = useState(false);
-  const [favor, setFavor] = useState({});
-  const [active, setActive] = useState("Description");
-  const dispatch = useDispatch();
-
   const subContents = useMemo(
     () => [
       { title: "Description" },
@@ -57,6 +57,20 @@ const ProductDisplay = (props) => {
     ],
     []
   );
+
+  useEffect(() => {
+    const getReviews = async () => {
+      await reviewAPI()
+        .GET(product.productId)
+        .then((res) => {
+          setReviews(res.data);
+        })
+        .catch((err) => console.log(err));
+    };
+
+    getReviews();
+  }, [product.productId]);
+
 
   useEffect(() => {
     if (user) {
@@ -183,14 +197,12 @@ const ProductDisplay = (props) => {
             <p className="text-black font-semibold pl-3">{rating}/5.0</p>
             <RxDividerVertical className="text-gray-400 text-3xl" />
             <span className="text-gray-400">
-              {product.reviews.length} Customer Review
+              {reviews.length} Customer Review
             </span>
             <div>
               <FaHeart
-                className="w-6 h-6 hover:cursor-pointer text-red-500 ml-8"
-                color={hover || favor.isFavourite === true ? "red" : "gray"}
-                onMouseEnter={() => setHover(true)}
-                onMouseLeave={() => setHover(false)}
+                className={`w-6 h-6 hover:cursor-pointer ml-8 ${favor.isFavourite ? 'text-red-500' : 'text-gray-400 hover:text-red-500'}`}
+        
                 onClick={() => handleFavourite()}
               />
             </div>
@@ -201,9 +213,9 @@ const ProductDisplay = (props) => {
             which boasts a clear midrange and extended highs for a sound.
           </p>
 
-          <SizePicker onChange={handleSize} />
+          <SizePicker onChange={handleSize} product={product}/>
 
-          <ColorPicker onChange={handleColor} />
+          <ColorPicker onChange={handleColor} product={product} />
 
           <div className="pt-5 flex items-center justify-between w-full xl:w-11/12 text-sm md:text-base relative">
             <div className="w-16 sm:w-28 lg:w-16 xl:w-28 h-10 sm:h-14 lg:h-10 xl:h-14 border-2 border-gray-400 rounded-lg">
@@ -290,13 +302,13 @@ const ProductDisplay = (props) => {
             }
           >
             {content.title}
-            {content.title === "Review" && <span>[{product.reviews.length}]</span>}
+            {content.title === "Review" && <span>[{reviews.length}]</span>}
           </h1>
         ))}
       </div>
 
       {active === "Description" && <Description />}
-      {active === "Review" && <Review product={product} />}
+      {active === "Review" && <Review reviews={reviews} />}
 
       <hr className="my-16" />
 

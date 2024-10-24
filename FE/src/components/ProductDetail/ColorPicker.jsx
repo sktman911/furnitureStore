@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { colorAPI,  } from "../../modules/apiClient";
-import { useParams } from "react-router";
+import React, { useContext } from "react";
+import { ShopContext } from "../../context/ShopContext";
 
 const ColorPicker = (props) => {
-  const {productId} = useParams();
-  const [color, setColor] = useState([]);
+  const {colors} = useContext(ShopContext);
 
-  useEffect(() => {
-    colorAPI()
-      .GET_ID(productId)
-      .then((res) => {setColor(res.data)})
-      .catch((err) => console.log(err));
-  },[productId]);
+  const color = colors.filter((item) =>
+    props.product.productSizeColors.some(
+      (psc) => psc.colorId === item.colorId
+    )
+  );
 
   const selectedColor = (data) => {
     props.onChange(data);

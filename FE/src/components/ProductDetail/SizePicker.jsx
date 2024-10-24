@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { sizeAPI } from "../../modules/apiClient";
-import { useParams } from "react-router";
+import React, { useContext } from "react";
+import { ShopContext } from "../../context/ShopContext";
 
 const SizePicker = (props) => {
-  const { productId } = useParams();
-  const [size, setSize] = useState([]);
+  const {sizes} = useContext(ShopContext);
 
-  useEffect(() => {
-    sizeAPI()
-      .GET_ID(productId)
-      .then((res) => setSize(res.data))
-      .catch((err) => console.log(err));
-  }, [productId]);
+  const size = sizes.filter((item) =>
+    props.product.productSizeColors.some(
+      (psc) => psc.sizeId === item.sizeId
+    )
+  );
 
   const selectedSize = (data) => {
     props.onChange(data);

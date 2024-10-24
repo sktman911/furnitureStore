@@ -36,6 +36,7 @@ namespace FurnitureAPI.Respository
                 .Include(p => p.SubCategory)
                 .ThenInclude(sc => sc!.Category)
                 .Include(p => p.Images)
+                .Include(p => p.ProductSizeColors)
                 .OrderByDescending(x => x.CreatedDate)
                 .ToListAsync();
 

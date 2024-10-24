@@ -83,6 +83,12 @@ namespace FurnitureAPI.Services
                 CategoryId = p.SubCategory!.Category!.CategoryId,
                 CategoryName = p.SubCategory.Category.CategoryName,
                 Sale = p.Sale,
+                ProductSizeColors = p.ProductSizeColors.Select(psc => new ProductSizeColor
+                {
+                    PscId = psc.PscId,
+                    ColorId = psc.ColorId,
+                    SizeId = psc.SizeId,
+                }).ToList(),
                 CreatedDate = p.CreatedDate,
                 Images = p.Images.Select(i => new Image
                 {

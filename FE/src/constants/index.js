@@ -8,7 +8,7 @@ import { FaUserGroup, FaRegMoneyBill1 } from "react-icons/fa6";
 import { FaReceipt } from "react-icons/fa";
 
 
-// export const apiUrl = "https://localhost:7183/";
+// export const apiUrl = "http://localhost:7183/";
 export const apiUrl = "https://furniturestore-fct8.onrender.com/";
 
 export const navLinks = [
