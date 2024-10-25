@@ -46,6 +46,8 @@ export default function Search() {
             name={item.productName}
             des={item.description}
             price={item.price}
+            sale = {item.sale}
+              salePrice={Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(item.price - (item.price * item.sale /100))}
           />
         ))}
       </div>

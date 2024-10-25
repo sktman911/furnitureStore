@@ -8,3 +8,9 @@ export function differenceInDays(startDate, endDate) {
     
     return Math.floor(differnceInDays); 
 }
+
+export function formatDate(date)  {
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    const formattedDate = Intl.DateTimeFormat('en-CA', options).format(new Date(date)); 
+    return formattedDate;
+};

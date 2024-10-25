@@ -31,7 +31,7 @@ namespace FurnitureAPI.Helpers
             var token = new JwtSecurityToken(
                 issuer: configuration["Jwt:Issuer"],
                 audience: configuration["Jwt:Audience"],
-                expires: DateTime.Now.AddMinutes(10),
+                expires: DateTime.Now.AddDays(3),
                 signingCredentials: signCredential,
                 claims: claims
             );

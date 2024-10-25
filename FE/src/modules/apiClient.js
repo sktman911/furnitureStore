@@ -79,7 +79,7 @@ const categoryAPI = (url = `${baseURL}api/Categories/`) => {
 const customerAPI = (url = `${baseURL}api/Customers/`) => {
   return {
     GET_ID: (id) => axios.get(url + id),
-    PUT: (id, data) => axios.put(url+id, data),
+    PUT: (id, data) => axios.put(url+id, data,{headers: {'Authorization': `Bearer ${localStorage.getItem("token")}`}}),
   };
 };
 

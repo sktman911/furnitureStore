@@ -5,6 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import { LOGIN_USER } from "../../slice/userSlice";
 import { useDispatch } from "react-redux";
 import { errorMessage } from "../../constants/message";
+import { formatDate } from "../../helper/dayHelper";
 
 
 export default function Profile({ id }) {
@@ -42,7 +43,7 @@ export default function Profile({ id }) {
       setValue("username", data.username);
       setValue("cusAddress", data.cusAddress);
       if(data.doB != null){
-        setValue("doB", Intl.DateTimeFormat('us', {dateStyle: 'long',timeStyle: 'medium'}).format(new Date(data.doB)));
+        setValue("doB", formatDate(data.doB));
       }
   };
 
@@ -68,17 +69,8 @@ export default function Profile({ id }) {
     }
 
     if(data.doB.length > 0){
-      const today = new Date(Date.now());
-      const birthday = new Date(data.doB);
-      let year = today.getFullYear() - birthday.getFullYear();    
-      const month = today.getMonth() - birthday.getMonth();
-      if(year < 10 || (year === 10 && month < 0) || (month === 0 && today.getDate() < birthday.getDate())){
-          errorMessage("Invalid age");
-          return;
-      }
-      const isoDate = Intl.DateTimeFormat('us', {dateStyle: 'long',timeStyle: 'medium'}).format(new Date(data.doB))
-      // format(data.doB, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-      data.doB = isoDate;
+      const newDate = new Date(data.doB).toISOString(); 
+      data.doB = newDate;
     }
     else{
       data.doB = null;

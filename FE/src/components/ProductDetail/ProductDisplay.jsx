@@ -20,8 +20,8 @@ const ProductDisplay = (props) => {
   const user = useSelector((state) => state.user);
   const { product } = props;
 
-  const [color, setColor] = useState({});
-  const [size, setSize] = useState({});
+  const [color, setColor] = useState(null);
+  const [size, setSize] = useState(null);
   const [favor, setFavor] = useState({});
   const [active, setActive] = useState("Description");
   const [reviews, setReviews] = useState([]);
@@ -34,12 +34,11 @@ const ProductDisplay = (props) => {
     99
   );
 
-  const sum = useMemo(() => reviews.reduce((initial, item) => {
+  const sum = reviews.reduce((initial, item) => {
     return initial + item.rating;
-  }, 0)
-  ,[reviews]);
+  }, 0);
 
-  const rating = useMemo(() => (sum / reviews.length).toFixed(1),[sum,reviews.length])
+  const rating = useMemo(() => (sum / reviews.length).toFixed(1),[sum,reviews.length]);
 
   const salePrice = useMemo(
     () =>
@@ -67,10 +66,8 @@ const ProductDisplay = (props) => {
         })
         .catch((err) => console.log(err));
     };
-
     getReviews();
-  }, [product.productId]);
-
+  },[product.productId])
 
   useEffect(() => {
     if (user) {
@@ -139,7 +136,7 @@ const ProductDisplay = (props) => {
 
   const handleColor = useCallback((color) => {
     setColor(color);
-  }, []);
+  }, []); 
 
   return (
     <>
@@ -194,7 +191,7 @@ const ProductDisplay = (props) => {
               );
             })}
 
-            <p className="text-black font-semibold pl-3">{rating}/5.0</p>
+            <p className="text-black font-semibold pl-3">{rating !== isNaN ? rating : 0}/5.0</p>
             <RxDividerVertical className="text-gray-400 text-3xl" />
             <span className="text-gray-400">
               {reviews.length} Customer Review
