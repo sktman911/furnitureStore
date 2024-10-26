@@ -8,8 +8,8 @@ import { customerAPI, orderAPI } from "../modules/apiClient";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { errorMessage } from "../constants/message";
-import { CLEAR_CART } from "../slice/cartSlice";
-
+import vnPay from "../assets/images/vnpay.jpg";
+import momoPay from "../assets/images/momo.png";
 
 const Checkout = () => {
   const cart = useSelector((state) => state.cart);
@@ -17,7 +17,6 @@ const Checkout = () => {
   const [shipFee, setShipFee] = useState(0);
   const [total, setTotal] = useState(0);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const [paymentMethod, setPaymentMethod] = useState(null);
 
@@ -56,7 +55,7 @@ const Checkout = () => {
     }
   }, []);
 
-  const onCheckout = async(data) => {
+  const onCheckout = async (data) => {
     if (user === null) {
       navigate("/login", { replace: true });
       return;
@@ -114,8 +113,6 @@ const Checkout = () => {
           theme: "colored",
         });
       });
-
-      dispatch(CLEAR_CART());
   };
 
   return (
@@ -241,11 +238,20 @@ const Checkout = () => {
                 </div>
                 {item.sale !== null ? (
                   <p>
-                    {Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(item.cartQuantity * (item.price - (item.price * item.sale /100)))}
+                    {Intl.NumberFormat("vi-VI", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(
+                      item.cartQuantity *
+                        (item.price - (item.price * item.sale) / 100)
+                    )}
                   </p>
                 ) : (
                   <p>
-                    {Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(item.cartQuantity * item.price)}
+                    {Intl.NumberFormat("vi-VI", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(item.cartQuantity * item.price)}
                   </p>
                 )}
               </div>
@@ -263,54 +269,52 @@ const Checkout = () => {
                 <span>Total</span>
               </div>
               <p className="text-yellow-600 text-lg md:text-xl font-semibold">
-              {Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(total)}
+                {Intl.NumberFormat("vi-VI", {
+                  style: "currency",
+                  currency: "VND",
+                }).format(total)}
               </p>
             </div>
           </div>
 
           <div className="pt-8 flex flex-col gap-4 px-3 bg-yellow-50 rounded-b-lg">
-            <div>
-              <div className="flex items-center gap-5">
+          <label className="w-56 flex items-center justify-between gap-4 cursor-pointer">
+              <div className="flex items-center gap-4">
                 <input
+                  className="peer"
+                  type="radio"
+                  name="payment"
+                  onChange={() => setPaymentMethod(1)}
+                />
+                <p className="text-sm">Cash On Delivery</p>
+              </div>
+            </label>
+
+            <label className="w-56 flex items-center justify-between gap-4 cursor-pointer my-1">
+              <div className="flex gap-4 items-center">
+                <input
+                  className="peer"
                   type="radio"
                   name="payment"
                   onChange={() => setPaymentMethod(2)}
                 />
-                <label className="text-sm">Vnpay payment</label>
+                <p className="text-sm">Vnpay Payment</p>
               </div>
-              <p className="text-sm text-left text-gray-400 leading-6 py-2">
-                Make your payment directly into our bank account. Please use
-                your Order ID as the payment reference. Your order will not be
-                shipped until the funds have cleared in our account.
-              </p>
-            </div>
+              <img src={vnPay} alt="Images" className="h-14 w-14" />
+            </label>
 
-            <div className="flex items-center gap-5">
-              <input
-                type="radio"
-                name="payment"
-                onChange={() => setPaymentMethod(1)}
-              />
-              <label className="text-sm">Momo payment</label>
-            </div>
-
-            <div className="text-sm text-left leading-6">
-              <p>
-                Your personal data will be used to support your experience
-                throughout this website, to manage access to your account, and
-                for other purposes described in our {""}
-                <span className="font-bold">privacy policy</span>.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-5">
-              <input
-                type="radio"
-                name="payment"
-                onChange={() => setPaymentMethod(1)}
-              />
-              <label className="text-sm">Cash On Delivery</label>
-            </div>
+            <label className="w-56 flex items-center justify-between gap-4 cursor-pointer my-1">
+              <div className="flex gap-4 items-center">
+                <input
+                  className="peer"
+                  type="radio"
+                  name="payment"
+                  onChange={() => setPaymentMethod(3)}
+                />
+                <p className="text-sm">Momo Wallet</p>
+              </div>
+              <img src={momoPay} alt="Images" className="h-14 w-14" />
+            </label>
 
             <div className="text-sm text-left leading-6">
               <p>

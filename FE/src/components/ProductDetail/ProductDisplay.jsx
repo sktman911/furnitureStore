@@ -171,7 +171,7 @@ const ProductDisplay = (props) => {
               {Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(product.price)}
             </p>
             {salePrice !== null ? (
-              <p className="text-red-600">
+              <p className="text-red-600 font-semibold">
                 {Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(salePrice)}
               </p>
             ) : null}
@@ -191,7 +191,7 @@ const ProductDisplay = (props) => {
               );
             })}
 
-            <p className="text-black font-semibold pl-3">{rating !== isNaN ? rating : 0}/5.0</p>
+            <p className="text-black font-semibold pl-3">{isNaN(rating) ? 0 : rating}/5.0</p>
             <RxDividerVertical className="text-gray-400 text-3xl" />
             <span className="text-gray-400">
               {reviews.length} Customer Review

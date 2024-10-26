@@ -4,6 +4,7 @@ import Button from "../components/Button";
 import { useLocation } from "react-router";
 import { CLEAR_CART } from "../slice/cartSlice";
 import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 
 const PaymentReturn = () => {
   const param = useLocation();
@@ -11,9 +12,11 @@ const PaymentReturn = () => {
   const success = selectParam.get("success");
   const dispatch = useDispatch();
 
-  // if(success === "true"){
-  //   dispatch(CLEAR_CART());
-  // }
+  useEffect(() => {
+    if(success === "true"){
+      dispatch(CLEAR_CART());
+    }
+  },[]);
 
   return (
     <>
