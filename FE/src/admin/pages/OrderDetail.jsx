@@ -15,14 +15,14 @@ export default function OrderDetail() {
 
   useEffect(() => {
     getOrder();
-  }, [order.os.osId]);
+  }, []);
 
   const getOrder = async () => {
     await orderAPI()
       .GET_ID(orderId)
       .then((res) => {
         setOrder(res.data);
-        hanldeOrderStatus(res.data.os.osName);
+        hanldeOrderStatus(res.data.orderStatusName);
       })
       .catch((err) => console.log(err));
   };
@@ -37,7 +37,7 @@ export default function OrderDetail() {
   const updateOrderStatus = () => {
     orderAPI()
       .PUT(order.orderId, order)
-      .then((res) => {setOrder(res.data)})
+      .then((res) => {setOrder(res.data);hanldeOrderStatus(res.data.orderStatusName);})
       .catch((err) => console.log(err));
   };
 
@@ -73,7 +73,7 @@ export default function OrderDetail() {
           </div>
           <div className="w-2/6">
             <span>Order Method: </span>
-            <span>{order.om.omName}</span>
+            <span>{order.orderMethodName}</span>
           </div>
         </div>
 

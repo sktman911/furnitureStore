@@ -10,20 +10,21 @@ import Profile from "../components/Account/Profile.jsx";
 import History from "../components/Account/History.jsx";
 
 export const AccountItem = React.memo(
-  ({ url, icon, title, active, setActive }) => {
+  ({ icon, title, active, setActive }) => {
+    const titleText = title.charAt(0).toUpperCase() + title.slice(1);
     return (
       <li
         key={title}
         className={
-          active === title
+          title === active
             ? "bg-white text-yellow-600 rounded-md py-2 px-4"
             : "hover:bg-white hover:text-yellow-600 rounded-md py-2 px-4"
         }
         onClick={() => setActive(title)}
       >
-        <Link to={url} className="flex items-center justify-between cursor-pointer">
+        <Link to={"/"+title} className="flex items-center justify-between cursor-pointer">
           <span className="w-1/3">{icon}</span>
-          <span className="w-2/3 text-center text-lg">{title}</span>
+          <span className="w-2/3 text-center text-lg">{titleText}</span>
         </Link>
       </li>
     );
@@ -33,13 +34,15 @@ export const AccountItem = React.memo(
 export default function Account({ component }) {
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
-  const [active, setActive] = useState("Profile");
+
+  const [active, setActive] = useState(component);
 
   useEffect(() => {
     if (user === null) {
       navigate("/login", { replace: true });
       return;
     }
+
   }, []);
 
   const componentMap = {
@@ -51,13 +54,11 @@ export default function Account({ component }) {
     () => [
       {
         icon: <FaRegUser className="w-5 h-5" />,
-        title: "Profile",
-        path: "/profile",
+        title: "profile",
       },
       {
         icon: <IoReceiptOutline className="w-5 h-5" />,
-        title: "History",
-        path: "/history",
+        title: "history",
       },
       {
         icon: <FaLock className="w-5 h-5" />,
@@ -83,7 +84,6 @@ export default function Account({ component }) {
                   key={index}
                   icon={item.icon}
                   title={item.title}
-                  url={item.path}
                   active={active}
                   setActive={setActive}
                 />

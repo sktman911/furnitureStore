@@ -107,7 +107,7 @@ namespace FurnitureAPI.Controllers
             try
             {
                 await _orderService.UpdateOrder(id, order);
-                var updatedOrder = await GetOrder(id);
+                var updatedOrder =  await GetOrder(id);
 
                 await _hubContext.Clients.All.SendAsync("ReceiveUpdateOrderStatus", updatedOrder.Value);
                 return Ok(updatedOrder.Value);

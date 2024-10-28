@@ -93,13 +93,8 @@ namespace FurnitureAPI.Services
 
         public async Task UpdateOrder(int id, Order order)
         {
-            var existedOrder = await _unitOfWork.Orders.GetById(id);
-            if(existedOrder == null)
-            {
-                throw new KeyNotFoundException();
-            }
-            existedOrder.OsId = 2;
-            await _unitOfWork.Orders.Update(id);
+            order.OsId++;
+            await _unitOfWork.Orders.Update(order);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿
+using DocumentFormat.OpenXml.Vml.Office;
 using FurnitureAPI.Helpers;
 using FurnitureAPI.Models;
 using FurnitureAPI.Models.MomoModel;
@@ -18,11 +19,6 @@ namespace FurnitureAPI.Respository
             _context = context;
         }
 
-        public async Task Update(int id)
-        {
-            await _context.SaveChangesAsync();
-        }
-
         public async Task<IEnumerable<Order>> GetAll()
         {
             var orders = await _context.Orders.ToListAsync();
@@ -38,7 +34,8 @@ namespace FurnitureAPI.Respository
                                 join product in _context.Products on productSizeColor.ProductId equals product.ProductId
                                 join size in _context.Sizes on productSizeColor.SizeId equals size.SizeId
                                 join color in _context.Colors on productSizeColor.ColorId equals color.ColorId
-                                select new Order
+                       
+                                select new OrderInfo
                                 {
                                     OrderId = order.OrderId,
                                     OrderAddress = order.OrderAddress,
@@ -60,8 +57,10 @@ namespace FurnitureAPI.Respository
                                             Color = productSizeColor.Color
                                         },
                                     }).ToList(),
-                                    Om = order.Om,
-                                    Os = order.Os,
+                                    OrderMethodName = order.Om!.OmName,
+                                    OrderStatusName = order.Os!.OsName,
+                                    OsId = order.OsId,
+                                    OmId = order.OmId,
                                     OrderPhone = order.OrderPhone,
                                 }).FirstOrDefaultAsync();
 
@@ -74,9 +73,10 @@ namespace FurnitureAPI.Respository
             return result;
         }
 
-        public Task Update(Order order)
+        public async Task Update(Order order)
         {
-            throw new NotImplementedException();
+            _context.Entry(order).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
 
         public Task Delete(Order order)

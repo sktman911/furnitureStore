@@ -11,6 +11,7 @@ import { faCouch, faUserFriends, faUsers,faList,faListAlt, faHome, faPalette, fa
 from '@fortawesome/free-solid-svg-icons'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { apiUrl } from "../../constants";
 const Sidebar = () => {
   // Add Sidebar icon
   library.add( faCouch, faUserFriends, faUsers, faList, faListAlt, faHome, faPalette,faReceipt)
@@ -31,7 +32,7 @@ const Sidebar = () => {
     "flex items-center gap-5 m-2 pl-6 py-2.5 rounded-lg text-gray-300 " +
     "dark:text-gray-200 dark:hover:text-black hover:bg-gray-100 hover:text-slate-700";
 
-  const getFunctions = (url = "https://localhost:7183/api/Functions/") => {
+  const getFunctions = (url = apiUrl + "api/Functions/") => {
     axios
       .get(url)
       .then((res) => {
@@ -40,7 +41,7 @@ const Sidebar = () => {
       .catch((err) => console.log(err));
   };
 
-  const getTitles = (url = "https://localhost:7183/api/Titles/") => {
+  const getTitles = (url = apiUrl + "api/Titles/") => {
     axios
       .get(url)
       .then((res) => {

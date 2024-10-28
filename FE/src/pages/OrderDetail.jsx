@@ -60,7 +60,7 @@ export default function OrderDetail() {
     // listen for update status
     connection.on("ReceiveUpdateOrderStatus", (order) => {
       setOrder(order);
-      hanldeOrderStatus(order.os.osName);
+      hanldeOrderStatus(order.orderStatusName);
     });
 
     // disconnect signalR when component unmount
@@ -78,7 +78,7 @@ export default function OrderDetail() {
       .GET_ID(orderId)
       .then((res) => {
         setOrder(res.data);
-        hanldeOrderStatus(res.data.os.osName);
+        hanldeOrderStatus(res.data.orderStatusName);
       })
       .catch((err) => console.log(err));
   };
@@ -118,7 +118,7 @@ export default function OrderDetail() {
           </div>
           <div className="w-2/6">
             <span>Order Method: </span>
-            <span>{order.om.omName}</span>
+            <span>{order.orderMethodName}</span>
           </div>
         </div>       
 
@@ -228,6 +228,6 @@ export default function OrderDetail() {
       )}
     </div>
   ) : (
-    <div className="mx-auto w-1/2">Loading</div>
+    <div className="mt-24 py-10">Loading...</div>
   );
 }

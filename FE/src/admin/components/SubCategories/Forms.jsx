@@ -4,6 +4,7 @@ import axios from "axios";
 import { IoClose } from "react-icons/io5";
 import FormInput from "../FormInput";
 import FormSelect from "../FormSelect";
+import { apiUrl } from "../../../constants";
 
 const Forms = (props) => {
   const [option, setOption] = useState([]);
@@ -12,13 +13,13 @@ const Forms = (props) => {
   );
 
   const getCategories = () => {
-    const url = "https://localhost:7183/api/Categories/";
+    const url = apiUrl+ "api/Categories/";
     axios
       .get(url)
       .then((res) => setOption(res.data))
       .catch((err) => console.log(err));
   };
-console.log("a")
+
   useEffect(() => {
     if (props.addForm === true) getCategories();
   }, []);
