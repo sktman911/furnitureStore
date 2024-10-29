@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Analytics } from "@vercel/analytics/react"
+import {SpeedInsights} from "@vercel/speed-insights/react";
 
 import ShopContextProvider from "./context/ShopContext";
 import { StateContextProvider } from "./context/StateContext";
@@ -17,6 +18,7 @@ import store from "./slice/store"
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
+    <SpeedInsights/>
     <Analytics/>
     <Provider store={store}>
       <ShopContextProvider>
