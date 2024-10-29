@@ -32,13 +32,13 @@ namespace FurnitureAPI.Controllers
             var res = _momoService.PaymentExcute(Request.Query);
             if (res.ResultCode == null || res == null)
             {
-                return Redirect("http://localhost:3000/paymentReturn?success=false");
+                return Redirect("https://furniturestore-fct8.onrender.com/paymentReturn?success=false");
             }
             try
             {
                 var order = MomoService.GetOrder();
                 await _orderService.AddOrder(order);
-                return Redirect("http://localhost:3000/paymentReturn?success=true");
+                return Redirect("https://furniturestore-fct8.onrender.com/paymentReturn?success=true");
             }
             catch (BadHttpRequestException e)
             {
@@ -59,14 +59,14 @@ namespace FurnitureAPI.Controllers
 
             if (res == null || res.VnPayResponseCode != "00")
             {
-                return Redirect("http://localhost:3000/paymentReturn?success=false");
+                return Redirect("https://furniturestore-fct8.onrender.com/paymentReturn?success=false");
             }
        
             try
             {
                 var order = res.Order;
                 await _orderService.AddOrder(order!);
-                return Redirect("http://localhost:3000/paymentReturn?success=true");
+                return Redirect("https://furniturestore-fct8.onrender.com/paymentReturn?success=true");
             }
             catch (BadHttpRequestException e)
             {
