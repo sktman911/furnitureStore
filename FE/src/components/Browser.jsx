@@ -1,7 +1,7 @@
 import React from "react";
-import dining from "../assets/images/dining.png"
-import living from "../assets/images/living.png"
-import bedroom from "../assets/images/bedroom.png"
+import dining from "../assets/images/dining.webp"
+import living from "../assets/images/living.webp"
+import bedroom from "../assets/images/bedroom.webp"
 
 const Browser = () => {
   return (
@@ -12,15 +12,15 @@ const Browser = () => {
         </div>
         <div className="flex w-10/12 mx-auto justify-between gap-6 pt-10">
           <div className=" w-4/12">
-            <img className="w-full"  src={dining} alt="Dining" loading="lazy"/>
+            <img className="w-full h-auto"  src={dining} alt="Dining" loading="lazy"/>
             <h1 className="py-5 font-bold tracking-wider">Dining</h1>
           </div>
           <div className=" w-4/12">
-            <img className="w-full"  src={living} alt="Living" loading="lazy"/>
+            <img className="w-full h-auto"  src={living} alt="Living" loading="lazy"/>
             <h1 className="py-5 font-bold tracking-wider">Living</h1>
           </div>
           <div className=" w-4/12">
-            <img className="w-full"  src={bedroom} alt="Bedroom" loading="lazy"/>
+            <img className="w-full h-auto"  src={bedroom} alt="Bedroom" loading="lazy"/>
             <h1 className="py-5 font-bold tracking-wider">Bedroom</h1>
           </div>
         </div>

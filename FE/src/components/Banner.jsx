@@ -1,10 +1,10 @@
 import React from "react";
-import banner from "../assets/images/banner.png";
+import banner from "../assets/images/banner.webp";
 
 const Banner = () => {
   return (
     <section className="w-full h-auto mt-24">
-      <img className="w-full" src={banner} alt="" />
+      <img className="w-full h-auto" src={banner} loading="lazy" alt="Banner" />
 
       <div className="absolute top-1/3 ms-5 left-2/4 text-left space-y-4 w-1/3 p-12 bg-yellow-50 hidden xl:block">
         <p className="text-sm">New Arrival</p>

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 
-import logo from "../assets/images/logo.jpg";
+import logo from "../assets/images/logo.webp";
 import Button from "../components/Button";
 import Cart from "./Cart";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -91,37 +91,35 @@ const Navbar = () => {
                   <div className="bg-white p-8 shadow-lg">
                     <ul className="grid grid-cols-3 gap-10">
                       {categories.map((category, index) => (
-                        <div key={index}>
-                          <li>
-                            <Link
-                              to={`shop/${category.categoryName.toLowerCase()}`}
-                              onClick={() => window.scrollTo(0, 0)}
-                            >
-                              <h1 className="text-lg py-2">
-                                {category.categoryName}
-                              </h1>
-                            </Link>
-                            <ul>
-                              {subCategories
-                                .filter(
-                                  (e) => e.categoryId === category.categoryId
-                                )
-                                .map((subCategory, index) => (
-                                  <li
-                                    key={index}
-                                    className=" text-sm text-gray-400 py-1.5"
+                        <li key={index}>
+                          <Link
+                            to={`shop/${category.categoryName.toLowerCase()}`}
+                            onClick={() => window.scrollTo(0, 0)}
+                          >
+                            <h1 className="text-lg py-2">
+                              {category.categoryName}
+                            </h1>
+                          </Link>
+                          <ul>
+                            {subCategories
+                              .filter(
+                                (e) => e.categoryId === category.categoryId
+                              )
+                              .map((subCategory, index) => (
+                                <li
+                                  key={index}
+                                  className=" text-sm text-gray-400 py-1.5"
+                                >
+                                  <Link
+                                    to={`shop/${category.categoryName.toLowerCase()}/${subCategory.subCategoryName.toLowerCase()}`}
+                                    onClick={() => window.scrollTo(0, 0)}
                                   >
-                                    <Link
-                                      to={`shop/${category.categoryName.toLowerCase()}/${subCategory.subCategoryName.toLowerCase()}`}
-                                      onClick={() => window.scrollTo(0, 0)}
-                                    >
-                                      {subCategory.subCategoryName}
-                                    </Link>
-                                  </li>
-                                ))}
-                            </ul>
-                          </li>
-                        </div>
+                                    {subCategory.subCategoryName}
+                                  </Link>
+                                </li>
+                              ))}
+                          </ul>
+                        </li>
                       ))}
                     </ul>
                   </div>
@@ -137,8 +135,8 @@ const Navbar = () => {
       </ul>
 
       <ul className="flex-1 flex justify-center items-center gap-4 xl:gap-10 max-lg:hidden">
-        <Link to={"/profile"}>
-          <li className="cursor-pointer">
+        <li className="cursor-pointer">
+          <Link to={"/profile"}>
             <div
               className="text-xl"
               onClick={() => {
@@ -147,11 +145,11 @@ const Navbar = () => {
             >
               <AiOutlineUser />
             </div>
-          </li>
-        </Link>
+          </Link>
+        </li>
 
-        <Link to={"/favourite"}>
-          <li className="cursor-pointer">
+        <li className="cursor-pointer">
+          <Link to={"/favourite"}>
             <div
               className="text-xl"
               onClick={() => {
@@ -160,8 +158,8 @@ const Navbar = () => {
             >
               <AiOutlineHeart />
             </div>
-          </li>
-        </Link>
+          </Link>
+        </li>
 
         <li className="relative cursor-pointer">
           <div
