@@ -12,7 +12,7 @@ function App() {
 
   return (
     <>
-      <div className="App font-poppins">
+      <div className="text-center font-poppins">
         <BrowserRouter>       
         <ToastContainer />
           <Layout />
