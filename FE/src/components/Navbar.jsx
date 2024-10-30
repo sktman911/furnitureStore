@@ -136,7 +136,7 @@ const Navbar = () => {
 
       <ul className="flex-1 flex justify-center items-center gap-4 xl:gap-10 max-lg:hidden">
         <li className="cursor-pointer">
-          <Link to={"/profile"}>
+          <Link to={"/profile"} aria-label="Your profile">
             <div
               className="text-xl"
               onClick={() => {
@@ -149,7 +149,7 @@ const Navbar = () => {
         </li>
 
         <li className="cursor-pointer">
-          <Link to={"/favourite"}>
+          <Link to={"/favourite"} aria-label="Your favourite">
             <div
               className="text-xl"
               onClick={() => {

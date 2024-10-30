@@ -125,6 +125,7 @@ app.UseHttpsRedirection();
 if (app.Environment.IsProduction())
 {
     app.UseDeveloperExceptionPage();
+    app.UseHttpsRedirection();
 }
 
 
