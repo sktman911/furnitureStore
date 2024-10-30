@@ -1,4 +1,5 @@
-﻿using FurnitureAPI.Helpers;
+﻿using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using FurnitureAPI.Helpers;
 using FurnitureAPI.Hubs;
 using FurnitureAPI.Models;
 using FurnitureAPI.Respository;
@@ -9,6 +10,7 @@ using FurnitureAPI.Services.Momo;
 using FurnitureAPI.Services.VnPay;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -29,6 +31,10 @@ builder.Services.AddSingleton<PaymentURL>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddHttpContextAccessor();
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ISubCategoryService, SubCategoryService>();
@@ -124,6 +130,7 @@ app.UseHttpsRedirection();
 
 if (app.Environment.IsProduction())
 {
+    app.UseForwardedHeaders();
     app.UseDeveloperExceptionPage();
     app.UseHttpsRedirection();
 }

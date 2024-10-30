@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "XGrbCKjAf4F3ZqSjAoC7h9Em58H2khY+g6N55S4fLQJtyJfj5md7ImgZFpHDMLKE0QsJ5Wke+NFAZ9REUBvXgg==",
+  "dgSpecHash": "os1vSyWD/FUo+vSeCK5EwBo/jFg+94C7K7lb0CUralznUGjGE0kXaSfxIjZU9gKYcrcHnToPlDom6zkKF4yBNQ==",
   "success": true,
   "projectFilePath": "E:\\Giang\\react-project\\FurnitureAPI\\FurnitureAPI\\FurnitureAPI.csproj",
   "expectedPackageFiles": [
@@ -150,6 +150,7 @@
     "C:\\Users\\ASUS\\.nuget\\packages\\runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl\\4.3.2\\runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\scrutor\\3.3.0\\scrutor.3.3.0.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\sixlabors.fonts\\1.0.0\\sixlabors.fonts.1.0.0.nupkg.sha512",
+    "C:\\Users\\ASUS\\.nuget\\packages\\sixlabors.imagesharp\\3.1.5\\sixlabors.imagesharp.3.1.5.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\swashbuckle.aspnetcore\\6.2.3\\swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\swashbuckle.aspnetcore.filters\\8.0.2\\swashbuckle.aspnetcore.filters.8.0.2.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\swashbuckle.aspnetcore.filters.abstractions\\8.0.2\\swashbuckle.aspnetcore.filters.abstractions.8.0.2.nupkg.sha512",
