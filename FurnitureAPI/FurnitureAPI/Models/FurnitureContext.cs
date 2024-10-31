@@ -40,8 +40,8 @@ namespace FurnitureAPI.Models
             if (!optionsBuilder.IsConfigured)
             {
                 //optionsBuilder.UseSqlServer("Server=.;Database=Furniture;Trusted_Connection=True;");
-                optionsBuilder.UseNpgsql("Host=dpg-cshg5nij1k6c739796u0-a.singapore-postgres.render.com;Port=5432;Username=luxurysg_db_user;Password=dRDwbP8enuSxArx5zqR7g1IjbCArGeVl;Database=luxurysg_db;Trust Server Certificate=true;");
-                //optionsBuilder.UseSqlServer("Server=luxurySG_db.mssql.somee.com;workstation id=luxurySG_db.mssql.somee.com;packet size=4096;user id=sktman911_SQLLogin_1;pwd=2gl2cal3wc;data source=luxurySG_db.mssql.somee.com;persist security info=False;initial catalog=luxurySG_db;TrustServerCertificate=True");
+                //optionsBuilder.UseNpgsql("Host=dpg-cshg5nij1k6c739796u0-a.singapore-postgres.render.com;Port=5432;Username=luxurysg_db_user;Password=dRDwbP8enuSxArx5zqR7g1IjbCArGeVl;Database=luxurysg_db;Trust Server Certificate=true;");
+                optionsBuilder.UseSqlServer("Server=luxurySG_db.mssql.somee.com;workstation id=luxurySG_db.mssql.somee.com;packet size=4096;user id=sktman911_SQLLogin_1;pwd=2gl2cal3wc;data source=luxurySG_db.mssql.somee.com;persist security info=False;initial catalog=luxurySG_db;TrustServerCertificate=True");
             }
         }
 
