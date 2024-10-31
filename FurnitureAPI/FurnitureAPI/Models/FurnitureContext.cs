@@ -40,7 +40,8 @@ namespace FurnitureAPI.Models
             if (!optionsBuilder.IsConfigured)
             {
                 //optionsBuilder.UseSqlServer("Server=.;Database=Furniture;Trusted_Connection=True;");
-                optionsBuilder.UseSqlServer("Server=luxurySG_db.mssql.somee.com;workstation id=luxurySG_db.mssql.somee.com;packet size=4096;user id=sktman911_SQLLogin_1;pwd=2gl2cal3wc;data source=luxurySG_db.mssql.somee.com;persist security info=False;initial catalog=luxurySG_db;TrustServerCertificate=True");
+                optionsBuilder.UseNpgsql("Host=dpg-cshg5nij1k6c739796u0-a.singapore-postgres.render.com;Port=5432;Username=luxurysg_db_user;Password=dRDwbP8enuSxArx5zqR7g1IjbCArGeVl;Database=luxurysg_db;Trust Server Certificate=true;");
+                //optionsBuilder.UseSqlServer("Server=luxurySG_db.mssql.somee.com;workstation id=luxurySG_db.mssql.somee.com;packet size=4096;user id=sktman911_SQLLogin_1;pwd=2gl2cal3wc;data source=luxurySG_db.mssql.somee.com;persist security info=False;initial catalog=luxurySG_db;TrustServerCertificate=True");
             }
         }
 
@@ -48,7 +49,7 @@ namespace FurnitureAPI.Models
         {
             modelBuilder.Entity<Category>(entity =>
             {
-                entity.ToTable("Category");
+                entity.ToTable("category");
 
                 entity.Property(e => e.CategoryId).HasColumnName("category_id");
 
@@ -59,7 +60,7 @@ namespace FurnitureAPI.Models
 
             modelBuilder.Entity<Color>(entity =>
             {
-                entity.ToTable("Color");
+                entity.ToTable("color");
 
                 entity.Property(e => e.ColorId).HasColumnName("color_id");
 
@@ -77,7 +78,7 @@ namespace FurnitureAPI.Models
                 entity.HasKey(e => e.CusId)
                     .HasName("PK__Customer__E84D41E827CEFF59");
 
-                entity.ToTable("Customer");
+                entity.ToTable("customer");
 
                 entity.Property(e => e.CusId).HasColumnName("cus_id");
 
@@ -121,7 +122,7 @@ namespace FurnitureAPI.Models
                 entity.HasKey(e => e.EmpId)
                     .HasName("PK__Employee__1299A861016FBE44");
 
-                entity.ToTable("Employee");
+                entity.ToTable("employee");
 
                 entity.Property(e => e.EmpId).HasColumnName("emp_id");
 
@@ -169,7 +170,7 @@ namespace FurnitureAPI.Models
 
             modelBuilder.Entity<Function>(entity =>
             {
-                entity.ToTable("Function_");
+                entity.ToTable("function_");
 
                 entity.Property(e => e.FunctionId).HasColumnName("function_id");
 
@@ -201,7 +202,7 @@ namespace FurnitureAPI.Models
 
             modelBuilder.Entity<Order>(entity =>
             {
-                entity.ToTable("Order_");
+                entity.ToTable("order_");
 
                 entity.Property(e => e.OrderId).HasColumnName("order_id");
 
@@ -242,7 +243,7 @@ namespace FurnitureAPI.Models
                 entity.HasKey(e => e.OdId)
                     .HasName("PK__OrderDet__FB4B2EFECBA3BDDF");
 
-                entity.ToTable("OrderDetail");
+                entity.ToTable("orderDetail");
 
                 entity.Property(e => e.OdId).HasColumnName("od_id");
 
@@ -274,7 +275,7 @@ namespace FurnitureAPI.Models
                 entity.HasKey(e => e.OmId)
                     .HasName("PK__OrderMet__CBB505A7A302DBA5");
 
-                entity.ToTable("OrderMethod");
+                entity.ToTable("orderMethod");
 
                 entity.Property(e => e.OmId).HasColumnName("om_id");
 
@@ -288,7 +289,7 @@ namespace FurnitureAPI.Models
                 entity.HasKey(e => e.OsId)
                     .HasName("PK__OrderSta__374FA4B595B08116");
 
-                entity.ToTable("OrderStatus");
+                entity.ToTable("orderStatus");
 
                 entity.Property(e => e.OsId).HasColumnName("os_id");
 
@@ -299,7 +300,7 @@ namespace FurnitureAPI.Models
 
             modelBuilder.Entity<Product>(entity =>
             {
-                entity.ToTable("Product");
+                entity.ToTable("product");
 
                 entity.Property(e => e.ProductId).HasColumnName("product_id");
 
@@ -332,7 +333,7 @@ namespace FurnitureAPI.Models
                 entity.HasKey(e => e.PscId)
                     .HasName("PK__Product___ACF5453BE6958D33");
 
-                entity.ToTable("Product_Size_Color");
+                entity.ToTable("product_Size_Color");
 
                 entity.Property(e => e.PscId).HasColumnName("psc_id");
 
@@ -362,7 +363,7 @@ namespace FurnitureAPI.Models
 
             modelBuilder.Entity<Role>(entity =>
             {
-                entity.ToTable("Role");
+                entity.ToTable("role");
 
                 entity.Property(e => e.RoleId).HasColumnName("role_id");
 
@@ -374,7 +375,7 @@ namespace FurnitureAPI.Models
 
             modelBuilder.Entity<Size>(entity =>
             {
-                entity.ToTable("Size");
+                entity.ToTable("size");
 
                 entity.Property(e => e.SizeId).HasColumnName("size_id");
 
@@ -386,7 +387,7 @@ namespace FurnitureAPI.Models
 
             modelBuilder.Entity<SubCategory>(entity =>
             {
-                entity.ToTable("SubCategory");
+                entity.ToTable("subCategory");
 
                 entity.Property(e => e.SubCategoryId).HasColumnName("subCategory_id");
 
@@ -404,7 +405,7 @@ namespace FurnitureAPI.Models
 
             modelBuilder.Entity<Image>(entity =>
             {
-                entity.ToTable("Image");
+                entity.ToTable("image");
 
                 entity.Property(e => e.ImageId).HasColumnName("image_id");
 
@@ -423,7 +424,7 @@ namespace FurnitureAPI.Models
                 entity.HasKey(e => e.FavouriteId)
                     .HasName("PK__Favourit__B3E742CEBCFD8025");
 
-                entity.ToTable("Favourite");
+                entity.ToTable("favourite");
                 entity.Property(e => e.FavouriteId).HasColumnName("favourite_id");
                 entity.Property(e => e.CusId).HasColumnName("cus_id");
                 entity.Property(e => e.ProductId).HasColumnName("product_id");
@@ -446,7 +447,7 @@ namespace FurnitureAPI.Models
                 entity.HasKey(e => e.ReviewId)
                     .HasName("PK_Review__PRIMARY");
 
-                entity.ToTable("Review");
+                entity.ToTable("review");
                 entity.Property(e => e.ReviewId).HasColumnName("review_id");
                 entity.Property(e => e.CusId).HasColumnName("cus_id");
                 entity.Property(e => e.ProductId).HasColumnName("product_id");

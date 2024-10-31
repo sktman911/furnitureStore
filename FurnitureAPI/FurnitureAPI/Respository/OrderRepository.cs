@@ -48,7 +48,7 @@ namespace FurnitureAPI.Respository
                                         PscId = od.PscId,
                                         ReviewStatus = od.ReviewStatus,
                                         Quantity = od.Quantity,
-                                        UnitPrice = od.UnitPrice,
+                                        UnitPrice = od.UnitPrice,                                 
                                         ProductSizeColor = new ProductSizeColor
                                         {
                                             PscId = productSizeColor.PscId,

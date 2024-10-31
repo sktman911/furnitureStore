@@ -509,3 +509,6 @@ E:\Giang\react-project\FurnitureAPI\FurnitureAPI\bin\Debug\net6.0\System.Text.En
 E:\Giang\react-project\FurnitureAPI\FurnitureAPI\bin\Debug\net6.0\System.Text.Json.dll
 E:\Giang\react-project\FurnitureAPI\FurnitureAPI\bin\Debug\net6.0\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll
 E:\Giang\react-project\FurnitureAPI\FurnitureAPI\bin\Debug\net6.0\FurnitureAPI.staticwebassets.runtime.json
+E:\Giang\react-project\FurnitureAPI\FurnitureAPI\bin\Debug\net6.0\SixLabors.ImageSharp.dll
+E:\Giang\react-project\FurnitureAPI\FurnitureAPI\bin\Debug\net6.0\Npgsql.dll
+E:\Giang\react-project\FurnitureAPI\FurnitureAPI\bin\Debug\net6.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
