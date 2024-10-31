@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import { MdOutlineRateReview } from "react-icons/md";
 import { apiUrl } from "../constants";
 import { differenceInDays } from "../helper/dayHelper";
+import {motion} from "framer-motion";
 
 export default function OrderDetail() {
   const { orderId } = useParams();
@@ -96,7 +97,7 @@ export default function OrderDetail() {
   }, [navigate, location.state.fromPage]);
 
   return order && order.orderDate ? (
-    <div className="mt-24">
+    <motion.div className="mt-24" initial={{opacity: 0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration: 0.2}}>
       <div className="w-4/5 py-5 shadow-2xl rounded-sm mx-auto border-2 border-gray-200 mt-32 mb-8">
         <h2 className=" text-2xl font-bold mb-4">Order</h2>
         <div className="flex justify-between w-10/12 mx-auto text-start">
@@ -226,7 +227,7 @@ export default function OrderDetail() {
           />
         </Suspense>
       )}
-    </div>
+    </motion.div>
   ) : (
     <div className="mt-24 py-10">Loading...</div>
   );

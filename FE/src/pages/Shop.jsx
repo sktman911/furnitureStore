@@ -6,6 +6,7 @@ import Info from "../components/Info";
 import { useParams } from "react-router";
 import ReactPaginate from "react-paginate";
 import { useSearchParams } from "react-router-dom";
+import {motion} from "framer-motion";
 
 const Shop = (props) => {
   const { products } = useContext(ShopContext);
@@ -97,7 +98,7 @@ const Shop = (props) => {
   );
 
   return (
-    <section className="w-full max-container max-lg:h-max mt-24">
+    <motion.section className="w-full max-container max-lg:h-max mt-24" initial={{opacity: 0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration: 0.2}}>
       <div className="relative">
         <img className="w-full h-full" src={props.banner} alt="" />
         <div className="absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4 font-bold">
@@ -200,7 +201,7 @@ const Shop = (props) => {
       ) : null}
 
       <Info />
-    </section>
+    </motion.section>
   );
 };
 

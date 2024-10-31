@@ -7,6 +7,7 @@ import { FaTrashAlt } from "react-icons/fa";
 import Button from "../components/Button";
 import Info from "../components/Info";
 import { CLEAR_CART } from "../slice/cartSlice";
+import {motion} from "framer-motion";
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
@@ -42,7 +43,7 @@ const Cart = () => {
   };
 
   return (
-    <div className="mt-24">
+    <motion.div className="mt-24" initial={{opacity: 0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration: 0.2}}>
       <div>
         <h1 className="py-5 font-bold text-3xl">Cart</h1>
         <span className="uppercase">
@@ -217,7 +218,7 @@ const Cart = () => {
       )}
 
       <Info />
-    </div>
+    </motion.div>
   );
 };
 

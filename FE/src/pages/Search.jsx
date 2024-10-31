@@ -3,6 +3,7 @@ import { ShopContext } from "../context/ShopContext";
 import { useLocation } from "react-router";
 import Products from "../components/Products";
 import ReactPaginate from "react-paginate";
+import {motion} from "framer-motion";
 
 export default function Search() {
     const { products } = useContext(ShopContext);
@@ -32,7 +33,7 @@ export default function Search() {
   );
 
   return (
-    <section className="w-full max-container max-lg:h-max mt-24">
+    <motion.section className="w-full max-container max-lg:h-max mt-24" initial={{opacity: 0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration: 0.2}}>
       <div className="relative">
         <h1 className="text-2xl md:text-2xl py-3">Result for "{query}"</h1>
       </div>
@@ -73,6 +74,6 @@ export default function Search() {
           renderOnZeroPageCount={null}
         />
       ) : null}
-    </section>
+    </motion.section>
   );
 }

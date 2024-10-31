@@ -8,6 +8,7 @@ import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import Profile from "../components/Account/Profile.jsx";
 import History from "../components/Account/History.jsx";
+import {motion} from "framer-motion";
 
 export const AccountItem = React.memo(
   ({ icon, title, active, setActive }) => {
@@ -69,7 +70,7 @@ export default function Account({ component }) {
   );
 
   return (
-    <section className="mt-24">
+    <motion.section className="mt-24" initial={{opacity: 0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration: 0.2}}>
       {/* Account left  */}
       <div className="flex flex-col lg:flex-row w-4/5 mx-auto py-6 mt-36 mb-12 bg-yellow-50 rounded-md">
         <div className="w-full lg:w-1/3 my-5">
@@ -96,6 +97,6 @@ export default function Account({ component }) {
 
         {componentMap[component]}
       </div>
-    </section>
+    </motion.section>
   );
 }

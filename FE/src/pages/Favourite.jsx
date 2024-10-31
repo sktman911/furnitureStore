@@ -3,6 +3,7 @@ import Products from "../components/Products";
 import { productAPI } from "../modules/apiClient";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
+import {motion} from "framer-motion";
 
 export default function Favourite() {
     const user = useSelector(state => state.user);
@@ -26,7 +27,7 @@ export default function Favourite() {
 
   return (
     <>
-      <div className="mt-24">
+      <motion.div className="mt-24" initial={{opacity: 0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration: 0.2}}>
         <h1 className="py-5 font-bold text-3xl">Favourite</h1>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 w-11/12 max-h-full justify-around mx-auto"
         >
@@ -45,7 +46,7 @@ export default function Favourite() {
             );
           })}
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }

@@ -3,13 +3,14 @@ import { useForm } from "react-hook-form";
 
 import Button from "../components/Button";
 import Info from "../components/Info";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { customerAPI, orderAPI } from "../modules/apiClient";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { errorMessage } from "../constants/message";
 import vnPay from "../assets/images/vnpay.jpg";
 import momoPay from "../assets/images/momo.png";
+import {motion} from "framer-motion";
 
 const Checkout = () => {
   const cart = useSelector((state) => state.cart);
@@ -116,7 +117,7 @@ const Checkout = () => {
   };
 
   return (
-    <div className="mt-24">
+    <motion.div className="mt-24" initial={{opacity: 0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration: 0.2}}>
       <div className="py-10">
         <h1 className="py-5 font-bold text-3xl">Checkout</h1>
         <span className="uppercase">
@@ -336,7 +337,7 @@ const Checkout = () => {
       </div>
 
       <Info />
-    </div>
+    </motion.div>
   );
 };
 
