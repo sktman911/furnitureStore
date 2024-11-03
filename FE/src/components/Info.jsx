@@ -6,7 +6,7 @@ import trophy from "../assets/images/category/trophy.svg";
 
 const Info = () => {
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 w-full mx-auto bg-yellow-50 py-16 gap-8 lg:gap-20 px-8">
+    <div className="grid grid-cols-2 lg:grid-cols-4 w-full mx-auto bg-customLightYellow  py-16 gap-8 lg:gap-20 px-8">
       <div className="flex items-center gap-2">
         <img className="h-9 lg:h-10" src={trophy} alt="" />
         <div className="flex flex-col text-left">

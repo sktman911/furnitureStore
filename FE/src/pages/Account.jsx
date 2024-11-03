@@ -21,9 +21,8 @@ export const AccountItem = React.memo(
             ? "bg-white text-yellow-600 rounded-md py-2 px-4"
             : "hover:bg-white hover:text-yellow-600 rounded-md py-2 px-4"
         }
-        onClick={() => setActive(title)}
       >
-        <Link to={"/"+title} className="flex items-center justify-between cursor-pointer">
+        <Link to={"/"+title} className="flex items-center justify-between cursor-pointer" onClick={() => setActive(title)}>
           <span className="w-1/3">{icon}</span>
           <span className="w-2/3 text-center text-lg">{titleText}</span>
         </Link>
@@ -70,7 +69,7 @@ export default function Account({ component }) {
   );
 
   return (
-    <motion.section className="mt-24" initial={{opacity: 0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration: 0.2}}>
+    <motion.section className="mt-24" initial={{opacity: 0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration: 0.1}}>
       {/* Account left  */}
       <div className="flex flex-col lg:flex-row w-4/5 mx-auto py-6 mt-36 mb-12 bg-yellow-50 rounded-md">
         <div className="w-full lg:w-1/3 my-5">

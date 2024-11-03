@@ -117,7 +117,7 @@ const Checkout = () => {
   };
 
   return (
-    <motion.div className="mt-24" initial={{opacity: 0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration: 0.2}}>
+    <motion.div className="mt-24" initial={{opacity: 0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration: 0.1}}>
       <div className="py-10">
         <h1 className="py-5 font-bold text-3xl">Checkout</h1>
         <span className="uppercase">
@@ -223,7 +223,7 @@ const Checkout = () => {
         </div>
 
         <div className="w-full lg:w-1/2 lg:pl-12 xl:pl-20 max-h-max mb-8">
-          <div className="flex flex-col gap-4 border-b-2 py-8 px-3 bg-yellow-50 rounded-t-lg">
+          <div className="flex flex-col gap-4 border-b-2 py-8 px-3">
             <div className="text-md md:text-lg font-semibold flex justify-between">
               <span>Product</span>
               <span>Subtotal</span>
@@ -278,7 +278,7 @@ const Checkout = () => {
             </div>
           </div>
 
-          <div className="pt-8 flex flex-col gap-4 px-3 bg-yellow-50 rounded-b-lg">
+          <div className="pt-8 flex flex-col gap-4 px-3 ">
           <label className="w-56 flex items-center justify-between gap-4 cursor-pointer">
               <div className="flex items-center gap-4">
                 <input

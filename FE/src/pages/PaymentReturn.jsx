@@ -21,7 +21,7 @@ const PaymentReturn = () => {
 
   return (
     <>
-      <motion.div className="mt-24" initial={{opacity: 0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration: 0.2}}>
+      <motion.div className="mt-24" initial={{opacity: 0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration: 0.1}}>
         {success === "true"?
          (
           <FaCheckCircle className=" text-green-400 w-28 h-28 mx-auto mt-32 mb-8" />

@@ -43,7 +43,7 @@ const Cart = () => {
   };
 
   return (
-    <motion.div className="mt-24" initial={{opacity: 0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration: 0.2}}>
+    <motion.div className="mt-24" initial={{opacity: 0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration: 0.1}}>
       <div>
         <h1 className="py-5 font-bold text-3xl">Cart</h1>
         <span className="uppercase">
@@ -69,7 +69,7 @@ const Cart = () => {
           <div className="w-full xl:w-3/5">
             <table className="w-full">
               <thead className="max-md:hidden">
-                <tr className="bg-yellow-50 w-full h-full">
+                <tr className="bg-customLightYellow w-full h-full">
                   <th className="p-3">#</th>
                   <th className="p-3">Image</th>
                   <th className="p-3">Product</th>
@@ -183,7 +183,7 @@ const Cart = () => {
           </div>
 
           <div className="w-full xl:w-2/5">
-            <div className="w-9/12 bg-yellow-50 mx-auto pt-6 pb-10">
+            <div className="w-9/12 bg-customLightYellow mx-auto pt-6 pb-10">
               <h1 className="font-semibold text-2xl pb-10">Cart Totals</h1>
               <div className="py-5 flex w-2/3 lg:w-1/2 mx-auto justify-between items-center">
                 <span className="font-semibold text-sm md:text-base">

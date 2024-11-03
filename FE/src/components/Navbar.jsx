@@ -50,7 +50,7 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center">
-        <img src={logo} alt="Logo" className=" w-36 h-24 max-lg:mx-auto" />
+        <Link to={"home"} replace={true}><img src={logo} alt="Logo" className=" w-36 h-24 max-lg:mx-auto cursor-pointer" /></Link>
         <div className="text-xl flex items-center max-lg:hidden">
           <SearchBar />
         </div>

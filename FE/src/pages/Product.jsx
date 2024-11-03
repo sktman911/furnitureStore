@@ -3,6 +3,7 @@ import { ShopContext } from '../context/ShopContext'
 import { useParams } from 'react-router';
 import Breadcrum from '../components/Breadcrum';
 import ProductDisplay from '../components/ProductDetail/ProductDisplay';
+import {motion} from "framer-motion";
 
 const Product = () => {
     const {products} = useContext(ShopContext);
@@ -11,10 +12,10 @@ const Product = () => {
   return (
     <>
     {products.length > 0 ? (
-      <div className='mt-24'>
+      <motion.div className='mt-24' initial={{opacity: 0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration: 0.1}}>
         <Breadcrum product={product} />
         <ProductDisplay product={product} />
-      </div>
+      </motion.div>
     ) : (
       <></>
     )}

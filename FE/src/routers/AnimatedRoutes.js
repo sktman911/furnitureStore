@@ -38,9 +38,8 @@ export default function AnimatedRoutes() {
   const location = useLocation();
   return (
     <AnimatePresence>
-      {" "}
       <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<Home />}></Route>
+        <Route path="/" element={<Home/>}></Route>
         <Route path="home" element={<Home />}></Route>
         <Route
           path="shop"

@@ -33,7 +33,7 @@ export default function Search() {
   );
 
   return (
-    <motion.section className="w-full max-container max-lg:h-max mt-24" initial={{opacity: 0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration: 0.2}}>
+    <motion.section className="w-full max-container max-lg:h-max mt-24" initial={{opacity: 0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration: 0.1}}>
       <div className="relative">
         <h1 className="text-2xl md:text-2xl py-3">Result for "{query}"</h1>
       </div>
