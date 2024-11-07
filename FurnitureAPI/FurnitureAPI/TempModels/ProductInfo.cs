@@ -11,9 +11,6 @@ namespace FurnitureAPI.TempModels
 
         public string? CategoryName { get; set; }
 
-        
-        //public List<Image>? Images { get; set; }
-
 
     }
 }

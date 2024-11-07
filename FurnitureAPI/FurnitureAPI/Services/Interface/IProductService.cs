@@ -21,7 +21,11 @@ namespace FurnitureAPI.Services.Interface
 
         Task DeleteProduct(int id);
 
+        // export excel
+
         byte[] ExportExcel(IEnumerable<Product> products);
+
+        // import excel
 
         Task ImportExcel(IFormFile formFile);
     }

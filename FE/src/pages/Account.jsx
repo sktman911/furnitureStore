@@ -43,6 +43,11 @@ export default function Account({ component }) {
       return;
     }
 
+    if (user.role !== "KH") {
+      navigate("/home", { replace: true });
+      return;
+    }
+
   }, []);
 
   const componentMap = {

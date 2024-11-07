@@ -8,12 +8,10 @@ import Routers from "../routers/Routers";
 import AdminNavbar from "../admin/components/AdminNavbar";
 import AdminFooter from "../admin/components/AdminFooter";
 import { useStateContext } from "../context/StateContext";
-import { useSelector } from "react-redux";
 
 const Layout = () => {
   const location = useLocation();
-  const { activeMenu, setActiveMenu } = useStateContext();
-  const user = useSelector((state) => state.user);
+  const { activeMenu } = useStateContext();
 
   return (
     <>
@@ -36,7 +34,7 @@ const Layout = () => {
           )}
 
           <div
-            className={`bg-white min-h-screen ${
+            className={`bg-gray-100 min-h-screen ${
               activeMenu ? "md:ml-80" : "flex-1"
             }`}
           >
@@ -48,6 +46,7 @@ const Layout = () => {
               <Routers />
             </div>
           </div>
+          
           <div className={`bg-white ${activeMenu ? "md:ml-80" : "flex-1"}`}>
             <AdminFooter />
           </div>

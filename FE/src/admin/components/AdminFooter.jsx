@@ -2,7 +2,7 @@ import React from "react";
 
 const AdminFooter = () => {
   return (
-    <footer className="bg-white border-t-2 mt-4 dark:bg-gray-800">
+    <footer className="bg-white dark:bg-gray-800">
       <div className="w-full max-w-screen-xl p-4 md:flex 
       md:items-center md:justify-center">
         <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">

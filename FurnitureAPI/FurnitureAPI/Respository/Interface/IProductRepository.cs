@@ -13,5 +13,6 @@ namespace FurnitureAPI.Respository.Interface
 
         Task<IEnumerable<Product>> GetFavouriteProducts(int customerId);
 
+
     }
 }

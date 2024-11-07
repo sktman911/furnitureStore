@@ -22,6 +22,7 @@ namespace FurnitureAPI.Respository
         private Lazy<FunctionRepository> _functions;
         private Lazy<FavouriteRepository> _favourites;
         private Lazy<ReviewRepository> _reviews;
+        private Lazy<StatisticRepository> _statistics;
 
         public UnitOfWork(FurnitureContext context)
         {
@@ -40,6 +41,7 @@ namespace FurnitureAPI.Respository
             _functions = new Lazy<FunctionRepository>(() => new FunctionRepository(_context));
             _favourites = new Lazy<FavouriteRepository>(() => new FavouriteRepository(_context));
             _reviews = new Lazy<ReviewRepository>(() => new ReviewRepository(_context));
+            _statistics = new Lazy<StatisticRepository>(() => new StatisticRepository(_context));
         }
         public ICategoryRespository Categories => _categories.Value;
         public ISubCategoryRepository SubCategories => _subCategories.Value;
@@ -54,6 +56,7 @@ namespace FurnitureAPI.Respository
         public IFunctionRepository Functions => _functions.Value;
         public IFavouriteRepository Favourites => _favourites.Value;
         public IReviewRepository Reviews => _reviews.Value;
+        public IStatisticRepository Statistics => _statistics.Value;
 
         public async Task BeginTransactionAsync()
         {

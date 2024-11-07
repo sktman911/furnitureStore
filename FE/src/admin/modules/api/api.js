@@ -109,5 +109,15 @@ const customerAPI = (url = apiUrl+"api/Customers/") => {
 };
 //End Customers API
 
+// Statistic API
+const statisticAPI = (url = apiUrl+"api/Statistic/") => {
+  return {
+    GET_TOTALSOLD: () => axios.get(url+"getTotalQuantitySold"),
+    GET_TOTALCONSUME: () => axios.get(url+"getTotalConsume"),
+    GET_REVENUE: (month, year) => axios.get(url+`getRevenue?month=${month}&&year=${year}`),
+  };
+};
+// End Statistic API
 
-  export {productSizeColorAPI, sizeAPI, colorAPI, productAPI, imageAPI, categoryAPI, orderAPI, customerAPI, orderDetailAPI, subCategoriesAPI}
+
+  export {productSizeColorAPI, sizeAPI, colorAPI, productAPI, imageAPI, categoryAPI, orderAPI, customerAPI, orderDetailAPI, subCategoriesAPI, statisticAPI}

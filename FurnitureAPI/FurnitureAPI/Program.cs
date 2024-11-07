@@ -49,6 +49,7 @@ builder.Services.AddScoped<IFunctionService, FunctionService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IFavouriteService, FavouriteService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IStatisticService, StatisticService>();
 
 
 builder.Services.AddControllers();

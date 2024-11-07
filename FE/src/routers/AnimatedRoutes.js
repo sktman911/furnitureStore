@@ -32,6 +32,7 @@ import CustomerDetail from "../admin/pages/CustomerDetail";
 import PrivateRoute from "./PrivateRoute";
 
 import { AnimatePresence } from "framer-motion";
+import Contact from "../pages/Contact";
 
 export default function AnimatedRoutes() {
   const { categories, subCategories } = useContext(ShopContext);
@@ -63,6 +64,7 @@ export default function AnimatedRoutes() {
         <Route path="checkout" element={<Checkout />}></Route>
         <Route path="paymentReturn" element={<PaymentReturn />}></Route>
         <Route path="favourite" element={<Favourite />}></Route>
+        <Route path="contact" element={<Contact/>}></Route>
 
         <Route
           path="profile"

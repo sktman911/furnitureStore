@@ -25,6 +25,7 @@ const ProductDisplay = (props) => {
   const [favor, setFavor] = useState({});
   const [active, setActive] = useState("Description");
   const [reviews, setReviews] = useState([]);
+  const [display, setDisplay] = useState(product.images[0].imageLink);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -38,7 +39,10 @@ const ProductDisplay = (props) => {
     return initial + item.rating;
   }, 0);
 
-  const rating = useMemo(() => (sum / reviews.length).toFixed(1),[sum,reviews.length]);
+  const rating = useMemo(
+    () => (sum / reviews.length).toFixed(1),
+    [sum, reviews.length]
+  );
 
   const salePrice = useMemo(
     () =>
@@ -67,7 +71,7 @@ const ProductDisplay = (props) => {
         .catch((err) => console.log(err));
     };
     getReviews();
-  },[product.productId])
+  }, [product.productId]);
 
   useEffect(() => {
     if (user) {
@@ -77,7 +81,9 @@ const ProductDisplay = (props) => {
           .then((res) => {
             setFavor(res.data);
           })
-          .catch((err) => { if(err.response.status !== 400) console.log(err)});
+          .catch((err) => {
+            if (err.response.status !== 400) console.log(err);
+          });
       };
       getFavourite();
     }
@@ -136,7 +142,7 @@ const ProductDisplay = (props) => {
 
   const handleColor = useCallback((color) => {
     setColor(color);
-  }, []); 
+  }, []);
 
   return (
     <>
@@ -146,20 +152,22 @@ const ProductDisplay = (props) => {
             {product.images.map((item, index) => (
               <img
                 key={index}
-                className="rounded-lg w-full h-16 sm:h-24"
+                className={`rounded-lg w-full h-16 sm:h-24 cursor-pointer ${
+                  display === item.imageLink && "border-2 border-black"
+                } `}
                 src={item.imageLink}
                 alt=""
                 loading="lazy"
+                onClick={() => setDisplay(item.imageLink)}
               />
             ))}
           </div>
 
           <div className="w-4/5 h-auto">
             <img
-              loading="lazy"
-              className=" rounded-lg h-full xl:h-auto w-full"
-              src={product.images[0].imageLink}
-              alt=""
+              src={display}
+              alt="Alt"
+              className="rounded-lg w-full h-full"
             />
           </div>
         </div>
@@ -168,11 +176,17 @@ const ProductDisplay = (props) => {
           <h1 className="text-3xl py-3">{product.productName}</h1>
           <div className=" text-gray-400 flex gap-6">
             <p className={` ${salePrice !== null ? "line-through" : null}`}>
-              {Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(product.price)}
+              {Intl.NumberFormat("vi-VI", {
+                style: "currency",
+                currency: "VND",
+              }).format(product.price)}
             </p>
             {salePrice !== null ? (
               <p className="text-red-600 font-semibold">
-                {Intl.NumberFormat('vi-VI',{style:'currency',currency: 'VND',}).format(salePrice)}
+                {Intl.NumberFormat("vi-VI", {
+                  style: "currency",
+                  currency: "VND",
+                }).format(salePrice)}
               </p>
             ) : null}
           </div>
@@ -184,22 +198,27 @@ const ProductDisplay = (props) => {
 
               return (
                 <div key={index}>
-                  {isFull && <FaStar className="text-yellow-300"/>}
-                  {isHalf && <FaStarHalfAlt className="text-yellow-300"/>}
-                  {isEmpty && <FaStar className="text-gray-400"/>}
-                </div> 
+                  {isFull && <FaStar className="text-yellow-300" />}
+                  {isHalf && <FaStarHalfAlt className="text-yellow-300" />}
+                  {isEmpty && <FaStar className="text-gray-400" />}
+                </div>
               );
             })}
 
-            <p className="text-black font-semibold pl-3">{isNaN(rating) ? 0 : rating}/5.0</p>
+            <p className="text-black font-semibold pl-3">
+              {isNaN(rating) ? 0 : rating}/5.0
+            </p>
             <RxDividerVertical className="text-gray-400 text-3xl" />
             <span className="text-gray-400">
               {reviews.length} Customer Review
             </span>
             <div>
               <FaHeart
-                className={`w-6 h-6 hover:cursor-pointer ml-8 ${favor.isFavourite ? 'text-red-500' : 'text-gray-400 hover:text-red-500'}`}
-        
+                className={`w-6 h-6 hover:cursor-pointer ml-8 ${
+                  favor.isFavourite
+                    ? "text-red-500"
+                    : "text-gray-400 hover:text-red-500"
+                }`}
                 onClick={() => handleFavourite()}
               />
             </div>
@@ -210,7 +229,7 @@ const ProductDisplay = (props) => {
             which boasts a clear midrange and extended highs for a sound.
           </p>
 
-          <SizePicker onChange={handleSize} product={product}/>
+          <SizePicker onChange={handleSize} product={product} />
 
           <ColorPicker onChange={handleColor} product={product} />
 

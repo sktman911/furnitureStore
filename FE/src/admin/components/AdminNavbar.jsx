@@ -3,6 +3,7 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { IoChatboxOutline } from "react-icons/io5";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import {useSelector} from "react-redux";
 
 import { useStateContext } from "../../context/StateContext";
 import ava from "../assets/images/logo.jpg";
@@ -25,13 +26,10 @@ const NavButton = ({ func, icon }) => (
 
 const AdminNavbar = () => {
   const {
-    activeMenu,
     setActiveMenu,
-    clicked,
-    setClicked,
-    handleClicked,
     screenSize, setScreenSize
   } = useStateContext();
+  const user = useSelector(state => state.user);
 
   
   useEffect(() => {
@@ -66,7 +64,7 @@ const AdminNavbar = () => {
           <img src={ava} alt="" className="rounded-full w-8 h-8" />
           <p className="text-gray-400 text-sm">
             <span>Hi, </span>
-            <span className="font-bold ml-1">John</span>
+            <span className="font-bold ml-1">{user.username}</span>
           </p>
           <MdKeyboardArrowDown />
         </div>

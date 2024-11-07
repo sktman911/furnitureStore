@@ -19,6 +19,8 @@
         IFunctionRepository Functions { get; }
         IFavouriteRepository Favourites { get; }
         IReviewRepository Reviews { get; }
+
+        IStatisticRepository Statistics { get; }
         Task BeginTransactionAsync();
         Task CommitAsync();
         Task RollbackAsync();

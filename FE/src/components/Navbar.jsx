@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 
-import logo from "../assets/images/logo.webp";
+import logo from "../assets/icons/web_logo.webp";
 import Button from "../components/Button";
 import Cart from "./Cart";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -49,8 +49,11 @@ const Navbar = () => {
         <GiHamburgerMenu />
       </div>
 
-      <div className="flex items-center">
-        <Link to={"home"} replace={true}><img src={logo} alt="Logo" className=" w-36 h-24 max-lg:mx-auto cursor-pointer" /></Link>
+      <div className="flex items-center justify-between">
+        <Link to={"home"} replace={true} className="w-36 h-24 flex items-center border-none">
+          <img src={logo} alt="Logo" className=" w-1/3 h-1/3 max-lg:mx-auto cursor-pointer" />
+          <h1 className="font-bold text-xl">LuxurySG</h1>
+        </Link>    
         <div className="text-xl flex items-center max-lg:hidden">
           <SearchBar />
         </div>
