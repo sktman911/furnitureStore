@@ -54,7 +54,7 @@ export default function HomeSlider() {
   }
 
   return (
-    <section className="w-full my-10 bg-customLightYellow flex items-center relative">
+    <section className="w-full my-10 bg-customLightYellow flex items-center relative max-lg:hidden">
       <div className="text-left w-5/12">
         <div className="w-1/2 mx-auto">
           <p className=" text-4xl font-bold text-customBlack">

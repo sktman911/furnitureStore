@@ -43,7 +43,7 @@ export default function Account({ component }) {
       return;
     }
 
-    if (user.role !== "KH") {
+    if (user.role) {
       navigate("/home", { replace: true });
       return;
     }

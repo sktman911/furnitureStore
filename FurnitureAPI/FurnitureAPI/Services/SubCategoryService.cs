@@ -14,7 +14,7 @@ namespace FurnitureAPI.Services
 
         public async Task AddSubCategory(SubCategory subCategory)
         {
-            var existedSubCategory = _unitOfWork.SubCategories.FindByName(subCategory.SubCategoryName!);
+            var existedSubCategory = await _unitOfWork.SubCategories.FindByName(subCategory.SubCategoryName!);
             if(existedSubCategory != null)
             {
                 throw new KeyNotFoundException();

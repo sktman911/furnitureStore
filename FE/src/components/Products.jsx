@@ -6,7 +6,7 @@ const Products = (props) => {
   // const time = new Date() - props.date;
 
   return (
-    <div className="my-6 relative group">
+    <div className="my-6 relative group h-fit">
       <div className="hidden group-hover:block absolute bg-gray-700 opacity-30 w-full h-full z-20"></div>
       <img className="w-full h-fit" src={props.img} alt="" loading="lazy" />
       <div className=" w-full text-left ps-3 py-5 space-y-2 bg-gray-100">
