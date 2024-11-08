@@ -29,15 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\Images\eddy-sofa-sub1.jpg" />
-    <None Include="wwwroot\Images\eddy-sofa-sub2.jpg" />
-    <None Include="wwwroot\Images\eddy-sofa-sub3.jpg" />
-    <None Include="wwwroot\Images\eddy-sofa.jpg" />
-    <None Include="wwwroot\Images\white-sofa-sub1.jpg" />
-    <None Include="wwwroot\Images\white-sofa-sub2.jpg" />
-    <None Include="wwwroot\Images\white-sofa-sub3.jpg" />
-    <None Include="wwwroot\Images\white-sofa-sub4.jpg" />
-    <None Include="wwwroot\Images\white-sofa.jpg" />
+    <Folder Include="wwwroot\Images\" />
   </ItemGroup>
 
 </Project>
