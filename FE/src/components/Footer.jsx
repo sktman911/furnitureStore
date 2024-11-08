@@ -42,13 +42,13 @@ const Footer = () => {
 
           <li className=" w-full mx-auto text-left">
             <h2 className=" text-gray-600 pb-6 text-lg md:text-xl xl:text-xl">Newsletter</h2>
-            <div className="xl:pt-6 flex xl:w-auto">
+            <div className="xl:pt-6 flex xl:w-auto max-xs:block">
               <input
                 type="email"
                 className=" text-sm border-b-2 xl:w-4/6 text-gray-600 border-black outline-none"
                 placeholder="Enter Your Email Address"
               />
-              <Link to="/home" className="ms-2 border-b-2 border-black text-sm md:text-md">
+              <Link to="/home" className="ms-2 border-b-2 border-black text-sm md:text-md max-xs:ms-0">
                 SUBSCRIBE
               </Link>
             </div>

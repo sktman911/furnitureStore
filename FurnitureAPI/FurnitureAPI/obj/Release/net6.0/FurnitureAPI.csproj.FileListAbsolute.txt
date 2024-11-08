@@ -264,3 +264,6 @@ E:\Giang\react-project\FurnitureAPI\FurnitureAPI\obj\Release\net6.0\FurnitureAPI
 E:\Giang\react-project\FurnitureAPI\FurnitureAPI\obj\Release\net6.0\FurnitureAPI.genruntimeconfig.cache
 E:\Giang\react-project\FurnitureAPI\FurnitureAPI\obj\Release\net6.0\ref\FurnitureAPI.dll
 E:\Giang\react-project\FurnitureAPI\FurnitureAPI\bin\Release\net6.0\FurnitureAPI.staticwebassets.runtime.json
+E:\Giang\react-project\FurnitureAPI\FurnitureAPI\bin\Release\net6.0\Npgsql.dll
+E:\Giang\react-project\FurnitureAPI\FurnitureAPI\bin\Release\net6.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+E:\Giang\react-project\FurnitureAPI\FurnitureAPI\bin\Release\net6.0\SixLabors.ImageSharp.dll

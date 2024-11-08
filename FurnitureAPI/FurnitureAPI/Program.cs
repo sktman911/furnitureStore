@@ -83,7 +83,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowOrigin",
             policy =>
             {
-                policy.WithOrigins("http://localhost:3000", "https://furniture-store-tawny.vercel.app")
+                policy.WithOrigins("http://localhost:3000", "https://furniture-store-tawny.vercel.app", "http://luxurysg.somee.com")
                        .AllowAnyMethod()
                        .AllowCredentials()
                        .AllowAnyHeader();

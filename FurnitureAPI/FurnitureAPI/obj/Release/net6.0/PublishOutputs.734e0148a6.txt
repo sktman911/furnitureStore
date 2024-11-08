@@ -57,6 +57,8 @@ E:\Giang\react-project\FurnitureAPI\FurnitureAPI\obj\Release\net6.0\PubTmp\Out\M
 E:\Giang\react-project\FurnitureAPI\FurnitureAPI\obj\Release\net6.0\PubTmp\Out\Microsoft.VisualStudio.Web.CodeGenerators.Mvc.dll
 E:\Giang\react-project\FurnitureAPI\FurnitureAPI\obj\Release\net6.0\PubTmp\Out\Microsoft.Win32.SystemEvents.dll
 E:\Giang\react-project\FurnitureAPI\FurnitureAPI\obj\Release\net6.0\PubTmp\Out\Newtonsoft.Json.dll
+E:\Giang\react-project\FurnitureAPI\FurnitureAPI\obj\Release\net6.0\PubTmp\Out\Npgsql.dll
+E:\Giang\react-project\FurnitureAPI\FurnitureAPI\obj\Release\net6.0\PubTmp\Out\Npgsql.EntityFrameworkCore.PostgreSQL.dll
 E:\Giang\react-project\FurnitureAPI\FurnitureAPI\obj\Release\net6.0\PubTmp\Out\NuGet.Common.dll
 E:\Giang\react-project\FurnitureAPI\FurnitureAPI\obj\Release\net6.0\PubTmp\Out\NuGet.Configuration.dll
 E:\Giang\react-project\FurnitureAPI\FurnitureAPI\obj\Release\net6.0\PubTmp\Out\NuGet.DependencyResolver.Core.dll
@@ -68,6 +70,7 @@ E:\Giang\react-project\FurnitureAPI\FurnitureAPI\obj\Release\net6.0\PubTmp\Out\N
 E:\Giang\react-project\FurnitureAPI\FurnitureAPI\obj\Release\net6.0\PubTmp\Out\NuGet.Versioning.dll
 E:\Giang\react-project\FurnitureAPI\FurnitureAPI\obj\Release\net6.0\PubTmp\Out\Scrutor.dll
 E:\Giang\react-project\FurnitureAPI\FurnitureAPI\obj\Release\net6.0\PubTmp\Out\SixLabors.Fonts.dll
+E:\Giang\react-project\FurnitureAPI\FurnitureAPI\obj\Release\net6.0\PubTmp\Out\SixLabors.ImageSharp.dll
 E:\Giang\react-project\FurnitureAPI\FurnitureAPI\obj\Release\net6.0\PubTmp\Out\Swashbuckle.AspNetCore.Filters.dll
 E:\Giang\react-project\FurnitureAPI\FurnitureAPI\obj\Release\net6.0\PubTmp\Out\Swashbuckle.AspNetCore.Filters.Abstractions.dll
 E:\Giang\react-project\FurnitureAPI\FurnitureAPI\obj\Release\net6.0\PubTmp\Out\Swashbuckle.AspNetCore.Swagger.dll

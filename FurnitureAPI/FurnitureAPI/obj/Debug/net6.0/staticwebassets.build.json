@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "2smGyHx362MxFcRpleJVC4BhWObJAEJ+zB4Ju6lI7+Y=",
+  "Hash": "e9SBNbhmmGJuZvoynSxOS7rTfeG+tApGx+Xf2lyAYrk=",
   "Source": "FurnitureAPI",
   "BasePath": "_content/FurnitureAPI",
   "Mode": "Default",
@@ -15,5 +15,23 @@
       "Pattern": "**"
     }
   ],
-  "Assets": []
+  "Assets": [
+    {
+      "Identity": "E:\\Giang\\react-project\\FurnitureAPI\\FurnitureAPI\\wwwroot\\Images\\eetkmer-arm-pine-wood_sub2.jpg",
+      "SourceId": "FurnitureAPI",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\Giang\\react-project\\FurnitureAPI\\FurnitureAPI\\wwwroot\\",
+      "BasePath": "_content/FurnitureAPI",
+      "RelativePath": "Images/eetkmer-arm-pine-wood_sub2.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Images\\eetkmer-arm-pine-wood_sub2.jpg"
+    }
+  ]
 }

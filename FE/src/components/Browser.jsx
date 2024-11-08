@@ -12,16 +12,16 @@ const Browser = () => {
         </div>
         <div className="flex w-10/12 mx-auto justify-between gap-6 pt-10">
           <div className=" w-4/12">
-            <img className="w-full h-fit"  src={dining} alt="Dining" loading="lazy"/>
-            <h1 className="py-5 font-bold tracking-wider">Dining</h1>
+            <img className="w-full h-fit max-xs:h-2/3"  src={dining} alt="Dining" loading="lazy"/>
+            <h1 className="py-5 font-bold tracking-wider max-xs:text-sm">Dining</h1>
           </div>
           <div className=" w-4/12">
-            <img className="w-full h-fit"  src={living} alt="Living" loading="lazy"/>
-            <h1 className="py-5 font-bold tracking-wider">Living</h1>
+            <img className="w-full h-fit max-xs:h-2/3"  src={living} alt="Living" loading="lazy"/>
+            <h1 className="py-5 font-bold tracking-wider max-xs:text-sm">Living</h1>
           </div>
           <div className=" w-4/12">
-            <img className="w-full h-fit"  src={bedroom} alt="Bedroom" loading="lazy"/>
-            <h1 className="py-5 font-bold tracking-wider">Bedroom</h1>
+            <img className="w-full h-fit max-xs:w-12 max-xs:mx-auto max-xs:h-2/3"  src={bedroom} alt="Bedroom" loading="lazy"/>
+            <h1 className="py-5 font-bold tracking-wider max-xs:text-sm">Bedroom</h1>
           </div>
         </div>
     </section>

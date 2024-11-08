@@ -9,7 +9,8 @@ import { FaReceipt } from "react-icons/fa";
 
 
 // export const apiUrl = "http://localhost:7183/";
-export const apiUrl = "https://furniturestore-fct8.onrender.com/";
+export const apiUrl = "http://luxurySG.somee.com/";
+// export const apiUrl = "https://furniturestore-fct8.onrender.com/";
 
 export const navLinks = [
   { href: "/", label: "Home", subMenu: false },

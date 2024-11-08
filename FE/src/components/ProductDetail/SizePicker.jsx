@@ -4,7 +4,6 @@ import { ShopContext } from "../../context/ShopContext";
 const SizePicker = (props) => {
   const {sizes} = useContext(ShopContext);
   const pscList = props.product.productSizeColors;
-  const [amount, setAmount] = useState();
 
   const size = sizes.filter((item) =>
     pscList.some(
@@ -22,7 +21,7 @@ const SizePicker = (props) => {
     )
     .map((item) => item.quantity)
     .reduce((total, quantity) => total + quantity, 0);
-  setAmount(newAmount);
+    props.setAmount(newAmount);
   };
 
   return (
@@ -50,11 +49,6 @@ const SizePicker = (props) => {
                   </div>
                 </label>
               ))}
-          </div>
-          <div className="ml-6">
-            {(props.color === null && props.size !== null) && (
-              <p>Stocks: {amount}</p>
-            )}
           </div>
         </div>
       </div>

@@ -25,6 +25,7 @@ const ProductDisplay = (props) => {
   const [favor, setFavor] = useState({});
   const [active, setActive] = useState("Description");
   const [reviews, setReviews] = useState([]);
+  const [amount, setAmount] = useState(product.productSizeColors.reduce((initial, item) => initial + item.quantity,0));
   const [display, setDisplay] = useState(product.images[0].imageLink);
 
   const dispatch = useDispatch();
@@ -92,6 +93,11 @@ const ProductDisplay = (props) => {
   const handleAddToCart = (product) => {
     if (size === null || color === null) {
       errorMessage("Please choose size and color");
+      return;
+    }
+
+    if(amount === 0){
+      errorMessage("This product is out of stock");
       return;
     }
 
@@ -228,14 +234,16 @@ const ProductDisplay = (props) => {
             </div>
           </div>
           <p className="w-5/6 text-sm md:text-md">
-            Setting the bar as one of the loudest speakers in its class, the
-            Kilburn is a compact, stout-hearted hero with a well-balanced audio
-            which boasts a clear midrange and extended highs for a sound.
+            
           </p>
 
-          <SizePicker onChange={handleSize} size={size} color={color} product={product} />
+          <SizePicker onChange={handleSize} amount={amount} setAmount={setAmount} size={size} color={color} product={product} />
 
-          <ColorPicker onChange={handleColor} size={size} color={color} product={product} />
+          <ColorPicker onChange={handleColor} amount={amount} setAmount={setAmount} size={size} color={color} product={product} />
+
+          <div className="mt-4 mb-2">
+            In stock: {amount}
+          </div>
 
           <div className="pt-5 flex items-center justify-between w-full xl:w-11/12 text-sm md:text-base relative">
             <div className="w-16 sm:w-28 lg:w-16 xl:w-28 h-10 sm:h-14 lg:h-10 xl:h-14 border-2 border-gray-400 rounded-lg">

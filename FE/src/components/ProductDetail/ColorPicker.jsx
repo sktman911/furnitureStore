@@ -4,7 +4,6 @@ import { ShopContext } from "../../context/ShopContext";
 const ColorPicker = (props) => {
   const { colors } = useContext(ShopContext);
   const pscList = props.product.productSizeColors;
-  const [amount, setAmount] = useState();
 
   const color = colors.filter((item) =>
     pscList.some((psc) => psc.colorId === item.colorId)
@@ -20,14 +19,14 @@ const ColorPicker = (props) => {
       )
       .map((item) => item.quantity)
       .reduce((total, quantity) => total + quantity, 0);
-    setAmount(newAmount);
+    props.setAmount(newAmount);
   };
 
   return (
     <div>
       <div className="py-3">
         <label className="text-gray-400" htmlFor="">
-          Color
+          Color:
         </label>
         <div className="flex items-baseline mt-2">
           <div className="space-x-2 flex gap-2 text-sm">
@@ -49,11 +48,6 @@ const ColorPicker = (props) => {
                   ></div>
                 </label>
               ))}
-          </div>
-          <div className="ml-6">
-            {(props.size !== null && props.color !== null) && (
-              <p>Stocks: {amount}</p>
-            )}
           </div>
         </div>
       </div>
