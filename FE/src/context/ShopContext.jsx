@@ -14,7 +14,7 @@ const ShopContextProvider = (props) => {
   const[colors, setColor] = useState([]);
 
   const  getProducts = async (url = apiUrl+"api/Products/") => {
-    axios.get(url).then(res => {setProducts(res.data);}).catch(err => console.log(err));
+    axios.get(url).then(res => {setProducts(res.data);console.log(res.data)}).catch(err => console.log(err));
   }
 
   const getCategories = async (url = apiUrl+"api/Categories/") => {

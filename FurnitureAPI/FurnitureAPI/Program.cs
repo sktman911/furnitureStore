@@ -138,10 +138,10 @@ if (app.Environment.IsProduction())
 
 
 //var contentRootPath = builder.Environment.ContentRootPath;
-var rootPath = builder.Environment.WebRootPath;
+//var rootPath = builder.Environment.WebRootPath;
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new PhysicalFileProvider(Path.Combine(rootPath, "Images")),
+    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.WebRootPath, "Images")),
     RequestPath = "/Images"
 });
 

@@ -114,7 +114,7 @@ export default function HomeSlider() {
           >
             {nextSlides.map((item, index) => {
               return (
-                <img className="w-full h-full pt-10" src={item.url} alt="Alt" />
+                <img key={index} className="w-full h-full pt-10" src={item.url} alt="Alt" />
               );
             })}
           </div>
@@ -124,12 +124,13 @@ export default function HomeSlider() {
                 <animated.li
                   className="p-2 border rounded-full border-customStrongYellow cursor-pointer"
                   style={animationStyle}
-                  
+                  key={slides.length}
                 >
                   <div className="w-3 h-3 rounded-full bg-customStrongYellow"></div>
                 </animated.li>
               ) : (
                 <li
+                  key={index}
                   className="w-3 h-3 rounded-full bg-gray-300 cursor-pointer"
                   onClick={() => dotClick(index)}
                 ></li>

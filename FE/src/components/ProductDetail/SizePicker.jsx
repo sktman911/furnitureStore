@@ -1,25 +1,37 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { ShopContext } from "../../context/ShopContext";
 
 const SizePicker = (props) => {
   const {sizes} = useContext(ShopContext);
+  const pscList = props.product.productSizeColors;
+  const [amount, setAmount] = useState();
 
   const size = sizes.filter((item) =>
-    props.product.productSizeColors.some(
+    pscList.some(
       (psc) => psc.sizeId === item.sizeId
     )
   );
 
   const selectedSize = (data) => {
     props.onChange(data);
+    const newAmount = pscList
+    .filter((item) =>
+      props.color === null
+        ? item.sizeId === data[0]
+        : item.sizeId === data[0] && item.colorId === props.color[0]
+    )
+    .map((item) => item.quantity)
+    .reduce((total, quantity) => total + quantity, 0);
+  setAmount(newAmount);
   };
 
   return (
     <div>
       <div className="py-3">
         <label className="text-gray-400" htmlFor="">
-          Size
+          Size:
         </label>
+        <span></span>
         <div className="flex items-baseline mt-2">
           <div className="space-x-2 flex text-sm">
             {size &&
@@ -38,6 +50,11 @@ const SizePicker = (props) => {
                   </div>
                 </label>
               ))}
+          </div>
+          <div className="ml-6">
+            {(props.color === null && props.size !== null) && (
+              <p>Stocks: {amount}</p>
+            )}
           </div>
         </div>
       </div>

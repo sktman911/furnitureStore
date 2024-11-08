@@ -88,6 +88,7 @@ namespace FurnitureAPI.Services
                     PscId = psc.PscId,
                     ColorId = psc.ColorId,
                     SizeId = psc.SizeId,
+                    Quantity = psc.Quantity,
                 }).ToList(),
                 CreatedDate = p.CreatedDate,
                 Images = p.Images.Select(i => new Image

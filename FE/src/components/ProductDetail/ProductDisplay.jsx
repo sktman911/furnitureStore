@@ -195,6 +195,10 @@ const ProductDisplay = (props) => {
               const isFull = index < Math.floor(rating);
               const isHalf = index === Math.floor(rating) && rating % 1 !== 0;
               const isEmpty = index > Math.floor(rating);
+              
+              if(isNaN(rating)) return (
+                <FaStar key={index} className="text-gray-400" />
+              )
 
               return (
                 <div key={index}>
@@ -229,9 +233,9 @@ const ProductDisplay = (props) => {
             which boasts a clear midrange and extended highs for a sound.
           </p>
 
-          <SizePicker onChange={handleSize} product={product} />
+          <SizePicker onChange={handleSize} size={size} color={color} product={product} />
 
-          <ColorPicker onChange={handleColor} product={product} />
+          <ColorPicker onChange={handleColor} size={size} color={color} product={product} />
 
           <div className="pt-5 flex items-center justify-between w-full xl:w-11/12 text-sm md:text-base relative">
             <div className="w-16 sm:w-28 lg:w-16 xl:w-28 h-10 sm:h-14 lg:h-10 xl:h-14 border-2 border-gray-400 rounded-lg">
