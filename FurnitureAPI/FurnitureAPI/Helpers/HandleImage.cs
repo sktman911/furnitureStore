@@ -21,22 +21,22 @@ namespace FurnitureAPI.Helpers
         {
             string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName).ToArray());
             //imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(imageFile.FileName);
-            imageName = imageName + ".webp";
+            //imageName = imageName + ".webp";
             var imagePath = Path.Combine(_hostEnvironment.WebRootPath,"Images", imageName);
-            //if (!File.Exists(imagePath))
-            //{
-            //    var fileStream = new FileStream(imagePath, FileMode.Create);
-            //    await imageFile.CopyToAsync(fileStream);
-               
-            //}
             if (!File.Exists(imagePath))
             {
-                using (var image = await Image.LoadAsync(imageFile.OpenReadStream()))
-                {
-                    await image.SaveAsync(imagePath, new SixLabors.ImageSharp.Formats.Webp.WebpEncoder());
-                }
+                var fileStream = new FileStream(imagePath, FileMode.Create);
+                await imageFile.CopyToAsync(fileStream);
 
             }
+            //if (!File.Exists(imagePath))
+            //{
+            //    using (var image = await Image.LoadAsync(imageFile.OpenReadStream()))
+            //    {
+            //        await image.SaveAsync(imagePath, new SixLabors.ImageSharp.Formats.Webp.WebpEncoder());
+            //    }
+
+            //}
             return imageName;
         }
 
