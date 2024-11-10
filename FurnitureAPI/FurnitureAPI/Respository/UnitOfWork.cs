@@ -9,54 +9,40 @@ namespace FurnitureAPI.Respository
         private readonly FurnitureContext _context;
         private IDbContextTransaction? _transaction;
 
-        private Lazy<CategoryRespository> _categories;
-        private Lazy<SubCategoryRepository> _subCategories;
-        private Lazy<ColorRepository> _colors;
-        private Lazy<SizeRepository> _sizes;
-        private Lazy<CustomerRepository> _customers;
-        private Lazy<ProductRepository> _products;
-        private Lazy<ProductSizeColorRepository> _productSizeColors;
-        private Lazy<OrderRepository> _orders;
-        private Lazy<OrderDetailRepository> _orderDetails;
-        private Lazy<ImageRepository> _images;
-        private Lazy<FunctionRepository> _functions;
-        private Lazy<FavouriteRepository> _favourites;
-        private Lazy<ReviewRepository> _reviews;
-        private Lazy<StatisticRepository> _statistics;
+        public ICategoryRespository Categories { get; private set; }
+        public ISubCategoryRepository SubCategories { get; private set; }
+        public IColorRepository Colors { get; private set; }
+        public ISizeRepository Sizes { get; private set; }
+        public ICustomerRepository Customers { get; private set; }
+        public IProductRepository Products { get; private set; }
+        public IProductSizeColorRepository ProductSizeColors { get; private set; }
+        public IOrderRepository Orders { get; private set; }
+        public IOrderDetailRepository OrderDetails { get; private set; }
+        public IImageRepository Images { get; private set; }
+        public IFunctionRepository Functions { get; private set; }
+        public IFavouriteRepository Favourites { get; private set; }
+        public IReviewRepository Reviews { get; private set; }
+        public IStatisticRepository Statistics { get; private set; }
 
         public UnitOfWork(FurnitureContext context)
         {
             _context = context;
 
-            _categories = new Lazy<CategoryRespository>(() => new CategoryRespository(_context));
-            _subCategories = new Lazy<SubCategoryRepository>(() => new SubCategoryRepository(_context));
-            _colors = new Lazy<ColorRepository>(() => new ColorRepository(_context));
-            _sizes = new Lazy<SizeRepository>(() => new SizeRepository(_context));
-            _customers = new Lazy<CustomerRepository>(() => new CustomerRepository(_context));
-            _products = new Lazy<ProductRepository>(() => new ProductRepository(_context));
-            _productSizeColors = new Lazy<ProductSizeColorRepository>(() => new ProductSizeColorRepository(_context));
-            _orders = new Lazy<OrderRepository>(() => new OrderRepository(_context));
-            _orderDetails = new Lazy<OrderDetailRepository>(() => new OrderDetailRepository(_context));
-            _images = new Lazy<ImageRepository>(() => new ImageRepository(_context));
-            _functions = new Lazy<FunctionRepository>(() => new FunctionRepository(_context));
-            _favourites = new Lazy<FavouriteRepository>(() => new FavouriteRepository(_context));
-            _reviews = new Lazy<ReviewRepository>(() => new ReviewRepository(_context));
-            _statistics = new Lazy<StatisticRepository>(() => new StatisticRepository(_context));
+            Categories = new CategoryRespository(_context);
+            SubCategories = new SubCategoryRepository(_context);
+            Colors =  new ColorRepository(_context);
+            Sizes =  new SizeRepository(_context);
+            Customers =  new CustomerRepository(_context);
+            Products =  new ProductRepository(_context);
+            ProductSizeColors = new ProductSizeColorRepository(_context);
+            Orders = new OrderRepository(_context);
+            OrderDetails = new OrderDetailRepository(_context);
+            Images =  new ImageRepository(_context);
+            Functions = new FunctionRepository(_context);
+            Favourites =  new FavouriteRepository(_context);
+            Reviews =  new ReviewRepository(_context);
+            Statistics =  new StatisticRepository(_context);
         }
-        public ICategoryRespository Categories => _categories.Value;
-        public ISubCategoryRepository SubCategories => _subCategories.Value;
-        public IColorRepository Colors => _colors.Value;
-        public ISizeRepository Sizes => _sizes.Value;
-        public ICustomerRepository Customers => _customers.Value;
-        public IProductRepository Products => _products.Value;
-        public IProductSizeColorRepository ProductSizeColors => _productSizeColors.Value;
-        public IOrderRepository Orders => _orders.Value;
-        public IOrderDetailRepository OrderDetails => _orderDetails.Value;
-        public IImageRepository Images => _images.Value;
-        public IFunctionRepository Functions => _functions.Value;
-        public IFavouriteRepository Favourites => _favourites.Value;
-        public IReviewRepository Reviews => _reviews.Value;
-        public IStatisticRepository Statistics => _statistics.Value;
 
         public async Task BeginTransactionAsync()
         {
